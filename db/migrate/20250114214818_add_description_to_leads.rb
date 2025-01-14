@@ -1,0 +1,5 @@
+class AddDescriptionToLeads < ActiveRecord::Migration[7.2]
+  def change
+    add_column :leads, :description, :text
+  end
+end
