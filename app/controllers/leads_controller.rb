@@ -9,17 +9,17 @@ class LeadsController < ApplicationController
   end
 
   def new
-    @user = user.find_by(form_token: params[:form_token])
+    @user = User.find_by(form_token: params[:form_token])
     redirect_to root_path, alert: "Form not found" unless @user
     @lead = Lead.new
   end
 
   def create
-    @user = user.find_by(form_token: params[:form_token])
+    @user = User.find_by(form_token: params[:form_token])
     redirect_to root_path, alert: "Form not found" unless @user
     @lead = @user.leads.new(lead_params)
     if @lead.save
-      redirect_to thank_you_path, notice: "Thank you for signing up!"
+      render "thank_you", status: :ok
     else
       render :new
     end
@@ -48,6 +48,6 @@ class LeadsController < ApplicationController
   end
 
   def lead_params
-    params.require(:lead).permit(:name)
+    params.require(:lead).permit(:name, :last_name, :email, :phone, :capital, :description)
   end
 end

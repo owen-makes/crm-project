@@ -1,9 +1,12 @@
-# app/views/leads/new.html.erb
 <% if @user %>
-  <h1>New Lead for User: <%= @user.name %></h1>
-  <%= form_for @lead, url: create_lead_path(form_token: params[:form_token]), method: :post do |f| %>
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4"><%= @user.name + " " + @user.last_name %> Servicios Financieros</h1>
+    <h1 class="text-l mb-4">Si te interesan nuestros servicios, llená el formulario de abajo y te contactaremos a la brevedad!</h1>
+
     <% if @lead.errors.any? %>
-      <div class="alert alert-danger">
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Oops!</strong>
+        <span class="block sm:inline">There were some problems with your submission.</span>
         <ul>
           <% @lead.errors.full_messages.each do |message| %>
             <li><%= message %></li>
@@ -12,42 +15,47 @@
       </div>
     <% end %>
 
-    <div class="mb-3">
-      <%= f.label :name %>
-      <%= f.text_field :name, class: "form-control", required: true %>
-    </div>
+    <%= form_for @lead, url: "/signup/#{params[:form_token]}", method: :post, class: "space-y-4" do |f| %>
+      <div>
+        <%= f.label "Nombre", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :name, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
+      </div>
 
-    <div class="mb-3">
-      <%= f.label :last_name %>
-      <%= f.text_field :last_name, class: "form-control", required: true %>
-    </div>
+      <div>
+        <%= f.label "Apellido", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :last_name, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
+      </div>
 
-    <div class="mb-3">
-      <%= f.label :email %>
-      <%= f.email_field :email, class: "form-control", required: true %>
-    </div>
+      <div>
+        <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.email_field :email, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
+      </div>
 
-    <div class="mb-3">
-      <%= f.label :phone %>
-      <%= f.number_field :phone, class: "form-control", required: true %>
-    </div>
+      <div>
+        <%= f.label "Teléfono", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :phone, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
+      </div>
 
-    <div class="mb-3">
-      <%= f.label :capital %>
-      <%= f.number_field :capital, class: "form-control" %>
-    </div>
+      <div>
+        <%= f.label "¿Cuánto estas dispuesto a invertir? (Monto en dólares)", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :capital, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+      </div>
 
-    <div class="mb-3">
-      <%= f.label :description %>
-      <%= f.text_area :description, class: "form-control" %>
-    </div>
+      <div>
+        <%= f.label "Contanos tus objetivos financieros", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_area :description, rows: 4, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+      </div>
 
-    <div class="d-grid gap-2">
-      <%= f.submit "Create Lead", class: "btn btn-primary" %>
-    </div>
-  <% end %>
+      <div>
+        <%= f.submit "Submit", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      </div>
+    <% end %>
+  </div>
 <% else %>
-  <div class="alert alert-danger">
-    Form not found!
+  <div class="container mx-auto p-4">
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">Oops!</strong>
+      <span class="block sm:inline">Form not found!</span>
+    </div>
   </div>
 <% end %>
