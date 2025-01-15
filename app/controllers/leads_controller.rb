@@ -1,22 +1,25 @@
-class LeadController < ApplicationController
+class LeadsController < ApplicationController
   before_action :set_lead, only: [ :show, :edit, :update, :destroy ]
-
+  before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
   def index
-    @leads = Lead.all
+    @leads = current_user.leads
   end
 
   def show
   end
 
   def new
+    @user = user.find_by(form_token: params[:form_token])
+    redirect_to root_path, alert: "Form not found" unless @user
     @lead = Lead.new
   end
 
   def create
-    @lead = Lead.new(lead_params)
-
+    @user = user.find_by(form_token: params[:form_token])
+    redirect_to root_path, alert: "Form not found" unless @user
+    @lead = @user.leads.new(lead_params)
     if @lead.save
-      redirect_to leads_path, notice: "Lead was successfully created."
+      redirect_to thank_you_path, notice: "Thank you for signing up!"
     else
       render :new
     end

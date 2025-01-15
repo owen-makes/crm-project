@@ -1,0 +1,53 @@
+# app/views/leads/new.html.erb
+<% if @user %>
+  <h1>New Lead for User: <%= @user.name %></h1>
+  <%= form_for @lead, url: create_lead_path(form_token: params[:form_token]), method: :post do |f| %>
+    <% if @lead.errors.any? %>
+      <div class="alert alert-danger">
+        <ul>
+          <% @lead.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-3">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :last_name %>
+      <%= f.text_field :last_name, class: "form-control", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :email %>
+      <%= f.email_field :email, class: "form-control", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :phone %>
+      <%= f.number_field :phone, class: "form-control", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :capital %>
+      <%= f.number_field :capital, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :description %>
+      <%= f.text_area :description, class: "form-control" %>
+    </div>
+
+    <div class="d-grid gap-2">
+      <%= f.submit "Create Lead", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+<% else %>
+  <div class="alert alert-danger">
+    Form not found!
+  </div>
+<% end %>

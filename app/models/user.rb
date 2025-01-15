@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_many :clients
   has_many :leads
+  before_create :generate_form_token
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
@@ -14,5 +15,11 @@ class User < ApplicationRecord
       user.name = auth.info.given_name
       user.last_name = auth.info.family_name
     end
+  end
+
+  private
+
+  def generate_form_token
+    self.form_token ||= SecureRandom.hex(4)
   end
 end
