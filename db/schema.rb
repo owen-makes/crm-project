@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_15_211628) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_16_014341) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "leads", force: :cascade do |t|
     t.string "name"
     t.string "last_name"
-    t.integer "phone"
+    t.string "phone"
     t.string "status"
     t.string "channel"
     t.integer "capital"

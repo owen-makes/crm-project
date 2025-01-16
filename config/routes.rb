@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   get "/signup/:form_token", to: "leads#new", as: "new_lead_form"
   post "/signup/:form_token", to: "leads#create"
+  get "/thank_you", to: "leads#thank_you", as: "thank_you"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

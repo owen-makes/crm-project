@@ -19,10 +19,15 @@ class LeadsController < ApplicationController
     redirect_to root_path, alert: "Form not found" unless @user
     @lead = @user.leads.new(lead_params)
     if @lead.save
-      render "thank_you", status: :ok
+      flash[:lead_id] = @lead.id
+      redirect_to thank_you_path(format: nil)
     else
       render :new
     end
+  end
+
+  def thank_you
+    @lead = Lead.find(flash[:lead_id])
   end
 
   def edit
