@@ -1,6 +1,10 @@
       <aside class="col-start-1 col-end-2 flex-col px-8 py-7 mx-6 rounded-xl bg-sky-950 text-slate-100">
         <div class="text-4xl mb-28 font-bold">Tikertraker</div>
         <div class="text-xl mb-1">Dashboard</div>
-        <div class="text-xl mb-1">Leads</div>
+        <div class="text-xl mb-1 hover:underline"><%= link_to "Leads", leads_path %></div>
         <div class="text-xl mb-1">Clientes</div>
+        <div class="text-xl mb-1">Equipo</div>
+        <div class="flex-col h-full">
+          <div class="mt-auto text-xl mb-1"> <%= link_to "Log Out", destroy_user_session_url, data: { turbo_method: :delete } %></div>
+        </div>
       </aside>

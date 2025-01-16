@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
+  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks", registrations: "users/registrations" }
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :leads, except: [ :new, :create ]
 
@@ -16,5 +17,5 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   # Defines the root path route ("/")
-  # root "devise/sessions#new"
+  root "leads#index"
 end

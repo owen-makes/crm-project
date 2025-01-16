@@ -1,44 +1,57 @@
 <%= render "partials/sidebar" %>
-<div class="col-start-2 col-end-7 mx-auto mt-10">
+<div class="col-start-2 col-end-7 mt-10">
+  <div class="flex">
+    <div class="ml-auto">Mi link es <%= current_user.form_token %></div>
+  </div>
   <h1 class="text-2xl font-bold mb-4">My Leads</h1>
+  <% if @leads.blank? %>
+    <div class="flex-col bg-sky-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 m-auto text-white">
+      <h2 class="text-4xl font-bold my-4 mx-4">Todavía no tenes leads!</h1>
+      <p class="my-4 mx-4">Compartí tu link para ingresar nuevos prospectos</p>
+      <div class="bg-slate-50 rounded-md my-4 mx-4 text-black text-center">localhost:3000/signup/<%= current_user.form_token %></div>
+    </div>
 
-  <table class="min-w-full table-auto">
-    <thead>
-      <tr>
-        <th class="px-4 py-2 bg-gray-100">Nombre</th>
-        <th class="px-4 py-2 bg-gray-100">Apellido</th>
-        <th class="px-4 py-2 bg-gray-100">Teléfono</th>
-        <th class="px-4 py-2 bg-gray-100">Email</th>
-        <th class="px-4 py-2 bg-gray-100">Estado</th>
-        <th class="px-4 py-2 bg-gray-100">Fuente</th>
-        <th class="px-4 py-2 bg-gray-100">Capital</th>
-        <th class="px-4 py-2 bg-gray-100">Ingresado</th>
-        <th class="px-4 py-2 bg-gray-100">Detalles</th>
-        <th class="px-4 py-2 bg-gray-100">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @leads.each do |lead| %>
+  <% else %>
+    <table class="min-w-full table-auto">
+      <thead>
         <tr>
-          <td class="border px-4 py-2"><%= lead.name %></td>
-          <td class="border px-4 py-2"><%= lead.last_name %></td>
-          <td class="border px-4 py-2"><%= lead.phone %></td>
-          <td class="border px-4 py-2"><%= lead.email %></td>
-          <td class="border px-4 py-2"><%= lead.status %></td>
-          <td class="border px-4 py-2"><%= lead.channel %></td>
-          <td class="border px-4 py-2"><%= lead.capital %></td>
-          <td class="border px-4 py-2"><%= lead.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-          <td class="border px-4 py-2"><%= truncate(lead.description, length: 50) %></td>
-          <td class="border px-4 py-2">
-            <%= link_to "Show", lead, class: "text-blue-500 hover:underline" %> | 
-            <%= link_to "Edit", edit_lead_path(lead), class: "text-green-500 hover:underline" %> | 
-            <%= link_to "Delete", 
-                lead_path(lead), 
-                data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
-                class: "text-red-500 hover:underline" %>
-          </td>
+          <th class="px-4 py-2 bg-gray-100">Nombre</th>
+          <th class="px-4 py-2 bg-gray-100">Apellido</th>
+          <th class="px-4 py-2 bg-gray-100">Teléfono</th>
+          <th class="px-4 py-2 bg-gray-100">Email</th>
+          <th class="px-4 py-2 bg-gray-100">Fuente</th>
+          <th class="px-4 py-2 bg-gray-100">Broker</th>
+          <th class="px-4 py-2 bg-gray-100">Capital</th>
+          <th class="px-4 py-2 bg-gray-100">Ingresado</th>
+          <th class="px-4 py-2 bg-gray-100">Detalles</th>
+          <th class="px-4 py-2 bg-gray-100">Estado</th>
+          <th class="px-4 py-2 bg-gray-100">Acciones</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @leads.each do |lead| %>
+          <tr>
+            <td class="border px-4 py-2"><%= lead.name %></td>
+            <td class="border px-4 py-2"><%= lead.last_name %></td>
+            <td class="border px-4 py-2"><%= lead.phone %></td>
+            <td class="border px-4 py-2"><%= lead.email %></td>
+            <td class="border px-4 py-2"><%= lead.channel %></td>
+            <td class="border px-4 py-2"><%= lead.broker %></td>
+            <td class="border px-4 py-2"><%= lead.capital %></td>
+            <td class="border px-4 py-2"><%= lead.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td class="border px-4 py-2"><%= truncate(lead.description, length: 50) %></td>
+            <td class="border px-4 py-2"><%= lead.status %></td>
+            <td class="border px-4 py-2">
+              <%= link_to "Show", lead, class: "text-blue-500 hover:underline" %> | 
+              <%= link_to "Edit", edit_lead_path(lead), class: "text-green-500 hover:underline" %> | 
+              <%= link_to "Delete", 
+                  lead_path(lead), 
+                  data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
+                  class: "text-red-500 hover:underline" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
 </div>

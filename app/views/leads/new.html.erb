@@ -33,12 +33,17 @@
 
       <div>
         <%= f.label "Teléfono", class: "block text-sm font-medium text-gray-700" %>
-        <%= f.number_field :phone, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
+        <%= f.phone_field :phone, class: "appearance-none mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
       </div>
 
       <div>
         <%= f.label "¿Cuánto estas dispuesto a invertir? (Monto en dólares)", class: "block text-sm font-medium text-gray-700" %>
-        <%= f.number_field :capital, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        <%= f.number_field :capital, class: "appearance-none mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+      </div>
+
+      <div>
+        <%= f.label "¿Con qué broker operas? En caso de no tener, dejar en blanco", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :broker, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
       </div>
 
       <div>
