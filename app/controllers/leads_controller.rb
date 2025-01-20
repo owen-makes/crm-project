@@ -1,6 +1,7 @@
 class LeadsController < ApplicationController
   before_action :set_lead, only: [ :show, :edit, :update, :destroy ]
   before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
+  before_action :authorize_lead_access, only: [ :show, :edit, :update, :destroy, :convert ]
   def index
     @leads = current_user.leads.where.not(" status = ?", "Converted")
   end
@@ -64,6 +65,11 @@ class LeadsController < ApplicationController
 
   def set_lead
     @lead = Lead.find(params[:id])
+  end
+
+  def authorize_lead_access
+    # Redirect if the current user doesn't own the lead
+    redirect_to leads_path, alert: "You are not authorized to access this lead." unless @lead.user_id == current_user.id
   end
 
   def lead_params

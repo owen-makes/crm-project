@@ -1,10 +1,60 @@
-<% content_for :title, "Editing client" %>
+  <!-- Sidebar -->
+  <%= render "partials/sidebar" %>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing client</h1>
+  <!-- Edit Lead Form -->
+  <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+    <%= link_to "Volver a perfil", client_path(@client), class: "text-green-600 hover:underline text-sm" %>
 
-  <%= render "form", client: @client %>
+    <h1 class="text-3xl font-bold text-gray-800 mt-4">
+      Editar Cliente: <%= @client.name %> <%= @client.last_name %>
+    </h1>
 
-  <%= link_to "Show this client", @client, class: "ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to clients", clients_path, class: "ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+    <%= form_with(model: @client, local: true, class: "mt-6 space-y-4") do |f| %>
+      <div class="flex flex-wrap items-stretch w-100 justify-between">
+        <div class="w-2/4 pr-10">
+          <%= f.label :name, "First Name", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :name, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+        </div>
+        <div class="w-2/4">
+          <%= f.label :last_name, "Last Name", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_field :last_name, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :phone, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.telephone_field :phone, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+      </div>
+
+      <div>
+        <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.email_field :email, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+      </div>
+
+      <div>
+        <%= f.label :channel, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :channel, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+      </div>
+
+      <div>
+        <%= f.label :broker, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :broker, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+      </div>
+
+      <div>
+        <%= f.label :goals, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_area :goals, rows: 4, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+      </div>
+
+      <div>
+        <%= f.label :notes, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_area :notes, rows: 4, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+      </div>
+
+      <div class="flex items-center justify-between mt-6">
+        <%= f.submit "Guardar Cambios", class: "bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+        <%= link_to "Cancelar", client_path(@client), class: "text-gray-600 hover:underline" %>
+      </div>
+    <% end %>
+  </div>
 </div>
