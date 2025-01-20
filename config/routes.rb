@@ -5,6 +5,12 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :leads, except: [ :new, :create ]
 
+  resources :leads do
+    member do
+      post :convert
+    end
+  end
+
   get "/signup/:form_token", to: "leads#new", as: "new_lead_form"
   post "/signup/:form_token", to: "leads#create"
   get "/thank_you", to: "leads#thank_you", as: "thank_you"

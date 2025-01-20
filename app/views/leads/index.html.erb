@@ -3,7 +3,7 @@
   <div class="flex">
     <div class="ml-auto">Mi link es <%= current_user.form_token %></div>
   </div>
-  <h1 class="text-2xl font-bold mb-4">My Leads</h1>
+  <h1 class="text-2xl font-bold mb-4">Mis Leads</h1>
   <% if @leads.blank? %>
     <div class="flex-col bg-green-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 m-auto text-white">
       <h2 class="text-4xl font-bold my-4 mx-4">Todavía no tenes leads!</h1>
@@ -51,6 +51,7 @@
                           lead_path(lead), 
                           data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
                           class: "text-red-500 hover:text-red-700" %>
+                      <%= button_to 'Convert to Client', convert_lead_path(lead), method: :post, data: { confirm: 'Are you sure you want to convert this lead to a client?' } %>
                     </div>
                   </td>
                 </tr>

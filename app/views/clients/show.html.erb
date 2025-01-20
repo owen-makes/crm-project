@@ -1,17 +1,51 @@
-<% content_for :title, "Showing client" %>
+  <!-- Sidebar -->
+  <%= render "partials/sidebar" %>
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+  <!-- Lead Details -->
+  <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+    <%= link_to "Volver a Clientes", clients_path, class: "text-green-600 hover:underline text-sm" %> |
+    <%= link_to "Editar", edit_client_path, class: "text-green-600 hover:underline text-sm" %>
 
-  <h1 class="font-bold text-4xl">Showing client</h1>
 
-  <%= render @client %>
+    <h1 class="text-3xl font-bold text-gray-800 mt-4">
+      <%= @client.name %> <%= @client.last_name %>
+    </h1>
 
-  <%= link_to "Edit this client", edit_client_path(@client), class: "mt-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to clients", clients_path, class: "ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <div class="inline-block ml-2">
-    <%= button_to "Destroy this client", @client, method: :delete, class: "mt-2 rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium" %>
+    <div class="mt-4 space-y-2">
+      <div>
+        <span class="font-medium text-gray-600">Phone:</span>
+        <span class="text-gray-800"><%= @client.phone %></span>
+      </div>
+
+      <div>
+        <span class="font-medium text-gray-600">Email:</span>
+        <span class="text-gray-800"><%= @client.email %></span>
+      </div>
+
+      <div>
+        <span class="font-medium text-gray-600">Channel:</span>
+        <span class="text-gray-800"><%= @client.channel %></span>
+      </div>
+
+      <div>
+        <span class="font-medium text-gray-600">Broker:</span>
+        <span class="text-gray-800"><%= @client.broker %></span>
+      </div>
+
+      <div>
+        <span class="font-medium text-gray-600">Created At:</span>
+        <span class="text-gray-800"><%= @client.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+      </div>
+
+      <div>
+        <span class="font-medium text-gray-600">Goals:</span>
+        <span class="text-gray-800"><%= @client.goals %></span>
+      </div>
+
+      <div>
+        <span class="font-medium text-gray-600">Notes:</span>
+        <span class="text-gray-800"><%= @client.notes %></span>
+      </div>
+    </div>
   </div>
 </div>

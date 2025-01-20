@@ -2,7 +2,7 @@
         <div class="text-2xl mb-28 font-bold">LeadMaster</div>
         <div class="text-xl mb-1">Dashboard</div>
         <div class="text-xl mb-1 hover:underline"><%= link_to "Leads", leads_path %></div>
-        <div class="text-xl mb-1">Clientes</div>
+        <div class="text-xl mb-1"><%= link_to "Clientes", clients_path %></div>
         <div class="text-xl mb-1">Equipo</div>
         <div class="flex-col h-full">
           <div class="mt-auto text-xl mb-1"> <%= link_to "Log Out", destroy_user_session_url, data: { turbo_method: :delete } %></div>

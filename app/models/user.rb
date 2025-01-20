@@ -9,7 +9,6 @@ class User < ApplicationRecord
   validates :name, :last_name, :email, presence: true
 
   def self.from_omniauth(auth)
-    Rails.logger.debug "Auth Info: #{auth.inspect}"
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
       user.password = Devise.friendly_token[0, 20]

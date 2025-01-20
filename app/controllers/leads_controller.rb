@@ -2,7 +2,7 @@ class LeadsController < ApplicationController
   before_action :set_lead, only: [ :show, :edit, :update, :destroy ]
   before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
   def index
-    @leads = current_user.leads
+    @leads = current_user.leads.where.not(" status = ?", "Converted")
   end
 
   def show
@@ -24,6 +24,20 @@ class LeadsController < ApplicationController
     else
       render :new
     end
+  end
+
+  def convert
+    @lead = Lead.find(params[:id])
+
+    if @lead.status == "Converted"
+      redirect_to clients_path, alert: "This lead has already been converted to a client."
+      return
+    end
+
+    @client = @lead.convert_to_client
+    redirect_to client_path(@client), notice: "Lead successfully converted to a client."
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to lead_path(@lead), alert: "Conversion failed: #{e.message}"
   end
 
   def thank_you
