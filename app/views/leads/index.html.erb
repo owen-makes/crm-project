@@ -31,7 +31,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
               <% @leads.each do |lead| %>
                 <tr class="hover:bg-gray-50">
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= lead.name %> <%= lead.last_name %></td>
+                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= link_to lead.name + " " + lead.last_name, lead, class: "hover:underline" %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= lead.phone %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell"><%= lead.email %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= lead.channel %></td>
@@ -45,13 +45,8 @@
                   </td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
                     <div class="flex space-x-2">
-                      <%= link_to "Show", lead, class: "text-blue-500 hover:text-blue-700" %>
-                      <%= link_to "Edit", edit_lead_path(lead), class: "text-green-500 hover:text-green-700" %>
-                      <%= link_to "Delete", 
-                          lead_path(lead), 
-                          data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
-                          class: "text-red-500 hover:text-red-700" %>
-                      <%= button_to 'Convert to Client', convert_lead_path(lead), method: :post, data: { confirm: 'Are you sure you want to convert this lead to a client?' } %>
+                      <%= link_to "Editar", edit_lead_path(lead), class: "text-gray-500 hover:text-gray-700" %>
+                      <%= button_to 'Convertir a Cliente', convert_lead_path(lead), method: :post, data: { confirm: 'Are you sure you want to convert this lead to a client?' }, class: "text-green-500 hover:text-green-700" %>
                     </div>
                   </td>
                 </tr>

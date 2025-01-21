@@ -31,7 +31,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
               <% @clients.each do |client| %>
                 <tr class="hover:bg-gray-50">
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= client.name %> <%= client.last_name %></td>
+                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= link_to client.name + " " + client.last_name, client, class: "hover:underline" %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= client.phone %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell"><%= client.email %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= client.broker %></td>
