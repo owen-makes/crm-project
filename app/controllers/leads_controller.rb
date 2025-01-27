@@ -1,5 +1,5 @@
 class LeadsController < ApplicationController
-  before_action :set_lead, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_lead, only: [ :show, :edit, :update, :destroy, :convert ]
   before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
   before_action :authorize_lead_access, only: [ :show, :edit, :update, :destroy, :convert ]
   def index

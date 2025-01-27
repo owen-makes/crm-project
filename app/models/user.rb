@@ -1,6 +1,9 @@
 class User < ApplicationRecord
   has_many :clients
   has_many :leads
+  has_one :team, foreign_key: "admin_id", class_name: "Team"
+  belongs_to :team, optional: true
+  enum role: { member: 0, admin: 1 }
   before_create :generate_form_token
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,

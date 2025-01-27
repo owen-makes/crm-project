@@ -1,0 +1,41 @@
+<%= render "partials/sidebar" %>
+<div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+  <div class="flex">
+    <div class="ml-auto">Mi link es <%= current_user.form_token %></div>
+  </div>
+  <h1 class="text-2xl font-bold mb-4"><%= @team.name %></h1>
+  <%# cambiar por @team.members.one? una vez implementado el signup de team members %>
+  <% if @team.blank? or @team.members.none? %>
+    <div class="flex-col bg-green-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 m-auto text-white">
+      <h2 class="text-4xl font-bold my-4 mx-4">Todavía no tenes equipo!</h1>
+      <p class="my-4 mx-4">Ingresa miembros a tu equipo con este link:</p>
+      <div class="bg-slate-50 rounded-md my-4 mx-4 text-black text-center">localhost:3000/signup/<%= current_user.form_token %></div>
+    </div>
+  <% else %>
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Nombre</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Mail</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Rol</th>
+
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @team.members.each do |user| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= user.name + " " + user.last_name %></td>
+                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= user.email %></td>
+                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= user.role %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

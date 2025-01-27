@@ -1,5 +1,6 @@
 class Client < ApplicationRecord
   belongs_to :user
+  belongs_to :team, optional: true
   validates :name, :last_name, :phone, :email, presence: true
 
   def self.from_lead(lead)
