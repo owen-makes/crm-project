@@ -14,6 +14,12 @@
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden md:rounded-lg">
+         <div class="flex gap-2 mb-4">
+            <%= link_to "Todos", leads_path, class: "px-4 py-2 rounded #{'bg-green-500 text-white' unless params[:status].present?}" %>
+            <%= link_to "Activos", leads_path(status: 'active'), class: "px-4 py-2 rounded #{'bg-green-500 text-white' if params[:status] == 'active'}" %>
+            <%= link_to "Convertidos", leads_path(status: 'converted'), class: "px-4 py-2 rounded #{'bg-green-500 text-white' if params[:status] == 'converted'}" %>
+            <%= link_to "Bajas", leads_path(status: 'lost'), class: "px-4 py-2 rounded #{'bg-green-500 text-white' if params[:status] == 'lost'}" %>
+          </div>
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
@@ -39,7 +45,7 @@
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= lead.capital %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= truncate(lead.description, length: 50) %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_badge(lead.status) %>">
                       <%= lead.status %>
                     </span>
                   </td>

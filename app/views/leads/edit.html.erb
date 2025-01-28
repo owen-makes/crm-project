@@ -53,7 +53,7 @@
 
       <div>
         <%= f.label :status, class: "block text-sm font-medium text-gray-700" %>
-        <%= f.select :status, ["Open", "In Progress", "Closed"], {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+        <%= f.select :status, Lead.statuses.values, {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
       </div>
 
       <div>

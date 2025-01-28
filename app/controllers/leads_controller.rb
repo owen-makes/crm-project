@@ -3,7 +3,17 @@ class LeadsController < ApplicationController
   before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
   before_action :authorize_lead_access, only: [ :show, :edit, :update, :destroy, :convert ]
   def index
-    @leads = current_user.leads.where.not(" status = ?", "Converted")
+    # @leads = current_user.leads.where.not(" status = ?", "Converted")
+    @leads = current_user.leads.includes(:user)
+
+    case params[:status]
+    when "converted"
+      @leads = @leads.converted
+    when "lost"
+      @leads = @leads.lost
+    when "active"
+      @leads = @leads.active
+    end
   end
 
   def show
@@ -30,7 +40,7 @@ class LeadsController < ApplicationController
   def convert
     @lead = Lead.find(params[:id])
 
-    if @lead.status == "Converted"
+    if @lead.status == :converted
       redirect_to clients_path, alert: "This lead has already been converted to a client."
       return
     end

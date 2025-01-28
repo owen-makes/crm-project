@@ -5,12 +5,22 @@ class Lead < ApplicationRecord
   before_create :set_status
   validates :name, :last_name, :email, :phone, presence: true
 
-  enum status: { nuevo: 0, en_progreso: 1, convertido: 2, cerrado: 3 }
+  enum status: {
+    nuevo: "Nuevo",
+    wip: "WIP",
+    convertido: "Cerrado",
+    baja: "Baja"
+  }
+
+  scope :filter_by_status, ->(status) { where(status: status) if status.present? }
+  scope :converted, -> { where(status: "Cerrado") }
+  scope :lost, -> { where(status: "Baja") }
+  scope :active, -> { where.not(status: [ "Cerrado", "Baja" ]) }
 
   def convert_to_client
     transaction do
       client = Client.from_lead(self)
-      update!(status: 3)
+      update!(status: :converted)
       client
     end
     # Transactions are protective blocks where SQL statements are only permanent if they can all succeed as one atomic action.
@@ -21,6 +31,6 @@ class Lead < ApplicationRecord
   private
 
   def set_status
-    self.status = 0
+    self.status = :fresh
   end
 end
