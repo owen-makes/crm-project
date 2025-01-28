@@ -1,0 +1,23 @@
+<!-- Sidebar -->
+<%= render "partials/sidebar" %>
+
+<!-- Edit Team Form -->
+<div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+  <h1 class="text-3xl font-bold text-gray-800 mt-4 mb-6">
+    Editar Equipo
+  </h1>
+
+  <%= form_with(model: @team, local: true, class: "space-y-6") do |form| %>
+    <div>
+      <%= form.label :name, "Nombre del equipo", class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.text_field :name, 
+          class: "w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition",
+          placeholder: "Ej: Equipo de Ventas Norte" %>
+    </div>
+
+    <div class="mt-8">
+      <%= form.submit "Actualizar Equipo", 
+          class: "w-full px-6 py-3 bg-green-800 hover:bg-green-700 text-white font-medium rounded-lg transition duration-200 cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

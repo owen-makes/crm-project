@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1>You're Invited to Join <%= @invitation.team.name %>!</h1>
+    <p>
+      Hello, you've been invited to join the team <strong><%= @invitation.team.name %></strong> by 
+      <%= @invitation.invited_by.email %>. Click the button below to accept the invitation and create your account.
+    </p>
+
+    <p style="text-align: center; margin: 20px;">
+      <a href="<%= @url %>" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+        Accept Invitation
+      </a>
+    </p>
+
+    <p>If the button doesn't work, copy and paste the following link into your browser:</p>
+    <p><%= @url %></p>
+
+    <p>Thank you!</p>
+  </body>
+</html>

@@ -1,16 +1,18 @@
 <%= render "partials/sidebar" %>
 <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
   <div class="flex">
-    <div class="ml-auto">Mi link es <%= current_user.form_token %></div>
+    <div class="ml-auto">
+      <%= link_to "Editar Equipo", edit_team_path, class: "text-green-600 hover:underline text-sm" %>
+    </div>
   </div>
   <h1 class="text-2xl font-bold mb-4"><%= @team.name %></h1>
   <%# cambiar por @team.members.one? una vez implementado el signup de team members %>
-  <% if @team.blank? or @team.members.none? %>
-    <div class="flex-col bg-green-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 m-auto text-white">
-      <h2 class="text-4xl font-bold my-4 mx-4">Todavía no tenes equipo!</h1>
-      <p class="my-4 mx-4">Ingresa miembros a tu equipo con este link:</p>
-      <div class="bg-slate-50 rounded-md my-4 mx-4 text-black text-center">localhost:3000/signup/<%= current_user.form_token %></div>
-    </div>
+  <% if @team.blank? or @team.members.one? %>
+  <div class="flex flex-col items-center justify-center bg-green-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 mt-10 mx-auto text-white">
+    <h2 class="text-3xl font-bold mb-4">Tu equipo está vacío!</h2>
+    <p class="mb-4">↓ Ingresa miembros acá ↓</p>
+    <%= link_to "Invitar", new_invitation_path, class: "w-full px-6 py-3 bg-green-800 hover:bg-green-700 text-white font-medium rounded-lg transition duration-200 cursor-pointer text-center" %>
+  </div>
   <% else %>
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">

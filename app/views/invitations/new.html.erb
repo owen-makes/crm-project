@@ -1,0 +1,14 @@
+<%= render "partials/sidebar" %>
+<div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+  <div class="flex">
+    <div class="ml-auto">
+      
+    </div>
+  </div>
+  <h1 class="text-2xl font-bold mb-4"><%= @team.name %></h1>
+<%= form_with model: @invitation, url: invitations_path do |form| %>
+  <%= form.label :email, "Invitee's Email" %>
+  <%= form.email_field :email %>
+
+  <%= form.submit "Send Invitation" %>
+<% end %>

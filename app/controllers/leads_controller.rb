@@ -40,8 +40,8 @@ class LeadsController < ApplicationController
   def convert
     @lead = Lead.find(params[:id])
 
-    if @lead.status == :converted
-      redirect_to clients_path, alert: "This lead has already been converted to a client."
+    if @lead.convertido?
+      redirect_to clients_path, alert: "Este lead ya fue convertido a cliente"
       return
     end
 

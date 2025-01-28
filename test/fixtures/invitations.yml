@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: MyString
+  token: MyString
+  team: one
+  invited_by: one
+  invited_by_type: Invited by
+  status: MyString
+
+two:
+  email: MyString
+  token: MyString
+  team: two
+  invited_by: two
+  invited_by_type: Invited by
+  status: MyString

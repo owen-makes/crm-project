@@ -5,9 +5,9 @@
         <div class="text-xl mb-1 hover:underline"><%= link_to "Clientes", clients_path %></div>
         <div class="text-xl mb-1 hover:underline">
           <% if current_user.team_id.nil? %>
-            <%= link_to "Crear Equipo", teams_new_path %>
+            <%= link_to "Crear Equipo", team_new_path %>
           <% else %>
-            <%= link_to "Equipo", teams_show_path(current_user.team_id) %>
+            <%= link_to "Equipo", team_path(current_user.team_id) %>
           <% end %>
         </div>
         <div class="flex-col place-content-end">

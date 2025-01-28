@@ -1,30 +1,30 @@
 Rails.application.routes.draw do
-  get "teams/show"
-  get "teams/new"
-  get "teams/create"
-  get "teams/update"
-  get "teams/destroy"
   resources :clients
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks", registrations: "users/registrations" }
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  resources :leads, except: [ :new, :create ]
+  # resources :leads
 
-  resources :leads do
+  resources :leads, except: [ :new, :create ] do
     member do
       post :convert
     end
   end
 
-  get "/signup/:form_token", to: "leads#new", as: "new_lead_form"
-  post "/signup/:form_token", to: "leads#create"
-  get "/thank_you", to: "leads#thank_you", as: "thank_you"
-
-  resources :teams do
+  resource :team do
     member do
       post :join
     end
   end
+
+  resources :invitations, only: [ :new, :create ]
+  get "/invitations/accept/:token", to: "invitations#accept", as: :accept_invitation
+
+
+  get "/signup/:form_token", to: "leads#new", as: "new_lead_form"
+  post "/signup/:form_token", to: "leads#create"
+  get "/thank_you", to: "leads#thank_you", as: "thank_you"
+
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

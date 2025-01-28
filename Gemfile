@@ -63,3 +63,5 @@ group :test do
 end
 
 gem "pundit", "~> 2.4"
+
+gem "letter_opener", "~> 1.10"
