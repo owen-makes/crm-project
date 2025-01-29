@@ -4,10 +4,10 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <h1>You're Invited to Join <%= @invitation.team.name %>!</h1>
+    <h1>You're Invited to Join <%= @team.name %>!</h1>
     <p>
-      Hello, you've been invited to join the team <strong><%= @invitation.team.name %></strong> by 
-      <%= @invitation.invited_by.email %>. Click the button below to accept the invitation and create your account.
+      Hello, you've been invited to join the team <strong><%= @team.name %></strong> by 
+      <%= @invitation.sender.email %>. Click the button below to accept the invitation and create your account.
     </p>
 
     <p style="text-align: center; margin: 20px;">

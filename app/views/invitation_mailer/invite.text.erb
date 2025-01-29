@@ -1,10 +1,10 @@
-You're Invited to Join <%= @invitation.team.name %>!
+You're Invited to Join <%= @team.name %>!
 
-Hello, you've been invited to join the team "<%= @invitation.team.name %>" by <%= @invitation.invited_by.email %>. 
+Hello, you've been invited to join the team "<%= @team.name %>" by <%= @invitation.sender.email %>. 
 
 Click the link below to accept the invitation and create your account:
 <%= @url %>
 
-If you have any questions, please contact <%= @invitation.invited_by.email %>.
+If you have any questions, please contact <%= @invitation.sender.email %>.
 
 Thank you!

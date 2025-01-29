@@ -3,18 +3,18 @@ class InvitationsController < ApplicationController
   before_action :authorize_admin!
 
   def new
-    @team = current_user.team
+    @team = current_user.team.reload
     @invitation = Invitation.new
   end
 
   def create
     @invitation = current_user.managed_team.invitations.new(
                   invitation_params.merge(sender: current_user))
-    @team = current_user.team
+    @team = current_user.team.reload
 
     if @invitation.save
       # Send an email with the invitation link
-      InvitationMailer.invite(@invitation).deliver_later
+      InvitationMailer.invite(@invitation, @team).deliver_now!
       redirect_to team_path(current_user.managed_team), notice: "Invitation sent!"
     else
       render :new, alert: "Error sending invitation."
