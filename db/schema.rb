@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_28_214101) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_29_210719) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_28_214101) do
     t.bigint "admin_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "join_token"
     t.index ["admin_id"], name: "index_teams_on_admin_id"
   end
 

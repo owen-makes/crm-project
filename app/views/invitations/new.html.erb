@@ -5,7 +5,7 @@
   <h1 class="text-2xl font-bold text-gray-800 mt-4">Invitación Manual</h1>
     <div class="flex flex-col items-stretch w-100 justify-between mt-3">
       <p class="block text-m font-medium text-gray-700">Copia el link debajo y envialo a los miembros de tu equipo para que puedan crear una cuenta</p>
-      <div class="block bg-slate-50 rounded-md my-4 text-black">localhost:3000/invitation/accept/<%= @invitation.token %></div>
+      <div class="block bg-slate-50 rounded-md my-4 text-black">localhost:3000/team/join/<%= @team.join_token %></div>
   <h1 class="text-2xl font-bold text-gray-800 mt-4">Invitar por Mail</h1>
     <div class="flex flex-wrap items-stretch w-100 justify-between mt-3">
       <%= form_with model: @invitation, url: invitations_path do |form| %>

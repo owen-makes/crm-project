@@ -2,6 +2,7 @@
 <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
   <div class="flex">
     <div class="ml-auto">
+      <%= link_to "Invitar Miembros", new_invitation_path, class: "text-green-600 hover:underline text-sm mr-4" %>
       <%= link_to "Editar Equipo", edit_team_path, class: "text-green-600 hover:underline text-sm" %>
     </div>
   </div>
@@ -40,4 +41,14 @@
       </div>
     </div>
   <% end %>
+
+  <% unless @team.blank? or @team.invitations.none? %>
+    <h2>Pending Requests</h2>
+      <% @team.invitations.pending.each do |invitation| %>
+        <p><%= invitation.user.email %> wants to join</p>
+        <%= link_to "Approve", approve_invitation_path(invitation), method: :post, class: "btn btn-success" %>
+        <%= link_to "Reject", reject_invitation_path(invitation), method: :post, class: "btn btn-danger" %>
+      <% end %>
+  <% end %>
+
 </div>

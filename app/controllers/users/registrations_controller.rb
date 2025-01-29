@@ -10,9 +10,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    super do |user|
+      if session[:invited_team_id]
+        team = Team.find(session[:invited_team_id])
+        resource.update(team: team, role: "member") if team
+
+        session.delete(:invited_team_id)  # Clear session after use
+      end
+    end
+  end
 
   # GET /resource/edit
   # def edit

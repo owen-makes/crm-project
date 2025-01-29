@@ -17,6 +17,9 @@ Rails.application.routes.draw do
     end
   end
 
+  get "team/join/:token", to: "teams#join_via_link", as: :join_team_link
+
+
   resources :invitations, only: [ :new, :create ]
   get "/invitations/accept/:token", to: "invitations#accept", as: :accept_invitation
 
