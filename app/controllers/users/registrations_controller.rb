@@ -11,12 +11,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    super do |user|
+    super do |resource|
       if session[:invited_team_id]
-        team = Team.find(session[:invited_team_id])
-        resource.update(team: team, role: "member") if team
-
-        session.delete(:invited_team_id)  # Clear session after use
+        resource.update(team_id: session[:invited_team_id], role: "member")
+        session.delete(:invited_team_id)
       end
     end
   end
@@ -49,7 +47,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name, :last_name ])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :name, :last_name, :role ])
   end
 
   # If you have extra params to permit, append them to the sanitizer.

@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   resources :clients
-  devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks", registrations: "users/registrations" }
+  devise_for :users, controllers: {
+     omniauth_callbacks: "users/omniauth_callbacks",
+     sessions: "users/sessions",
+     registrations: "users/registrations",
+     invitations: "users/invitations"
+     }
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   # resources :leads
@@ -11,17 +16,13 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :team do
-    member do
-      post :join
-    end
-  end
+  resource :team
 
   get "team/join/:token", to: "teams#join_via_link", as: :join_team_link
 
 
-  resources :invitations, only: [ :new, :create ]
-  get "/invitations/accept/:token", to: "invitations#accept", as: :accept_invitation
+  # resources :invitations, only: [ :new, :create ]
+  # get "/invitations/accept/:token", to: "invitations#accept", as: :accept_invitation
 
 
   get "/signup/:form_token", to: "leads#new", as: "new_lead_form"

@@ -3,9 +3,9 @@ class User < ApplicationRecord
   has_many :leads
   has_one :managed_team, foreign_key: "admin_id", class_name: "Team"
   belongs_to :team, optional: true
-  enum role: [ :member, :admin ]
+  enum :role, [ :member, :admin ]
   before_create :generate_form_token
-  devise :database_authenticatable, :registerable,
+  devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
@@ -24,5 +24,9 @@ class User < ApplicationRecord
 
   def generate_form_token
     self.form_token ||= SecureRandom.hex(4)
+  end
+
+  def set_role
+    self.role ||= "admin"
   end
 end

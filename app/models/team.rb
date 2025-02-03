@@ -13,6 +13,6 @@ class Team < ApplicationRecord
   end
 
   def generate_join_token
-    self.join_token ||= SecureRandom.hex(10)
+    self.join_token ||= SecureRandom.urlsafe_base64(10)
   end
 end

@@ -1,5 +1,5 @@
 class TeamsController < ApplicationController
-  before_action :set_team, only: [ :show, :edit, :update, :destroy, :join ]
+  before_action :set_team, only: [ :show, :edit, :update, :destroy ]
   def show
     # authorize @team
   end
@@ -40,14 +40,14 @@ class TeamsController < ApplicationController
     redirect_to teams_url, notice: "Team was successfully destroyed."
   end
 
-  def join
-    # authorize @team
-    if @team.members << current_user
-      redirect_to @team, notice: "You have successfully joined the team."
-    else
-      redirect_to teams_url, alert: "Unable to join the team."
-    end
-  end
+  # def join
+  #   # authorize @team
+  #   if @team.members << current_user
+  #     redirect_to @team, notice: "You have successfully joined the team."
+  #   else
+  #     redirect_to teams_url, alert: "Unable to join the team."
+  #   end
+  # end
 
   def join_via_link
     @team = Team.find_by(join_token: params[:token])
@@ -61,7 +61,7 @@ class TeamsController < ApplicationController
       if @team.members.include?(current_user)
         redirect_to team_path(@team), notice: "You're already part of this team."
       else
-        current_user.update(team: @team)
+        current_user.update(team: @team, role: "member")
         redirect_to team_path(@team), notice: "You've joined #{@team.name}!"
       end
     else

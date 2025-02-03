@@ -16,7 +16,9 @@
         <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
         <%= f.password_field :password, autocomplete: "current-password", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
       </div>
-
+      <% if session[:invited_team_id].present? %>
+        <%= f.hidden_field :team_id, value: session[:invited_team_id] %>
+      <% end %>  
       <% if devise_mapping.rememberable? %>
         <div class="flex items-center">
           <%= f.check_box :remember_me, id: "remember_me", class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" %>
