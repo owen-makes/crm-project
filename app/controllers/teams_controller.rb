@@ -1,5 +1,6 @@
 class TeamsController < ApplicationController
   before_action :set_team, only: [ :show, :edit, :update, :destroy ]
+  before_action :authorize_admin!, only: [ :new, :create, :edit, :update, :destroy ]
   def show
     # authorize @team
   end
@@ -78,5 +79,9 @@ class TeamsController < ApplicationController
 
   def team_params
     params.require(:team).permit(:name)
+  end
+
+  def authorize_admin!
+    redirect_to root_path, alert: "You are not authorized." unless current_user.admin?
   end
 end

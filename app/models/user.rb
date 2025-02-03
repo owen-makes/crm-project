@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_one :managed_team, foreign_key: "admin_id", class_name: "Team"
   belongs_to :team, optional: true
   enum :role, [ :member, :admin ]
-  before_create :generate_form_token
+  before_create :generate_form_token, :set_role
   devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
@@ -27,6 +27,6 @@ class User < ApplicationRecord
   end
 
   def set_role
-    self.role ||= "admin"
+    self.role = self.team_id.nil? ? "admin" : "member"
   end
 end
