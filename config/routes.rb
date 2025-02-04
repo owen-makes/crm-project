@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :leads, except: [ :new, :create ] do
     member do
       post :convert
+      patch :assign
     end
   end
 

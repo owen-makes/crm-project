@@ -41,15 +41,6 @@ class TeamsController < ApplicationController
     redirect_to teams_url, notice: "Team was successfully destroyed."
   end
 
-  # def join
-  #   # authorize @team
-  #   if @team.members << current_user
-  #     redirect_to @team, notice: "You have successfully joined the team."
-  #   else
-  #     redirect_to teams_url, alert: "Unable to join the team."
-  #   end
-  # end
-
   def join_via_link
     @team = Team.find_by(join_token: params[:token])
 

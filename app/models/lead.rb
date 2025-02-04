@@ -31,6 +31,6 @@ class Lead < ApplicationRecord
   private
 
   def set_status
-    self.status = :fresh
+    self.status = "Nuevo"
   end
 end

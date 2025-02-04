@@ -11,6 +11,15 @@
       <%= @lead.name %> <%= @lead.last_name %>
     </h1>
 
+    <% if current_user.admin? %>
+      <%= form_with url: assign_lead_path(@lead), method: :patch, local: true do |form| %>
+        <%= form.label :assigned_user_id, "Assign to:" %>
+        <%= form.select :assigned_user_id, options_from_collection_for_select(
+              current_user.managed_team.members, "id", "name"
+            ), prompt: "Select team member" %>
+        <%= form.submit "Assign" %>
+      <% end %>
+    <% end %>
     <div class="mt-4 space-y-2">
       <div>
         <span class="font-medium text-gray-600">Phone:</span>

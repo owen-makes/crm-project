@@ -9,7 +9,7 @@
       <%= link_to "Editar Equipo", edit_team_path, class: "text-green-600 hover:underline text-sm" %>
     </div>
   </div>
-  <h1 class="text-2xl font-bold mb-4"><%= @team.name %></h1>
+  <h1 class="text-2xl font-bold mb-4"><%= @team.name %> id:<%= @team.id %>></h1>
   <%# cambiar por @team.members.one? una vez implementado el signup de team members %>
   <% if @team.blank? or @team.members.one? %>
   <div class="flex flex-col items-center justify-center bg-green-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 mt-10 mx-auto text-white">
@@ -27,6 +27,7 @@
                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Nombre</th>
                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Mail</th>
                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Rol</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">team_id</th>
 
               </tr>
             </thead>
@@ -36,6 +37,7 @@
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= user.name + " " + user.last_name %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= user.email %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= user.role %></td>
+                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= user.team_id %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -45,12 +47,12 @@
     </div>
   <% end %>
 
-  <% unless @team.blank? or @team.invitations.none? %>
-    <h2>Pending Requests</h2>
-      <% @team.invitations.pending.each do |invitation| %>
-        <p><%= invitation.user.email %> wants to join</p>
-        <%= link_to "Approve", approve_invitation_path(invitation), method: :post, class: "btn btn-success" %>
-        <%= link_to "Reject", reject_invitation_path(invitation), method: :post, class: "btn btn-danger" %>
+  <% unless @team.blank? %>
+    <h2 class="text-xl font-bold text-gray-700 mt-6 mb-1">Miembros Pendientes</h2>
+      <% @team.members.select {|x| x.name.nil? }.each do |user| %>
+        <ul class="pl-3">
+          <li class="py-1 whitespace-nowrap text-sm text-gray-700 list-disc"><%= user.email %></li>
+        </ul>
       <% end %>
   <% end %>
 

@@ -19,6 +19,19 @@ class LeadsController < ApplicationController
   def show
   end
 
+  def assign
+    @lead = Lead.find(params[:id])
+    # Only allow admin to assign leads to a team member
+    authorize @lead, :assign?
+
+    # The form should submit the new user_id as :assigned_user_id
+    if @lead.update(user_id: params[:assigned_user_id])
+      redirect_to leads_path, notice: "Lead assigned successfully."
+    else
+      redirect_to leads_path, alert: "Assignment failed."
+    end
+  end
+
   def new
     @user = User.find_by(form_token: params[:form_token])
     redirect_to root_path, alert: "Form not found" unless @user
