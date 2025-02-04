@@ -13,6 +13,7 @@ class Client < ApplicationRecord
       email: lead.email,
       notes: lead.notes,
       goals: lead.description,
+      team_id: lead.team_id,
       user_id: lead.user_id
     )
   end

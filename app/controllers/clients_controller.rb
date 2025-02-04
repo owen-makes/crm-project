@@ -3,7 +3,7 @@ class ClientsController < ApplicationController
 
   # GET /clients or /clients.json
   def index
-    @clients = current_user.clients
+    @clients = policy_scope(Client).includes(:user)
   end
 
   # GET /clients/1 or /clients/1.json
