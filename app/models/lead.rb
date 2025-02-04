@@ -2,7 +2,7 @@ class Lead < ApplicationRecord
   belongs_to :user
   belongs_to :team, optional: true
 
-  before_create :set_status
+  before_create :set_status, :set_team
   validates :name, :last_name, :email, :phone, presence: true
 
   enum status: {
@@ -32,5 +32,11 @@ class Lead < ApplicationRecord
 
   def set_status
     self.status = "Nuevo"
+  end
+
+  def set_team
+    if self.user.team
+      self.team_id = self.user.team.id
+    end
   end
 end

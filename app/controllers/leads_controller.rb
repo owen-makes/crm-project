@@ -1,10 +1,9 @@
 class LeadsController < ApplicationController
   before_action :set_lead, only: [ :show, :edit, :update, :destroy, :convert ]
   before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
-  before_action :authorize_lead_access, only: [ :show, :edit, :update, :destroy, :convert ]
+  # before_action :authorize_lead_access, only: [ :show, :edit, :update, :destroy, :convert ]
   def index
-    # @leads = current_user.leads.where.not(" status = ?", "Converted")
-    @leads = current_user.leads.includes(:user)
+    @leads = policy_scope(Lead).includes(:user)
 
     case params[:status]
     when "converted"
@@ -17,12 +16,20 @@ class LeadsController < ApplicationController
   end
 
   def show
+    authorize @lead
   end
 
   def assign
     @lead = Lead.find(params[:id])
     # Only allow admin to assign leads to a team member
     authorize @lead, :assign?
+    assigned_user = User.find_by(id: params[:assigned_user_id])
+
+    # Ensure assigned user is part of the admin's team
+    unless assigned_user && current_user.team.members.include?(assigned_user)
+      redirect_to leads_path, alert: "Cannot assign lead to a user outside your team."
+      return
+    end
 
     # The form should submit the new user_id as :assigned_user_id
     if @lead.update(user_id: params[:assigned_user_id])
@@ -90,10 +97,10 @@ class LeadsController < ApplicationController
     @lead = Lead.find(params[:id])
   end
 
-  def authorize_lead_access
-    # Redirect if the current user doesn't own the lead
-    redirect_to leads_path, alert: "You are not authorized to access this lead." unless @lead.user_id == current_user.id
-  end
+  # def authorize_lead_access
+  #   # Redirect if the current user doesn't own the lead
+  #   redirect_to root, alert: "You are not authorized to access this lead." unless authorize @lead
+  # end
 
   def lead_params
     params.require(:lead).permit(:name, :last_name, :email, :phone, :capital, :description, :broker, :notes, :channel, :status)

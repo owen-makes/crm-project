@@ -1,32 +1,35 @@
 class LeadPolicy < ApplicationPolicy
-  # By default, only allow team members to manage their own leads
-  def update?
-    user.admin? || record.user_id == user.id
+  class Scope < Scope
+    def resolve
+      if user.admin?
+        scope.joins(:user).where(users: { team_id: user.team_id })
+      else
+        scope.where(user: user)
+      end
+    end
+  end
+  # scope: Represents the collection of resources Lead.all
+  # resolve: Defines how the collection should be filtered based on the user's role.
+
+  def show?
+    # Members can only see their leads; admins can see any lead in their team
+    user.admin? ? record.user.team == user.team : record.user == user
   end
 
   def assign?
-    # Only admin users can assign leads
-    user.admin?
+    # Admin can assign if the lead is in their team
+    user.admin? && record.user.team == user.team
+  end
+
+  def edit?
+    show?
+  end
+
+  def update?
+    show?
   end
 
   def destroy?
-    # For example, team members may not be allowed to destroy leads
-    user.admin?
-  end
-
-  # The index? and show? methods can also be defined here
-  def show?
-    user.admin? || record.user_id == user.id
-  end
-
-  class Scope < Scope
-    def resolve
-      # Team members only see their own leads, while admins see all leads in their team.
-      if user.admin?
-        scope.where(user_id: user.team.users.pluck(:id))
-      else
-        scope.where(user_id: user.id)
-      end
-    end
+    show?
   end
 end
