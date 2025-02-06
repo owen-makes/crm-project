@@ -62,6 +62,17 @@ class TeamsController < ApplicationController
     end
   end
 
+  def remove_from_team
+    @user = User.find(params[:id])
+
+    if current_user.admin? && @user != current_user
+      @user.remove_from_team
+      redirect_to team_path(current_user.team), notice: "Member removed from team"
+    else
+      redirect_to root_path, alert: "Not authorized"
+    end
+  end
+
   private
 
   def set_team

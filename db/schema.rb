@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_04_184239) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_05_013208) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -46,6 +46,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_04_184239) do
     t.text "notes"
     t.integer "team_id"
     t.index ["user_id"], name: "index_leads_on_user_id"
+  end
+
+  create_table "profiles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.jsonb "settings"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -90,5 +98,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_04_184239) do
 
   add_foreign_key "clients", "users"
   add_foreign_key "leads", "users"
+  add_foreign_key "profiles", "users"
   add_foreign_key "teams", "users", column: "admin_id"
 end

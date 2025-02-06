@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :clients
   devise_for :users, controllers: {
      omniauth_callbacks: "users/omniauth_callbacks",
      sessions: "users/sessions",
@@ -7,8 +6,9 @@ Rails.application.routes.draw do
      invitations: "users/invitations"
      }
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  # resources :leads
+  resources :users do
+    resource :profile, only: [ :show, :edit, :update ]
+  end
 
   resources :leads, except: [ :new, :create ] do
     member do
@@ -17,7 +17,14 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :team
+  resources :clients
+
+
+  resource :team do
+    member do
+      patch :remove_from_team
+    end
+  end
 
   get "team/join/:token", to: "teams#join_via_link", as: :join_team_link
 

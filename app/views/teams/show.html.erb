@@ -9,7 +9,7 @@
       <%= link_to "Editar Equipo", edit_team_path, class: "text-green-600 hover:underline text-sm" %>
     </div>
   </div>
-  <h1 class="text-2xl font-bold mb-4"><%= @team.name %> id:<%= @team.id %></h1>
+  <h1 class="text-2xl font-bold mb-4"><%= @team.name %></h1>
   <%# cambiar por @team.members.one? una vez implementado el signup de team members %>
   <% if @team.blank? or @team.members.one? %>
   <div class="flex flex-col items-center justify-center bg-green-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 mt-10 mx-auto text-white">
@@ -33,7 +33,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
               <% @team.members.reject {|x| x.name.nil? }.each do |user| %>
                 <tr class="hover:bg-gray-50">
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= user.name + " " + user.last_name %></td>
+                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= link_to user.name + " " + user.last_name, user_profile_path(user), data: { turbo_frame: "profile_panel" } %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= user.email %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= user.role %></td>
                 </tr>

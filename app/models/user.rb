@@ -3,6 +3,8 @@ class User < ApplicationRecord
   has_many :leads
   has_one :managed_team, foreign_key: "admin_id", class_name: "Team"
   belongs_to :team, optional: true
+  has_one :profile, dependent: :destroy
+  after_create :create_profile
   enum :role, [ :member, :admin ]
   before_create :generate_form_token, :set_role
   devise :invitable, :database_authenticatable, :registerable,
@@ -20,7 +22,15 @@ class User < ApplicationRecord
     end
   end
 
+  def remove_from_team
+    update(team_id: nil, role: nil)
+  end
+
   private
+
+  def create_profile
+    build_profile.save
+  end
 
   def generate_form_token
     self.form_token ||= SecureRandom.hex(4)

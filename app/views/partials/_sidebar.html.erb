@@ -1,16 +1,21 @@
-      <aside class="col-start-1 col-end-2 flex-col px-8 py-7 mx-6 rounded-xl bg-green-800 text-slate-100 shadow-xl">
-        <div class="text-2xl mb-28 font-bold font-mono">Prospex</div>
-        <div class="text-xl mb-1">Dashboard</div>
-        <div class="text-xl mb-1 hover:underline"><%= link_to "Leads", leads_path %></div>
-        <div class="text-xl mb-1 hover:underline"><%= link_to "Clientes", clients_path %></div>
-        <div class="text-xl mb-1 hover:underline">
-          <% if current_user.team_id.nil? %>
-            <%= link_to "Crear Equipo", new_team_path %>
-          <% else %>
-            <%= link_to "Equipo", team_path(current_user.team_id) %>
-          <% end %>
-        </div>
-        <div class="flex-col place-content-end">
-          <div class="text-xl hover:underline"> <%= link_to "Log Out", destroy_user_session_url, data: { turbo_method: :delete } %></div>
-        </div>
-      </aside>
+<aside class="col-start-1 col-end-2 flex flex-col px-8 py-7 mx-6 rounded-xl bg-green-800 text-slate-100 shadow-xl">
+  <div class="text-2xl mb-28 font-bold font-mono">Prospex</div>
+  <div class="text-xl mb-1">Dashboard</div>
+  <div class="text-xl mb-1 hover:underline"><%= link_to "Leads", leads_path %></div>
+  <div class="text-xl mb-1 hover:underline"><%= link_to "Clientes", clients_path %></div>
+  <div class="text-xl mb-1 hover:underline">
+    <% if current_user.team_id.nil? %>
+      <%= link_to "Crear Equipo", new_team_path %>
+    <% else %>
+      <%= link_to "Equipo", team_path(current_user.team_id) %>
+    <% end %>
+  </div>
+  <div class="text-xl mb-1 hover:underline"><%= link_to "Perfil", user_profile_path(current_user), data: { turbo_frame: "profile_panel" } %></div>
+
+  <!-- Logout link container -->
+  <div class="mt-auto">
+    <div class="text-xl hover:underline">
+      <%= link_to "Log Out", destroy_user_session_url, data: { turbo_method: :delete } %>
+    </div>
+  </div>
+</aside>
