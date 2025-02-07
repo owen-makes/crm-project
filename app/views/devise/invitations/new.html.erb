@@ -23,5 +23,34 @@
         </div>
       <% end %>
     </div>
+    <% unless current_user.team.members.none? { |x| x.name.nil? } %>
+      <h2 class="text-xl font-bold text-gray-700 mt-6 mb-3">Invitaciones Enviadas</h2>
+      <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="align-bottom">
+            <tr>
+              <th class="px-6 py-3 font-bold text-xs text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none border-b-solid tracking-none whitespace-nowrap text-slate-500 opacity-70">Email</th>
+              <th class="px-6 py-3 font-bold text-xs text-center uppercase align-middle bg-transparent border-b border-gray-200 shadow-none border-b-solid tracking-none whitespace-nowrap text-slate-500 opacity-70">Fecha de Invitación</th>
+              <th class="px-6 py-3 font-bold text-xs text-center uppercase align-middle bg-transparent border-b border-gray-200 shadow-none border-b-solid tracking-none whitespace-nowrap text-slate-500 opacity-70"></th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% current_user.team.members.select { |x| x.name.nil? }.each do |user| %>
+              <tr>
+                <td class="pl-4 py-3 whitespace-nowrap text-sm text-gray-900"><%= user.email %></td>
+                <td class="py-3 whitespace-nowrap text-center text-sm text-gray-500"><%= user.created_at.strftime('%d/%m/%Y') %></td>
+                <td class="px-4 py-3 whitespace-nowrap text-center text-sm">
+                  <%= button_to "Eliminar",
+                      delete_user_invitation_path(user),
+                      method: :delete,
+                      class: "text-red-600 hover:text-red-800 bg-transparent border-0 p-0 cursor-pointer",
+                      data: { turbo_confirm: "¿Eliminar invitación?" } %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
   </div>
 

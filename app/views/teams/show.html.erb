@@ -35,8 +35,8 @@
               <% @team.members.reject { |x| x.name.nil? }.each do |user| %>
                 <tr class="hover:bg-gray-50">
                   <td class="pl-2 py-4 whitespace-nowrap text-sm text-gray-900 flex items-center gap-3">
-                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-800 text-slate-100 text-lg">
-                      <%= user.name[0].upcase + user.last_name[0].upcase %>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-full text-slate-700 <%= user.emoji ? "text-4xl" : "text-lg" %>">
+                      <%= initials_or_emoji(user) %>
                     </div>
                     <div class="flex flex-col">
                       <%= link_to user.name + " " + user.last_name, user_profile_path(user), class: "font-medium text-gray-900" %>
@@ -58,31 +58,7 @@
     </div>
   <% end %>
 
-<% unless @team.blank? || current_user.member? %>
-  <h2 class="text-xl font-bold text-gray-700 mt-6 mb-3">Invitaciones Enviadas</h2>
-  <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="align-bottom">
-        <tr>
-          <th class="px-6 py-3 font-bold text-xs text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none border-b-solid tracking-none whitespace-nowrap text-slate-500 opacity-70">Email</th>
-          <th class="px-6 py-3 font-bold text-xs text-center uppercase align-middle bg-transparent border-b border-gray-200 shadow-none border-b-solid tracking-none whitespace-nowrap text-slate-500 opacity-70">Fecha de Invitación</th>
-          <th class="px-6 py-3 font-bold text-xs text-center uppercase align-middle bg-transparent border-b border-gray-200 shadow-none border-b-solid tracking-none whitespace-nowrap text-slate-500 opacity-70"></th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <% @team.members.select { |x| x.name.nil? }.each do |user| %>
-          <tr>
-            <td class="pl-4 py-3 whitespace-nowrap text-sm text-gray-900"><%= user.email %></td>
-            <td class="py-3 whitespace-nowrap text-center text-sm text-gray-500"><%= user.created_at.strftime('%d/%m/%Y') %></td>
-            <td class="px-4 py-3 whitespace-nowrap text-center text-sm">
-              <%= link_to "Eliminar", invitation_path(user), method: :delete, data: { confirm: "¿Eliminar invitación?" }, class: "text-red-600 hover:text-red-800" %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-<% end %>
+
 
 </div>
 

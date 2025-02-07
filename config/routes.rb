@@ -6,6 +6,8 @@ Rails.application.routes.draw do
      invitations: "users/invitations"
      }
 
+  delete "/users/invitation/:id", to: "users/invitations#destroy", as: :delete_user_invitation
+
   resources :users do
     resource :profile, only: [ :show, :edit, :update ]
   end

@@ -22,8 +22,16 @@ class User < ApplicationRecord
     end
   end
 
-  def remove_from_team
-    update(team_id: nil, role: nil)
+  def remove_from_team(reassign_to:)
+    # Start a transaction to ensure data consistency
+    User.transaction do
+      # Reassign clients to the specified user
+      clients.update_all(user_id: reassign_to.id) if clients.any?
+      # Reassign leads to the specified user
+      leads.update_all(user_id: reassign_to.id) if leads.any?
+      # Remove user from team
+      update!(team_id: nil, role: nil)
+    end
   end
 
   private

@@ -31,6 +31,6 @@ export default class extends Controller {
     // Navigate back after animation
     setTimeout(() => {
       window.history.back()
-    }, 100)
+    }, 110)
   }
 }
