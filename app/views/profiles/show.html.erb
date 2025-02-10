@@ -23,7 +23,8 @@
         <div class="flex justify-end w-full mb-auto text-slate-200 hover:text-white">
           <% if @user == current_user %>
             <%= link_to "Editar Perfil",
-                edit_user_profile_path,
+                edit_profile_path,
+                data: { action: "click->slide-panel#show" },
                 class: "ml-auto text-l pr-2 hover:scale-110 transition" %>
             <span class="mx-1">|</span>
           <% end %>

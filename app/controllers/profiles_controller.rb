@@ -1,5 +1,5 @@
 class ProfilesController < ApplicationController
-  before_action :set_user
+  before_action :set_user, only: [ :show ]
   before_action :authorize_profile_access!
 
   def show
@@ -11,13 +11,13 @@ class ProfilesController < ApplicationController
   end
 
   def edit
-    @profile = @user.profile
+    @user = current_user
   end
 
   def update
-    @profile = @user.profile
-    if @profile.update(profile_params)
-      redirect_to user_profile_path(@user), notice: "Profile updated successfully"
+    @user = current_user
+    if @user.update(user_params)
+      redirect_to profile_path, notice: "Profile updated successfully"
     else
       render :edit
     end

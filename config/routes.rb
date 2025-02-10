@@ -8,9 +8,14 @@ Rails.application.routes.draw do
 
   delete "/users/invitation/:id", to: "users/invitations#destroy", as: :delete_user_invitation
 
-  resources :users do
-    resource :profile, only: [ :show, :edit, :update ]
+
+  resources :users, only: [] do
+    get "profile", to: "profiles#show"
   end
+
+  # For managing current user's own profile
+  resource :profile, only: [ :edit, :update ]
+
 
   resources :leads, except: [ :new, :create ] do
     member do
