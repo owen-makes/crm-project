@@ -67,3 +67,7 @@ gem "pundit", "~> 2.4"
 gem "letter_opener", "~> 1.10"
 
 gem "devise_invitable", "~> 2.0"
+
+gem "carrierwave"
+
+gem "whenever", "~> 1.0"

@@ -1,0 +1,23 @@
+  <!-- Sidebar -->
+  <%= render "partials/sidebar" %>
+
+  <!-- Import Details -->
+<div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+  <h1 class="text-2xl font-bold mb-4">Importar CSV</h1>
+  
+  <%= form_with(model: @csv_import, local: true, class: "space-y-4") do |f| %>
+    <div class="mb-4">
+      <%= label_tag :record_type, "Importar como:", class: "block text-sm font-medium text-gray-700" %>
+      <%= select_tag :record_type,
+          options_for_select([["Clientes", 'clients'], ["Leads", 'leads']]),
+          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+    
+    <div>
+      <%= f.label :file, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.file_field :file, accept: '.csv', class: "mt-1 block w-full" %>
+    </div>
+    
+    <%= f.submit "Upload", class: "bg-green-700 text-white px-4 py-2 rounded" %>
+  <% end %>
+</div>

@@ -1,7 +1,7 @@
 <%= render "partials/sidebar" %>
 <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
   <div class="flex">
-    <div class="ml-auto">Mi link es <%= current_user.form_token %></div>
+    <div class="ml-auto"><%= link_to "Importar", new_csv_import_path %></div>
   </div>
   <h1 class="text-2xl font-bold mb-4">Mis Leads</h1>
   <% if @leads.blank? %>

@@ -26,6 +26,12 @@ Rails.application.routes.draw do
 
   resources :clients
 
+  resources :csv_imports do
+    member do
+      get :map_headers
+      post :import
+    end
+  end
 
   resource :team do
     member do

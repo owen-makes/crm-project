@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_many :clients
   has_many :leads
+  has_many :csv_imports
   has_one :managed_team, foreign_key: "admin_id", class_name: "Team"
   belongs_to :team, optional: true
   has_one :profile, dependent: :destroy

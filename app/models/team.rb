@@ -4,6 +4,7 @@ class Team < ApplicationRecord
   validates :name, :admin_id, presence: true
   has_many :leads
   has_many :clients
+  has_many :csv_imports
   before_create :generate_join_token
   after_create :add_admin_as_member
 
