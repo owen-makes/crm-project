@@ -1,0 +1,64 @@
+  <!-- Sidebar -->
+  <%= render "partials/sidebar" %>
+
+  <% Rails.logger.debug "View - Headers: #{@csv_import.headers.inspect}" %>
+  <% Rails.logger.debug "View - Headers class: #{@csv_import.headers.class}" %>
+  <% Rails.logger.debug "View - Record Type: #{params[:record_type]}" %>
+
+<div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+  <h1 class="text-2xl font-bold mb-4">Seleccionar Filas para Importar</h1>
+  
+  <%= form_tag import_csv_import_path(@csv_import, record_type: params[:record_type]), method: :post, class: "space-y-4" do %>
+    <!-- Pass along the mapped headers -->
+    <% @csv_import.headers.each_with_index do |header, index| %>
+      <%= hidden_field_tag "headers[]", @mapped_headers[header] %>
+    <% end %>
+
+    <%= hidden_field_tag :record_type, params[:record_type] %>
+
+    
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead>
+        <tr>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <input type="checkbox" id="select-all" class="rounded border-gray-300">
+          </th>
+          <% @mapped_headers.each do |_, field_name| %>
+            <% next if field_name.blank? %>
+            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <%= field_name.humanize %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @preview_data.each_with_index do |row, index| %>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= check_box_tag "selected_rows[]", index, true, class: "rounded border-gray-300" %>
+            </td>
+            <% row.each do |field, value| %>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= value %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <div class="mt-4 flex justify-between items-center">
+      <div class="text-sm text-gray-500">
+        <%= pluralize(@preview_data.size, 'row') %> found
+      </div>
+      <%= submit_tag "Importar Filas Seleccionadas", class: "bg-green-700 text-white px-4 py-2 rounded" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+document.getElementById('select-all').addEventListener('change', function() {
+  const checkboxes = document.querySelectorAll('input[name="selected_rows[]"]');
+  checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+});
+</script>

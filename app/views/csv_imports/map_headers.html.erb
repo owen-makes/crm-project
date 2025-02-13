@@ -20,7 +20,8 @@
       <p class="text-red-500">No headers found!</p>
     <% end %>
   
-  <%= form_tag import_csv_import_path(@csv_import, record_type: params[:record_type]), method: :post, class: "space-y-4" do %>
+  <%= form_tag choose_rows_csv_import_path(@csv_import, record_type: params[:record_type]), method: :get, class: "space-y-4" do %>
+    <%= hidden_field_tag :record_type, params[:record_type] %>
     <table class="min-w-full divide-y divide-gray-200">
       <thead>
         <tr>
@@ -49,6 +50,6 @@
       </tbody>
     </table>
     
-    <%= submit_tag "Importar", class: "mt-4 bg-green-700 text-white px-4 py-2 rounded" %>
+    <%= submit_tag "Seleccionar Datos", class: "mt-4 bg-green-700 text-white px-4 py-2 rounded" %>
   <% end %>
 </div>

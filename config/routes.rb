@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   resources :csv_imports do
     member do
       get :map_headers
+      get :choose_rows
       post :import
     end
   end
