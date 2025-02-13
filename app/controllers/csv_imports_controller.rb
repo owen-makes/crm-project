@@ -1,6 +1,7 @@
 class CsvImportsController < ApplicationController
   def new
     @csv_import = CsvImport.new
+    authorize @csv_import
   end
 
   def create
