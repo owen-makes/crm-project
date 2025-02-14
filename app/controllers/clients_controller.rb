@@ -3,7 +3,12 @@ class ClientsController < ApplicationController
 
   # GET /clients or /clients.json
   def index
-    @clients = policy_scope(Client).includes(:user)
+    @clients = policy_scope(Client).includes(:user).order(:created_at)
+
+    respond_to do |format|
+      format.html
+      format.csv { send_data @clients.to_csv, filename: "clients-#{Time.current.strftime("%Y%m%d")}.csv" }
+    end
   end
 
   # GET /clients/1 or /clients/1.json

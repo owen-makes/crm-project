@@ -1,7 +1,15 @@
 <%= render "partials/sidebar" %>
 <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
   <div class="flex">
-    <div class="ml-auto">
+    <div class="ml-auto flex gap-4">
+        <div class="flex gap-2">
+          <%= link_to leads_path(format: :csv), class: "inline-flex items-center px-3 py-1.5 border border-black rounded-md font-medium text-xs hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+            Exportar
+          <% end %>
+        </div>
       <%= link_to new_csv_import_path, class:"inline-flex items-center px-3 py-1.5 border border-black rounded-md font-medium text-xs hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" do %>
       <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="current-color"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
         Importar

@@ -1,6 +1,7 @@
 class Lead < ApplicationRecord
   belongs_to :user
   belongs_to :team, optional: true
+  include Exportable
 
   before_create :set_status, :set_team
   validates :name, :last_name, :email, :phone, presence: true

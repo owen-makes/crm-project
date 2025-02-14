@@ -2,7 +2,7 @@ class LeadsController < ApplicationController
   before_action :set_lead, only: [ :show, :edit, :update, :destroy, :convert ]
   before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
   def index
-    @leads = policy_scope(Lead).includes(:user)
+    @leads = policy_scope(Lead).includes(:user).order(:updated_at)
 
     case params[:status]
     when "converted"
@@ -11,6 +11,11 @@ class LeadsController < ApplicationController
       @leads = @leads.lost
     when "active"
       @leads = @leads.active
+    end
+
+    respond_to do |format|
+      format.html
+      format.csv { send_data @leads.to_csv, filename: "leads-#{Time.current.strftime("%Y%m%d")}.csv" }
     end
   end
 
