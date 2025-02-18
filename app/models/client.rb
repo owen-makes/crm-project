@@ -1,6 +1,7 @@
 class Client < ApplicationRecord
   belongs_to :user
   belongs_to :team, optional: true
+  has_many :portfolios
   include Exportable
 
   validates :name, :last_name, :phone, presence: true

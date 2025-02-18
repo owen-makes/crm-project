@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ticker: MyString
+  asset_type: MyString
+  quantity: 1
+  cost_basis: 1
+  portfolio: one
+
+two:
+  ticker: MyString
+  asset_type: MyString
+  quantity: 1
+  cost_basis: 1
+  portfolio: two

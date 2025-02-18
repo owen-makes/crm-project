@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_11_160009) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_160009) do
     t.index ["user_id"], name: "index_csv_imports_on_user_id"
   end
 
+  create_table "holdings", force: :cascade do |t|
+    t.string "ticker"
+    t.string "asset_type"
+    t.integer "quantity"
+    t.integer "cost_basis"
+    t.bigint "portfolio_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id"
+  end
+
   create_table "leads", force: :cascade do |t|
     t.string "name"
     t.string "last_name"
@@ -58,6 +69,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_160009) do
     t.text "notes"
     t.integer "team_id"
     t.index ["user_id"], name: "index_leads_on_user_id"
+  end
+
+  create_table "portfolios", force: :cascade do |t|
+    t.string "broker"
+    t.integer "account_number"
+    t.string "name"
+    t.bigint "client_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_portfolios_on_client_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -112,7 +133,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_160009) do
   add_foreign_key "clients", "users"
   add_foreign_key "csv_imports", "teams"
   add_foreign_key "csv_imports", "users"
+  add_foreign_key "holdings", "portfolios"
   add_foreign_key "leads", "users"
+  add_foreign_key "portfolios", "clients"
   add_foreign_key "profiles", "users"
   add_foreign_key "teams", "users", column: "admin_id"
 end

@@ -24,7 +24,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :clients
+  resources :clients do
+    resources :portfolios
+  end
 
   resources :csv_imports do
     member do
