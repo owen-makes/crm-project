@@ -1,4 +1,15 @@
-<div>
-  <h1 class="font-bold text-4xl">Portfolios#show</h1>
-  <p>Find me in app/views/portfolios/show.html.erb</p>
-</div>
+<%= render "partials/sidebar" %>
+
+  <!-- Lead Details -->
+  <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+    <%= link_to "Volver a Clientes", clients_path, class: "text-green-600 hover:underline text-sm" %> |
+    <%= link_to "Editar", edit_client_path, class: "text-green-600 hover:underline text-sm" %> 
+
+    <h1 class="text-3xl font-bold text-gray-800 mt-4">
+      <%= @portfolio.name %>
+      <span class="font-semibold text-gray-400 mb-4">
+       (<%= @portfolio.broker %>)
+    </span>
+    </h1>
+
+  </div>

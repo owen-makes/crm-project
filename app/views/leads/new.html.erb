@@ -41,10 +41,8 @@
         <%= f.number_field :capital, class: "appearance-none mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
       </div>
 
-      <div>
-        <%= f.label "¿Con qué broker operas? En caso de no tener, dejar en blanco", class: "block text-sm font-medium text-gray-700" %>
-        <%= f.text_field :broker, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
-      </div>
+        <%= render "partials/broker_field", form: f %>
+
 
       <div>
         <%= f.label "Contanos tus objetivos financieros", class: "block text-sm font-medium text-gray-700" %>
