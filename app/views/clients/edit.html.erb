@@ -36,10 +36,7 @@
         <%= f.text_field :channel, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
       </div>
 
-      <div>
-        <%= f.label :broker, class: "block text-sm font-medium text-gray-700" %>
-        <%= f.text_field :broker, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" %>
-      </div>
+      <%= render "partials/broker_field", form: f %>
 
       <div>
         <%= f.label :goals, class: "block text-sm font-medium text-gray-700" %>

@@ -36,6 +36,8 @@ class PortfoliosController < ApplicationController
   end
 
   def show
+    @holdings = @portfolio.holdings
+    @holdings_with_metrics = @portfolio.holdings_with_metrics
   end
 
   def edit

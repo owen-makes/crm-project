@@ -1,0 +1,42 @@
+<%# app/views/holdings/new.html.erb %>
+<%= turbo_frame_tag "new_holding" do %>
+ <div class="bg-white rounded shadow p-6">
+   <h2 class="text-xl font-bold mb-4">Add New Holding</h2>
+
+   <%= form_with model: [@portfolio, @holding], 
+                 data: { turbo_frame: "_top" } do |f| %>
+     
+     <div class="grid gap-4">
+       <div>
+         <%= f.label :ticker, class: "block font-medium" %>
+         <%= f.text_field :ticker, class: "mt-1 block w-full rounded-md border-gray-300" %>
+       </div>
+
+       <div>
+         <%= f.label :quantity, class: "block font-medium" %>
+         <%= f.number_field :quantity, step: :any, class: "mt-1 block w-full rounded-md border-gray-300" %>
+       </div>
+
+       <div>
+         <%= f.label :cost_basis, "Cost Basis ($)", class: "block font-medium" %>
+         <%= f.number_field :cost_basis, step: :any, class: "mt-1 block w-full rounded-md border-gray-300" %>
+       </div>
+
+       <div>
+         <%= f.label :asset_type, class: "block font-medium" %>
+         <%= f.select :asset_type, 
+             ["Stock", "ETF", "Mutual Fund", "Bond", "Other"],
+             {}, 
+             class: "mt-1 block w-full rounded-md border-gray-300" %>
+       </div>
+     </div>
+
+     <div class="mt-6 flex justify-end gap-4">
+       <%= link_to "Cancel", portfolio_path(@portfolio), 
+           class: "btn btn-secondary",
+           data: { turbo_frame: "_top" } %>
+       <%= f.submit "Add Holding", class: "btn btn-primary" %>
+     </div>
+   <% end %>
+ </div>
+<% end %>
