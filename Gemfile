@@ -71,3 +71,5 @@ gem "devise_invitable", "~> 2.0"
 gem "carrierwave"
 
 gem "whenever", "~> 1.0"
+
+gem "chartkick", "~> 5.1"

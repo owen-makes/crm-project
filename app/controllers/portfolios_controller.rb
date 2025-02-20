@@ -1,8 +1,9 @@
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_client, only: %i[new create]
   before_action :set_portfolio, only: %i[show edit update destroy]
   before_action :authorize_portfolio, only: %i[show edit update destroy]
+  before_action :set_client, only: %i[new create]
+  before_action :set_client_from_portfolio, only: [ :show, :edit ]
 
   def index
     if params[:client_id]
@@ -36,11 +37,13 @@ class PortfoliosController < ApplicationController
   end
 
   def show
+    @client = params[:client_id]
     @holdings = @portfolio.holdings
     @holdings_with_metrics = @portfolio.holdings_with_metrics
   end
 
   def edit
+    @holdings = @portfolio.holdings # Fetch the holdings for the edit view
   end
 
   def update
@@ -70,6 +73,10 @@ class PortfoliosController < ApplicationController
 
   def set_client
     @client = Client.find(params[:client_id])  # The client_id comes from the URL parameters
+  end
+
+  def set_client_from_portfolio
+    @client = @portfolio.client
   end
 
   def portfolio_params

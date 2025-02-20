@@ -1,8 +1,8 @@
 <%= render "partials/sidebar" %>
 
 <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
-    <%= link_to "Volver a Clientes", clients_path(@client), class: "text-green-600 hover:underline text-sm" %> |
-    <%= link_to "Editar", edit_client_portfolio_path(@portfolio), class: "text-green-600 hover:underline text-sm" %> 
+    <%= link_to "Volver a perfil", client_path(@portfolio.client), class: "text-green-600 hover:underline text-sm" %> |
+    <%= link_to "Editar", edit_client_portfolio_path(@portfolio.client, @portfolio), class: "text-green-600 hover:underline text-sm" %> 
 
     <h1 class="text-3xl font-bold text-gray-800 mt-4">
       <%= @portfolio.name %>
@@ -12,65 +12,65 @@
     </h1>
 
 
-  <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-6">
-      <%= link_to "Add Holding", new_portfolio_holding_path(@portfolio), 
-          class: "btn btn-primary", 
-          data: { turbo_frame: "new_holding" } %>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="bg-white rounded shadow p-6">
-        <table class="w-full">
-          <thead>
-            <tr>
-              <th class="text-left">Ticker</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Current Value</th>
-              <th class="text-right">% of Portfolio</th>
-              <th class="text-right">P/L</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @holdings_with_metrics.each do |metric| %>
-              <%= turbo_frame_tag dom_id(metric[:holding]) do %>
-                <tr class="hover:bg-gray-50">
-                  <td>
-                    <%= link_to metric[:holding].ticker, 
-                        portfolio_holdings_path(@portfolio, metric[:holding]),
-                        data: { turbo_frame: "_top" } %>
-                  </td>
-                  <td class="text-right"><%= metric[:holding].quantity %></td>
-                  <td class="text-right"><%= number_to_currency(metric[:current_value]) %></td>
-                  <td class="text-right"><%= number_to_percentage(metric[:percentage]) %></td>
-                  <td class="text-right <%= metric[:profit_loss] >= 0 ? 'text-green-600' : 'text-red-600' %>">
-                    <%= number_to_percentage(metric[:profit_loss_percentage]) %>
-                  </td>
-                </tr>
-              <% end %>
-            <% end %>
-          </tbody>
-          <tfoot>
-            <tr class="font-bold border-t">
-              <td>Total</td>
-              <td></td>
-              <td class="text-right"><%= number_to_currency(@portfolio.total_value) %></td>
-              <td class="text-right">100%</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      <div class="bg-white rounded shadow p-6">
-        <div id="holdings-chart" 
-          data-controller="portfolio-chart"
-          data-holdings="<%= @holdings_with_metrics.to_json %>">
-        </div>
-      </div>
-    </div>
-
-    <%= turbo_frame_tag "new_holding" %>
+ <%# app/views/portfolios/show.html.erb %>
+<div class="container mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <%= link_to "Agregar Activo", new_portfolio_holding_path(@portfolio), 
+        class: "ml-auto btn btn-primary", 
+        data: { turbo_frame: "new_holding" } %>
   </div>
 
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded p-6">
+      <table class="w-full">
+        <thead>
+          <tr>
+            <th class="text-left">Ticker</th>
+            <th class="text-right">Quantity</th>
+
+            <th class="text-right">Current Value</th>
+            <th class="text-right">% of Portfolio</th>
+            <th class="text-right">P/L</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @holdings_with_metrics.each do |metric| %>
+            <%= turbo_frame_tag dom_id(metric[:holding]) do %>
+              <tr class="hover:bg-gray-50">
+                <td>
+                  <%= link_to metric[:holding].ticker, 
+                      portfolio_holding_path(@portfolio, metric[:holding]),
+                      data: { turbo_frame: "_top" } %>
+                </td>
+                <td class="text-right"><%= metric[:holding].quantity %></td>
+
+                <td class="text-right"><%= number_to_currency(metric[:current_value]) %></td>
+                <td class="text-right"><%= number_to_percentage(metric[:percentage], precision: 1) %></td>
+                <td class="text-right <%= metric[:profit_loss] >= 0 ? 'text-green-600' : 'text-red-600' %>">
+                  <%= number_to_percentage(metric[:profit_loss_percentage], precision: 0) %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr class="font-bold border-t">
+            <td>Total</td>
+            <td></td>
+            <td class="text-right"><%= number_to_currency(@portfolio.total_value) %></td>
+            <td class="text-right">100%</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="bg-white rounded p-6">
+      <%= pie_chart @holdings_with_metrics.map { |metric| 
+        [metric[:holding].ticker, number_to_percentage(metric[:percentage])] 
+      }, legend: "bottom", suffix: "%"  %>
+    </div>
+  </div>
+
+  <%= turbo_frame_tag "new_holding" %>
 </div>

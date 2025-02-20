@@ -1,6 +1,6 @@
 class HoldingsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_portfolio
+  before_action :find_client_and_portfolio
   before_action :set_holding, only: %i[show edit update destroy]
   before_action :authorize_portfolio
 
@@ -43,8 +43,10 @@ class HoldingsController < ApplicationController
 
   private
 
-  def set_portfolio
+
+  def find_client_and_portfolio
     @portfolio = Portfolio.find(params[:portfolio_id])
+    @client = @portfolio.client
   end
 
   def set_holding

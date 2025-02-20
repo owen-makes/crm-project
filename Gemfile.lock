@@ -101,6 +101,7 @@ GEM
       image_processing (~> 1.1)
       marcel (~> 1.0.0)
       ssrf_filter (~> 1.0)
+    chartkick (5.1.4)
     childprocess (5.1.0)
       logger (~> 1.5)
     chronic (0.10.2)
@@ -389,6 +390,7 @@ DEPENDENCIES
   brakeman
   capybara
   carrierwave
+  chartkick (~> 5.1)
   debug
   devise
   devise_invitable (~> 2.0)
