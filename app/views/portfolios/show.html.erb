@@ -4,24 +4,27 @@
     <%= link_to "Volver a perfil", client_path(@portfolio.client), class: "text-green-600 hover:underline text-sm" %> |
     <%= link_to "Editar", edit_client_portfolio_path(@portfolio.client, @portfolio), class: "text-green-600 hover:underline text-sm" %> 
 
-    <h1 class="text-3xl font-bold text-gray-800 mt-4">
-      <%= @portfolio.name %>
-      <span class="font-semibold text-gray-400 mb-4">
-       (<%= @portfolio.broker %>)
-    </span>
-    </h1>
+    
 
 
- <%# app/views/portfolios/show.html.erb %>
 <div class="container mx-auto px-4 py-6">
-  <div class="flex justify-between items-center mb-6">
+  <div class="flex justify-between items-top mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800">
+        <%= @portfolio.name %>
+      </h1>
+      <h2 class="text-l text-gray-500 mt-0"> <%= @portfolio.broker %> (<strong class="font-medium"><%= @portfolio.account_number %></strong>)</h2>
+    </div>
     <%= link_to "Agregar Activo", new_portfolio_holding_path(@portfolio), 
         class: "ml-auto btn btn-primary", 
         data: { turbo_frame: "new_holding" } %>
   </div>
-
+   <h2 class="text-2xl font-bold">Tenencias</h2>
+   <div class="h-0.5 w-full mb-2 bg-gradient-to-b from-slate-100 to-slate-200 rounded-lg shadow-xl"></div>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="bg-white rounded p-6">
+
+
       <table class="w-full">
         <thead>
           <tr>

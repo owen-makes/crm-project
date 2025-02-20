@@ -1,6 +1,6 @@
 <%# app/views/holdings/new.html.erb %>
 <%= turbo_frame_tag "new_holding" do %>
- <div class="bg-white rounded shadow p-6">
+ <div class="bg-white rounded-lg border-green-600 border-solid border-2 shadow-lg p-6">
    <h2 class="text-xl font-bold mb-4">Add New Holding</h2>
 
    <%= form_with model: [@portfolio, @holding], 
