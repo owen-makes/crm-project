@@ -1,8 +1,8 @@
   <!-- Sidebar -->
-  <%= render "partials/sidebar" %>
+  <%= render "partials/tabbar" %>
 
   <!-- Import Details -->
-<div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+<div class="col-span-6 p-6 bg-white shadow-lg rounded-xl">
   <h1 class="text-2xl font-bold mb-4">Importar CSV</h1>
   
   <%= form_with(model: @csv_import, local: true, class: "space-y-4") do |f| %>

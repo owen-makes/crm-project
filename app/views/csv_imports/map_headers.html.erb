@@ -1,12 +1,12 @@
   <!-- Sidebar -->
-  <%= render "partials/sidebar" %>
+  <%= render "partials/tabbar" %>
   <% Rails.logger.debug "View - CSV Import ID: #{@csv_import.id}" %>
   <% Rails.logger.debug "View - Headers: #{@csv_import.headers.inspect}" %>
   <% Rails.logger.debug "View - Headers class: #{@csv_import.headers.class}" %>
   <% Rails.logger.debug "View - Record Type: #{params[:record_type]}" %>
 
   <!-- Form Details -->
-  <div class="col-span-5 lg:col-span-4 xl:col-span-5 p-6 bg-white shadow-lg rounded-xl">
+  <div class="col-span-6 p-6 bg-white shadow-lg rounded-xl">
   <h1 class="text-2xl font-bold mb-4">Mapear Columnas</h1>
   
   <div class="mb-4">
