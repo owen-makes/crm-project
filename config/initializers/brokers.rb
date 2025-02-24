@@ -233,4 +233,5 @@ BROKERS = [ "Aldazabal y Cía.",
 "Luxfin Valores",
 "DA Valores",
 "Bank of China Limited Sucursal Buenos Aires",
-"Banco del Sol" ]
+"Banco del Sol",
+"Otro" ]

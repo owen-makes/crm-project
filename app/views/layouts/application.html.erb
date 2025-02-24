@@ -18,24 +18,24 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-slate-50">
-    <% flash.each do |name, msg| %>
-      <% if msg.is_a?(String) %>
-        <div class="<%= notice_banner(name) %> 
-                    px-4 py-3 rounded relative border m-4" 
-             role="alert" 
-             data-controller="alert">
-          <strong class="font-bold"><%= name.titleize %>:</strong>
-          <span class="block sm:inline"><%= msg %></span>
-          <button class="absolute top-0 bottom-0 right-0 px-4 py-1" 
-                  data-action="click->alert#close">
-            <span class="text-2xl">&times;</span>
-          </button>
-        </div>
-      <% end %>
+<body class="bg-slate-50">
+  <% flash.each do |name, msg| %>
+    <% if msg.is_a?(String) %>
+      <div class="<%= notice_banner(name) %> 
+           px-3 py-2 rounded-md shadow-sm fixed top-3 right-3 w-72 flex items-center z-50 text-sm"
+           role="alert"
+           data-controller="alert">
+        <strong class="font-medium"><%= name.titleize %>:</strong>
+        <span class="ml-1 mr-6"><%= msg %></span>
+        <button class="absolute top-0 bottom-0 right-0 px-2 opacity-60 hover:opacity-100 transition-opacity"
+                data-action="click->alert#close">
+          <span class="text-lg">&times;</span>
+        </button>
+      </div>
     <% end %>
-      <main class="grid grid-cols-6 h-dvh px-16 pt-12 pb-20">
-        <%= yield %>
-      </main>
-  </body>
+  <% end %>
+  <main class="grid grid-cols-6 h-dvh px-16 pt-12 pb-20">
+    <%= yield %>
+  </main>
+</body>
 </html>
