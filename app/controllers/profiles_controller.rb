@@ -4,10 +4,13 @@ class ProfilesController < ApplicationController
 
   def show
     @profile = @user.profile
-    @leads_count = @user.leads.count
-    @active_leads_count = @user.leads.where(status: "wip").count
-    @converted_leads_count = @user.leads.where(status: "convertido").count
-    @clients_count = @user.clients.count
+    @user_clients = @user.clients
+    @user_leads = @user.leads
+
+    # Preload portfolios and holdings for performance
+    @user_portfolios = Portfolio.joins(client: :user)
+                               .where(clients: { user_id: @user.id })
+                               .includes(:holdings)
   end
 
   def edit

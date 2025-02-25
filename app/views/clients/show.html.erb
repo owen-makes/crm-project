@@ -2,17 +2,16 @@
 <%= render "partials/tabbar" %>
 
 <!-- Client Details & Portfolios -->
-<div class="col-span-6 p-6 bg-white shadow-lg rounded-xl">
+<div class="col-span-2 p-6 bg-white shadow-lg rounded-xl">
   <div class="flex justify-between items-center">
     <%= link_to "Volver a Clientes", clients_path, class: "text-green-600 hover:underline text-sm" %>
     <div class="space-x-3">
       <%= link_to "Editar", edit_client_path(@client), class: "text-green-600 hover:underline text-sm" %>
-      <%= link_to "Crear Portfolio", new_client_portfolio_path(@client), class: "text-green-600 hover:underline text-sm" %>
     </div>
   </div>
 
   <!-- Client Info -->
-  <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="mt-6 flex flex-col gap-6">
     <div class="p-6 bg-gray-100 rounded-xl shadow">
       <h1 class="text-3xl font-bold text-gray-800"><%= @client.name %> <%= @client.last_name %></h1>
       <p class="text-gray-500 text-sm mt-2">Cliente desde <%= @client.created_at.strftime("%Y-%m-%d") %></p>
@@ -32,14 +31,9 @@
       <p class="text-gray-600 mt-2"><%= @client.notes.presence || "Sin notas adicionales" %></p>
     </div>
   </div>
-
-  <!-- Portfolio Section -->
-  <%= render 'partials/client_portfolio_section' %>
-
-  <!-- Delete Button -->
-  <div class="flex justify-end mt-6">
-    <%= link_to "Eliminar Cliente", client_path(@client), 
-      data: { turbo_method: :delete, turbo_confirm: "¿Estás seguro? Esta acción no se puede deshacer" },
-      class: "text-red-500 hover:text-red-700 text-sm font-bold" %>
-  </div>
 </div>
+  <!-- Portfolio Section -->
+  <div class="col-span-4 bg-white shadow-lg rounded-xl ml-5 p-6">
+    <%= render 'partials/client_portfolio_section' %>
+  </div>
+

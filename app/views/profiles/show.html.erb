@@ -1,48 +1,301 @@
+<%# profiles/show.html.erb %>
 <%= render "partials/tabbar" %>
-  
 
-<div class="col-span-6 p-6 bg-white shadow-lg rounded-xl">
-    <div class="bg-gradient-to-r from-green-900 via-green-800 to-green-700 p-6 text-white rounded-xl">
-      <div class="flex items-center space-x-6">
-        <div class="flex-shrink-0">
-          <div class="w-24 h-24 bg-green-400 rounded-full flex items-center justify-center <%= @user.emoji ? "text-6xl" : "text-4xl" %>">
-            <%= initials_or_emoji(@user) %>
+  <!-- Left Column - Profile and Tables -->
+  <div class="col-span-3 bg-white rounded-xl">
+    <!-- Profile Section -->
+    <div class="bg-white shadow-lg rounded-xl mb-4 px-2 pt-3">
+      <div class="bg-gradient-to-r from-green-900 via-green-800 to-green-700 p-6 text-white rounded-xl">
+        <div class="flex items-center space-x-6">
+          <div class="flex-shrink-0">
+            <div class="w-24 h-24 bg-green-400 rounded-full flex items-center justify-center <%= @user.emoji ? "text-6xl" : "text-4xl" %>">
+              <%= initials_or_emoji(@user) %>
+            </div>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold"><%= @user.name %> <%= @user.last_name %></h1>
+            <p class="text-green-100"><%= @user.email %></p>
+            <span class="inline-flex items-center px-3 py-1 mt-2 rounded-full text-sm font-medium bg-green-800 text-green-100">
+              <%= @user.role.titleize %>
+            </span>
+          </div>
+          <div class="flex justify-end w-full mb-auto text-slate-200 hover:text-white">
+            <% if @user == current_user %>
+              <%= link_to "Editar Perfil",
+               edit_profile_path,
+              data: { action: "click->slide-panel#show" },
+              class: "ml-auto text-l pr-2 hover:scale-110 transition" %>
+              <span class="mx-1">|</span>
+            <% end %>
+            <%= link_to "Cerrar",
+            team_path(current_user.team_id),
+            data: { action: "click->slide-panel#close" }, class: "text-l pl-2 hover:scale-110 transition mr-2" %>
           </div>
         </div>
-        <div>
-          <h1 class="text-2xl font-bold"><%= @user.name %> <%= @user.last_name %></h1>
-          <p class="text-green-100"><%= @user.email %></p>
-          <span class="inline-flex items-center px-3 py-1 mt-2 rounded-full text-sm font-medium bg-green-800 text-green-100">
-            <%= @user.role.titleize %>
-          </span>
+      </div>
+
+
+      <!-- Clients Table -->
+      <div class="bg-white rounded-xl p-6">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-xl font-bold text-gray-800">Clientes <span class="font-light text-gray-700">(<%= @user_clients.count %>)</span></h2>
+          <%= link_to "View All", clients_path(user_id: @user.id), class: "text-green-600 hover:text-green-800" %>
         </div>
-        <div class="flex justify-end w-full mb-auto text-slate-200 hover:text-white">
-          <% if @user == current_user %>
-            <%= link_to "Editar Perfil",
-                edit_profile_path,
-                data: { action: "click->slide-panel#show" },
-                class: "ml-auto text-l pr-2 hover:scale-110 transition" %>
-            <span class="mx-1">|</span>
-          <% end %>
-          <%= link_to "Cerrar", 
-              team_path(current_user.team_id),
-              data: { action: "click->slide-panel#close" }, class: "text-l pl-2 hover:scale-110 transition mr-2" %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white rounded-lg">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Broker</th>
+                <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <% @user_clients.limit(5).each do |client| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="py-3 px-4 whitespace-nowrap"><%= client.name %> <%= client.last_name %></td>
+                  <td class="py-3 px-4 whitespace-nowrap"><%= client.broker %></td>
+                  <td class="py-3 px-4 whitespace-nowrap">
+                    <%= link_to "View", client_path(client), class: "text-green-600 hover:text-green-800 mr-2" %>
+                  </td>
+                </tr>
+              <% end %>
+              <% if @user_clients.empty? %>
+                <tr>
+                  <td colspan="5" class="py-4 px-4 text-center text-gray-500 italic">No clients found</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    <!-- Leads Table -->
+    <div class="bg-white rounded-xl p-6">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-xl font-bold text-gray-800">Leads  <span class="font-light text-gray-700">(<%= @user_leads.where.not(status: "convertido").count %>)</span></h2>
+        <%= link_to "View All", leads_path(user_id: @user.id), class: "text-green-600 hover:text-green-800" %>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-lg">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% @user_leads.where.not(status: "convertido", status: "baja").limit(5).each do |lead| %>
+              <tr class="hover:bg-gray-50">
+                <td class="py-3 px-4 whitespace-nowrap"><%= lead.name %> <%= lead.last_name %></td>
+                <td class="py-3 px-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= lead.status == 'nuevo' ? 'bg-blue-100 text-blue-800' : (lead.status == 'convertido' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800') %>">
+                    <%= lead.status&.titleize %>
+                  </span>
+                </td>
+                <td class="py-3 px-4 whitespace-nowrap">
+                  <%= link_to "View", lead_path(lead), class: "text-green-600 hover:text-green-800 mr-2" %>
+                </td>
+              </tr>
+            <% end %>
+            <% if @user_leads.empty? %>
+              <tr>
+                <td colspan="5" class="py-4 px-4 text-center text-gray-500 italic">No leads found</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- User Profile Settings Section -->
+      <div class="p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Profile Settings</h2>
+        <% if @user.profile&.settings.present? %>
+          <div class="grid grid-cols-2 gap-4">
+            <% @user.profile.settings.each do |key, value| %>
+              <div class="flex items-center">
+                <span class="font-medium text-gray-700"><%= key.humanize %>:</span>
+                <span class="ml-2 text-gray-600"><%= value %></span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-500 italic">No profile settings configured</p>
+        <% end %>
+      </div>
+
+      <% if current_user.admin? && @user != current_user %>
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+          <%= button_to "Remove from Team",
+          { action: "remove_from_team", controller: "teams", id: @user.id },
+          method: :patch,
+          class: "px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500",
+          data: {
+            turbo_confirm: "Are you sure you want to remove this member from the team?",
+            action: "click->slide-panel#close"
+          } %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+
+  <!-- Right Column - Bento Boxes -->
+  <div class="col-span-3 ml-6">
+    <!-- Sales Metrics Bento Box -->
+    <div class="bg-white shadow-lg rounded-xl p-6 mb-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Sales Metrics</h2>
+      <div class="space-y-4">
+        <!-- Conversion Rate -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-gray-500">Conversion Rate</span>
+            <span class="text-lg font-semibold text-green-600">
+              <%= number_to_percentage((@user_leads.where(status: 'convertido').count.to_f / @user_leads.count) * 100, precision: 2) rescue '0.00%' %>
+            </span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+            <div class="bg-green-600 h-2.5 rounded-full" style="width: <%= (@user_leads.where(status: 'convertido').count.to_f / @user_leads.count) * 100 rescue 0 %>%"></div>
+          </div>
+        </div>
+        <!-- Churn Rate -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-gray-500">Churn Rate</span>
+            <span class="text-lg font-semibold text-red-400">
+              <%= number_to_percentage((@user_leads.where(status: 'baja').count.to_f / @user_leads.count) * 100, precision: 2) rescue '0.00%' %>
+            </span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+            <div class="bg-red-400 h-2.5 rounded-full" style="width: <%= (@user_leads.where(status: 'baja').count.to_f / @user_leads.count) * 100 rescue 0 %>%"></div>
+          </div>
+        </div>
+        <!-- Avg Time to Convert -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-gray-500">Active Leads</span>
+            <span class="text-lg font-semibold text-blue-600">
+              <%= @user_leads.where(status: 'nuevo').count %>
+            </span>
+          </div>
+        </div>
+        
+        <!-- Sales Summary -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="text-sm font-medium text-gray-500">Total Leads</div>
+            <div class="mt-1 text-2xl font-semibold text-gray-800">
+              <%= @user_leads.count %>
+            </div>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="text-sm font-medium text-gray-500">Total Clients</div>
+            <div class="mt-1 text-2xl font-semibold text-gray-800">
+              <%= @user_clients.count %>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    
+    <!-- Portfolio Management Metrics -->
+    <div class="bg-white shadow-lg rounded-xl p-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Portfolio Metrics</h2>
+      <div class="space-y-4">
+        <!-- AUM -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="text-sm font-medium text-gray-500">Assets Under Management</div>
+          <div class="mt-1 text-2xl font-semibold text-green-600">
+            <% total_holdings = 0 %>
+            <% @user_clients.each do |client| %>
+              <% client.portfolios.each do |portfolio| %>
+                <% portfolio.holdings.each do |holding| %>
+                  <% total_holdings += holding.cost_basis * holding.quantity if holding.cost_basis.present? && holding.quantity.present? %>
+                <% end %>
+              <% end %>
+            <% end %>
+            <%= number_to_currency(total_holdings) %>
+          </div>
+        </div>
+        
+        <!-- Portfolios Created -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="text-sm font-medium text-gray-500">Portfolios Created</div>
+          <div class="flex justify-between items-center">
+            <span class="mt-1 text-2xl font-semibold text-blue-600">
+              <% portfolio_count = 0 %>
+              <% @user_clients.each do |client| %>
+                <% portfolio_count += client.portfolios.count %>
+              <% end %>
+              <%= portfolio_count %>
+            </span>
+            <span class="text-sm text-gray-500">
+              Avg <%= (portfolio_count.to_f / @user_clients.count).round(1) rescue 0 %> per client
+            </span>
+          </div>
+        </div>
+        
+        <!-- Asset Distribution -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="text-sm font-medium text-gray-500 mb-2">Asset Types</div>
+          <% 
+            asset_types = {}
+            total_assets = 0
+            
+            @user_clients.each do |client|
+              client.portfolios.each do |portfolio|
+                portfolio.holdings.each do |holding|
+                  asset_types[holding.asset_type] ||= 0
+                  asset_types[holding.asset_type] += 1
+                  total_assets += 1
+                end
+              end
+            end
+          %>
+          
+          <% asset_types.sort_by { |_, count| -count }.first(3).each do |asset_type, count| %>
+            <div class="mb-2">
+              <div class="flex justify-between items-center text-xs">
+                <span><%= asset_type.presence || 'Unknown' %></span>
+                <span><%= count %> (<%= number_to_percentage((count.to_f / total_assets) * 100, precision: 0) rescue '0%' %>)</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                <div class="bg-indigo-600 h-1.5 rounded-full" style="width: <%= (count.to_f / total_assets) * 100 rescue 0 %>%"></div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        
+        <!-- Broker Distribution -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="text-sm font-medium text-gray-500 mb-2">Brokers</div>
+          <% 
+            brokers = {}
+            total_portfolios = 0
+            
+              @user_portfolios.each do |portfolio|
+                brokers[portfolio.broker] ||= 0
+                brokers[portfolio.broker] += 1
+                total_portfolios += 1
+              end
 
-    <%= render "stats_grid" %>
-
-    <% if current_user.admin? && @user != current_user %>
-      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-            <%= button_to "Remove from Team",
-                { action: "remove_from_team", controller: "teams", id: @user.id },
-                method: :patch,
-                class: "px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500",
-                data: { 
-                  turbo_confirm: "Are you sure you want to remove this member from the team?",
-                  action: "click->slide-panel#close" 
-                } %>
+          %>
+          
+          <% brokers.sort_by { |_, count| -count }.first(3).each do |broker, count| %>
+            <div class="mb-2">
+              <div class="flex justify-between items-center text-xs">
+                <span><%= broker.presence || 'Unknown' %></span>
+                <span><%= count %> (<%= number_to_percentage((count.to_f / total_portfolios) * 100, precision: 0) rescue '0%' %>)</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                <div class="bg-purple-600 h-1.5 rounded-full" style="width: <%= (count.to_f / total_portfolios) * 100 rescue 0 %>%"></div>
+              </div>
+            </div>
+          <% end %>
+        </div>
       </div>
-    <% end %>
+    </div>
   </div>
+</div>

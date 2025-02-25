@@ -53,5 +53,11 @@
         <%= link_to "Cancelar", client_path(@client), class: "text-gray-600 hover:underline" %>
       </div>
     <% end %>
+      <!-- Delete Button -->
+    <div class="flex justify-end mt-6">
+      <%= link_to "Eliminar Cliente", client_path(@client), 
+        data: { turbo_method: :delete, turbo_confirm: "¿Estás seguro? Esta acción no se puede deshacer" },
+        class: "text-red-500 hover:text-red-700 text-sm font-bold" %>
+    </div>
   </div>
 </div>
