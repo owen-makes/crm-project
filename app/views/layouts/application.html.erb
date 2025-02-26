@@ -13,6 +13,12 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    <style>
+      /* Add padding to the bottom of the body or main content container */
+      body {
+        padding-bottom: 14rem; /* Adjust this value based on your tab bar height + extra space */
+      }
+    </style>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -34,7 +40,7 @@
       </div>
     <% end %>
   <% end %>
-  <main class="grid grid-cols-6 h-dvh px-16 pt-12 pb-20">
+  <main class="grid grid-cols-6 h-dvh px-16 pt-12 pb-40">
     <%= yield %>
   </main>
 </body>

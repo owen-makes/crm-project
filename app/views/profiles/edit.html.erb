@@ -1,12 +1,6 @@
 <%= render "partials/tabbar" %>
 
-<%= turbo_frame_tag "profile_panel", class: "col-span-5 lg:col-span-4 xl:col-span-5" do %>
-  <div
-    data-controller="slide-panel"
-    data-slide-panel-active-class="translate-y-0"
-    data-slide-panel-inactive-class="translate-y-full"
-    class="fixed w-full lg:w-3/4 xl:w-4/5 h-[95vh] transform transition-transform duration-300 ease-in-out translate-y-full bg-white shadow-lg rounded-xl overflow-y-auto">
-  
+<div class= "col-span-6  bg-white shadow-lg rounded-xl">
     <div class="bg-gradient-to-r from-green-600 to-green-700 p-6 text-white rounded-t-xl">
       <div class="flex items-center space-x-6">
         <div class="flex-shrink-0">
@@ -82,5 +76,5 @@
         </div>
       <% end %>
     </div>
-  </div>
-<% end %>
+
+</div>

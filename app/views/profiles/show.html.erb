@@ -2,9 +2,9 @@
 <%= render "partials/tabbar" %>
 
   <!-- Left Column - Profile and Tables -->
-  <div class="col-span-3 bg-white rounded-xl">
+  <div class="col-span-3 bg-white rounded-xl shadow-lg">
     <!-- Profile Section -->
-    <div class="bg-white shadow-lg rounded-xl mb-4 px-2 pt-3">
+    <div class="bg-white rounded-xl mb-4 px-2 pt-3">
       <div class="bg-gradient-to-r from-green-900 via-green-800 to-green-700 p-6 text-white rounded-xl">
         <div class="flex items-center space-x-6">
           <div class="flex-shrink-0">
@@ -86,7 +86,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <% @user_leads.where.not(status: "convertido", status: "baja").limit(5).each do |lead| %>
+            <% @user_leads.where.not(status: ["convertido", "baja"]).limit(5).each do |lead| %>
               <tr class="hover:bg-gray-50">
                 <td class="py-3 px-4 whitespace-nowrap"><%= lead.name %> <%= lead.last_name %></td>
                 <td class="py-3 px-4 whitespace-nowrap">
@@ -146,39 +146,63 @@
   <div class="col-span-3 ml-6">
     <!-- Sales Metrics Bento Box -->
     <div class="bg-white shadow-lg rounded-xl p-6 mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">Sales Metrics</h2>
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Ventas</h2>
       <div class="space-y-4">
-        <!-- Conversion Rate -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <div class="flex justify-between items-center">
-            <span class="text-sm font-medium text-gray-500">Conversion Rate</span>
-            <span class="text-lg font-semibold text-green-600">
-              <%= number_to_percentage((@user_leads.where(status: 'convertido').count.to_f / @user_leads.count) * 100, precision: 2) rescue '0.00%' %>
-            </span>
+        <!-- Conversion and Churn Rates -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Conversion Rate -->
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-500">Tasa de Conversión</span>
+              <span class="text-lg font-semibold text-green-600">
+                <%= number_to_percentage((@user_leads.where(status: 'convertido').count.to_f / @user_leads.count) * 100, precision: 2) rescue '0.00%' %>
+              </span>
+            </div>
+            <div class="pt-2">
+              <% conversion_data = {
+                "Convertido" => @user_leads.where(status: 'convertido').count,
+                "Activo" => @user_leads.where.not(status: ['convertido', 'baja']).count,
+                "Baja" => @user_leads.where(status: 'baja').count
+              } %>
+              <%= pie_chart conversion_data, 
+                    colors: ["#10B981", "#3B82F6", "#EF4444"], 
+                    donut: true, 
+                    legend: false,  
+                    height: "120px", 
+                    library: {
+                      plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                      }
+                    } %>
+            </div>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-            <div class="bg-green-600 h-2.5 rounded-full" style="width: <%= (@user_leads.where(status: 'convertido').count.to_f / @user_leads.count) * 100 rescue 0 %>%"></div>
-          </div>
-        </div>
-        <!-- Churn Rate -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <div class="flex justify-between items-center">
-            <span class="text-sm font-medium text-gray-500">Churn Rate</span>
-            <span class="text-lg font-semibold text-red-400">
-              <%= number_to_percentage((@user_leads.where(status: 'baja').count.to_f / @user_leads.count) * 100, precision: 2) rescue '0.00%' %>
-            </span>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-            <div class="bg-red-400 h-2.5 rounded-full" style="width: <%= (@user_leads.where(status: 'baja').count.to_f / @user_leads.count) * 100 rescue 0 %>%"></div>
-          </div>
-        </div>
-        <!-- Avg Time to Convert -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <div class="flex justify-between items-center">
-            <span class="text-sm font-medium text-gray-500">Active Leads</span>
-            <span class="text-lg font-semibold text-blue-600">
-              <%= @user_leads.where(status: 'nuevo').count %>
-            </span>
+          
+          <!-- Churn Rate -->
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-500">Lead Status</span>
+              <span class="text-lg font-semibold text-blue-600">
+                <%= @user_leads.count %> Total
+              </span>
+            </div>
+            <div class="pt-2">
+              <% lead_status_data = {
+                "Nuevo" => @user_leads.where(status: 'nuevo').count,
+                "WIP" => @user_leads.where(status: 'wip').count,
+                "Convertido" => @user_leads.where(status: 'convertido').count,
+                "Baja" => @user_leads.where(status: 'baja').count
+              } %>
+              <%= pie_chart lead_status_data, 
+                    colors: ["#3B82F6", "#6366F1", "#10B981", "#EF4444"],
+                    donut: true, 
+                    legend: false, 
+                    height: "120px", 
+                    library: {
+                      plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                      }
+                    } %>
+            </div>
           </div>
         </div>
         
@@ -189,11 +213,17 @@
             <div class="mt-1 text-2xl font-semibold text-gray-800">
               <%= @user_leads.count %>
             </div>
+            <div class="mt-2 text-xs text-gray-500">
+              <span class="text-green-600">+<%= @user_leads.where('created_at >= ?', 30.days.ago).count %></span> in last 30 days
+            </div>
           </div>
           <div class="bg-gray-50 p-4 rounded-lg">
             <div class="text-sm font-medium text-gray-500">Total Clients</div>
             <div class="mt-1 text-2xl font-semibold text-gray-800">
               <%= @user_clients.count %>
+            </div>
+            <div class="mt-2 text-xs text-gray-500">
+              <span class="text-green-600">+<%= @user_clients.where('created_at >= ?', 30.days.ago).count %></span> in last 30 days
             </div>
           </div>
         </div>
@@ -202,7 +232,7 @@
     
     <!-- Portfolio Management Metrics -->
     <div class="bg-white shadow-lg rounded-xl p-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">Portfolio Metrics</h2>
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Portfolios</h2>
       <div class="space-y-4">
         <!-- AUM -->
         <div class="bg-gray-50 p-4 rounded-lg">
@@ -218,82 +248,89 @@
             <% end %>
             <%= number_to_currency(total_holdings) %>
           </div>
-        </div>
-        
-        <!-- Portfolios Created -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <div class="text-sm font-medium text-gray-500">Portfolios Created</div>
-          <div class="flex justify-between items-center">
-            <span class="mt-1 text-2xl font-semibold text-blue-600">
-              <% portfolio_count = 0 %>
-              <% @user_clients.each do |client| %>
-                <% portfolio_count += client.portfolios.count %>
-              <% end %>
-              <%= portfolio_count %>
-            </span>
-            <span class="text-sm text-gray-500">
-              Avg <%= (portfolio_count.to_f / @user_clients.count).round(1) rescue 0 %> per client
-            </span>
+          <div class="mt-2 text-xs text-gray-500">
+            <% avg_per_client = @user_clients.count > 0 ? total_holdings / @user_clients.count : 0 %>
+            Avg <%= number_to_currency(avg_per_client) %> per client
           </div>
         </div>
         
         <!-- Asset Distribution -->
         <div class="bg-gray-50 p-4 rounded-lg">
-          <div class="text-sm font-medium text-gray-500 mb-2">Asset Types</div>
+          <div class="text-sm font-medium text-gray-500 mb-2">Asset Distribution</div>
           <% 
             asset_types = {}
-            total_assets = 0
+            total_value = 0
             
             @user_clients.each do |client|
               client.portfolios.each do |portfolio|
                 portfolio.holdings.each do |holding|
-                  asset_types[holding.asset_type] ||= 0
-                  asset_types[holding.asset_type] += 1
-                  total_assets += 1
+                  value = holding.cost_basis * holding.quantity if holding.cost_basis.present? && holding.quantity.present?
+                  if value && value > 0
+                    asset_types[holding.asset_type || "Unknown"] ||= 0
+                    asset_types[holding.asset_type || "Unknown"] += value
+                    total_value += value
+                  end
                 end
               end
             end
           %>
           
-          <% asset_types.sort_by { |_, count| -count }.first(3).each do |asset_type, count| %>
-            <div class="mb-2">
-              <div class="flex justify-between items-center text-xs">
-                <span><%= asset_type.presence || 'Unknown' %></span>
-                <span><%= count %> (<%= number_to_percentage((count.to_f / total_assets) * 100, precision: 0) rescue '0%' %>)</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                <div class="bg-indigo-600 h-1.5 rounded-full" style="width: <%= (count.to_f / total_assets) * 100 rescue 0 %>%"></div>
-              </div>
-            </div>
-          <% end %>
+          <%= pie_chart asset_types, 
+                colors: ["#8B5CF6", "#EC4899", "#F59E0B", "#10B981", "#3B82F6", "#6366F1"], 
+                donut: true, 
+                legend: true, 
+                height: "180px", 
+                library: {
+                  plugins: {
+                    legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } }
+                  }
+                } %>
         </div>
         
-        <!-- Broker Distribution -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <div class="text-sm font-medium text-gray-500 mb-2">Brokers</div>
-          <% 
-            brokers = {}
-            total_portfolios = 0
-            
+        <!-- Brokers Distribution -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Portfolios Created -->
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="text-sm font-medium text-gray-500">Portfolios Created</div>
+            <div class="flex justify-between items-center">
+              <% portfolio_count = 0 %>
+              <% @user_clients.each do |client| %>
+                <% portfolio_count += client.portfolios.count %>
+              <% end %>
+              <span class="mt-1 text-2xl font-semibold text-blue-600">
+                <%= portfolio_count %>
+              </span>
+            </div>
+            <div class="mt-2 text-xs text-gray-500">
+              Avg <%= (portfolio_count.to_f / @user_clients.count).round(1) rescue 0 %> per client
+            </div>
+          </div>
+          
+          <!-- Broker Distribution -->
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="text-sm font-medium text-gray-500">Top Broker</div>
+            <% 
+              brokers = {}
+              total_portfolios = 0
+              
               @user_portfolios.each do |portfolio|
-                brokers[portfolio.broker] ||= 0
-                brokers[portfolio.broker] += 1
+                brokers[portfolio.broker || "Unknown"] ||= 0
+                brokers[portfolio.broker || "Unknown"] += 1
                 total_portfolios += 1
               end
-
-          %>
-          
-          <% brokers.sort_by { |_, count| -count }.first(3).each do |broker, count| %>
-            <div class="mb-2">
-              <div class="flex justify-between items-center text-xs">
-                <span><%= broker.presence || 'Unknown' %></span>
-                <span><%= count %> (<%= number_to_percentage((count.to_f / total_portfolios) * 100, precision: 0) rescue '0%' %>)</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                <div class="bg-purple-600 h-1.5 rounded-full" style="width: <%= (count.to_f / total_portfolios) * 100 rescue 0 %>%"></div>
-              </div>
+              
+              top_broker = brokers.max_by { |_, count| count }
+              top_broker_name = top_broker ? top_broker[0] : "None"
+              top_broker_count = top_broker ? top_broker[1] : 0
+              percentage = total_portfolios > 0 ? (top_broker_count.to_f / total_portfolios) * 100 : 0
+            %>
+            <div class="mt-1 text-xl font-semibold text-purple-600">
+              <%= top_broker_name %>
             </div>
-          <% end %>
+            <div class="mt-2 text-xs text-gray-500">
+              <%= top_broker_count %> portfolios (<%= number_to_percentage(percentage, precision: 0) %>)
+            </div>
+          </div>
         </div>
       </div>
     </div>

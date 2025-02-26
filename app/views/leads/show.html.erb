@@ -1,71 +1,130 @@
+
   <!-- Sidebar -->
   <%= render "partials/tabbar" %>
-
+  
   <!-- Lead Details -->
   <div class="col-span-6 p-6 bg-white shadow-lg rounded-xl">
-    <%= link_to "Volver a Leads", leads_path, class: "text-green-600 hover:underline text-sm" %> |
-    <%= link_to "Editar", edit_lead_path, class: "text-green-600 hover:underline text-sm" %>
+    <div class="flex justify-between items-center">
+      <div>
+        <%= link_to leads_path, class: "inline-flex items-center text-green-600 hover:text-green-800 text-sm" do %>
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Volver a Leads
+        <% end %>
+      </div>
+      <div class="flex gap-2">
+        <%= link_to edit_lead_path, class: "px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 text-sm flex items-center" do %>
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+          </svg>
+          Editar
+        <% end %>
+      </div>
+    </div>
 
+    <!-- Status Badge -->
+    <div class="mt-4">
+      <% status_color = case @lead.status 
+                        when "nuevo" then "bg-blue-100 text-blue-800"
+                        when "wip" then "bg-green-100 text-green-800"
+                        when "baja" then "bg-red-100 text-red-800"
+                        when "convertido" then "bg-purple-100 text-purple-800"
+                        else "bg-gray-100 text-gray-800"
+                        end %>
+      <span class="px-2 py-1 rounded-full text-xs font-medium <%= status_color %>">
+        <%= @lead.status %>
+      </span>
+    </div>
 
-    <h1 class="text-3xl font-bold text-gray-800 mt-4">
+    <!-- Lead Name -->
+    <h1 class="text-3xl font-bold text-gray-800 mt-2">
       <%= @lead.name %> <%= @lead.last_name %>
     </h1>
 
+    <!-- Admin Assignment Form -->
     <% if current_user.admin? %>
-      <%= form_with url: assign_lead_path(@lead), method: :patch, local: true do |form| %>
-        <%= form.label :assigned_user_id, "Assign to:" %>
-          <%= form.select :assigned_user_id, options_from_collection_for_select(
-            current_user.managed_team.members.reject { |user| user.name.nil? },
-            :id,
-            lambda { |user| "#{user.name} #{user.last_name}" }
-          ), prompt: "Select team member" %>
-        <%= form.submit "Assign" %>
-      <% end %>
+      <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Asignar</h3>
+        <%= form_with url: assign_lead_path(@lead), method: :patch, local: true, class: "flex items-center gap-2 py-1" do |form| %>
+          <%= form.select :assigned_user_id, 
+              options_from_collection_for_select(
+                current_user.managed_team.members.reject { |user| user.name.nil? },
+                :id,
+                lambda { |user| "#{user.name} #{user.last_name}" }
+              ),
+              { prompt: "Select team member" },
+              { class: "border-gray-300 rounded-md text-sm focus:ring-green-500 focus:border-green-500" } %>
+          <%= form.submit "Assign", class: "px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm" %>
+        <% end %>
+      </div>
     <% end %>
-    <div class="mt-4 space-y-2">
-      <div>
-        <span class="font-medium text-gray-600">Phone:</span>
-        <span class="text-gray-800"><%= @lead.phone %></span>
-      </div>
 
-      <div>
-        <span class="font-medium text-gray-600">Email:</span>
-        <span class="text-gray-800"><%= @lead.email %></span>
+    <!-- Lead Information Cards -->
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Contact Information -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-3">Información de Contacto</h3>
+        
+        <div class="space-y-2">
+          <div class="flex items-center">
+            <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+            </svg>
+            <span class="text-gray-800"><%= @lead.phone %></span>
+          </div>
+          
+          <div class="flex items-center">
+            <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            <span class="text-gray-800"><%= @lead.email %></span>
+          </div>
+        </div>
       </div>
-
-      <div>
-        <span class="font-medium text-gray-600">Channel:</span>
-        <span class="text-gray-800"><%= @lead.channel %></span>
+      
+      <!-- Lead Details -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-3">Detalles</h3>
+        
+        <div class="space-y-2">
+          <div class="flex items-start">
+            <span class="text-gray-600 text-sm w-20">Fuente:</span>
+            <span class="text-gray-800"><%= @lead.channel %></span>
+          </div>
+          
+          <div class="flex items-start">
+            <span class="text-gray-600 text-sm w-20">Broker:</span>
+            <span class="text-gray-800"><%= @lead.broker %></span>
+          </div>
+          
+          <div class="flex items-start">
+            <span class="text-gray-600 text-sm w-20">Capital:</span>
+            <span class="text-gray-800"><%= number_to_currency(@lead.capital, precision: 0) %></span>
+          </div>
+          
+          <div class="flex items-start">
+            <span class="text-gray-600 text-sm w-20">Ingresado:</span>
+            <span class="text-gray-800"><%= @lead.created_at.strftime("%b %d, %Y at %H:%M") %></span>
+          </div>
+        </div>
       </div>
-
-      <div>
-        <span class="font-medium text-gray-600">Broker:</span>
-        <span class="text-gray-800"><%= @lead.broker %></span>
+    </div>
+    
+    <!-- Description and Notes -->
+    <div class="mt-6 space-y-4">
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Descripción</h3>
+        <div class="text-gray-800 whitespace-pre-line">
+          <%= @lead.description.present? ? @lead.description : "No hay descripción" %>
+        </div>
       </div>
-
-      <div>
-        <span class="font-medium text-gray-600">Capital:</span>
-        <span class="text-gray-800"><%= @lead.capital %></span>
-      </div>
-
-      <div>
-        <span class="font-medium text-gray-600">Created At:</span>
-        <span class="text-gray-800"><%= @lead.created_at.strftime("%Y-%m-%d %H:%M") %></span>
-      </div>
-
-      <div>
-        <span class="font-medium text-gray-600">Description:</span>
-        <span class="text-gray-800"><%= truncate(@lead.description, length: 50) %></span>
-      </div>
-
-      <div>
-        <span class="font-medium text-gray-600">Status:</span>
-        <span class="text-gray-800"><%= @lead.status %></span>
-      </div>
-
-      <div>
-        <span class="font-medium text-gray-600">Notes:</span>
-        <span class="text-gray-800"><%= @lead.notes %></span>
+      
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Notas</h3>
+        <div class="text-gray-800 whitespace-pre-line">
+          <%= @lead.notes.present? ? @lead.notes : "No hay notas" %>
+        </div>
       </div>
     </div>
   </div>
