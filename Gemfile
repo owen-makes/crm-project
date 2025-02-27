@@ -73,3 +73,5 @@ gem "carrierwave"
 gem "whenever", "~> 1.0"
 
 gem "chartkick", "~> 5.1"
+
+gem "kaminari", "~> 1.2"

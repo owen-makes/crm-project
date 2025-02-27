@@ -2,16 +2,56 @@ class LeadsController < ApplicationController
   before_action :set_lead, only: [ :show, :edit, :update, :destroy, :convert ]
   before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
   def index
-    @leads = policy_scope(Lead).includes(:user).order(:updated_at)
+    @leads = policy_scope(Lead).includes(:user)
 
+    # Apply filters
+    @leads = @leads.where("leads.name ILIKE ? OR leads.last_name ILIKE ?", "%#{params[:query]}%", "%#{params[:query]}%") if params[:query].present?
+    @leads = @leads.where(broker: params[:broker]) if params[:broker].present?
+    @leads = @leads.where("capital >= ?", params[:min_capital]) if params[:min_capital].present?
+    @leads = @leads.where(user_id: params[:user_id]) if params[:user_id].present?
+
+    # Date range filter
+    if params[:date_from].present?
+      date_from = Date.parse(params[:date_from]).beginning_of_day
+      @leads = @leads.where("leads.created_at >= ?", date_from)
+    end
+
+    if params[:date_to].present?
+      date_to = Date.parse(params[:date_to]).end_of_day
+      @leads = @leads.where("leads.created_at <= ?", date_to)
+    end
+
+    # Status filter
     case params[:status]
+    when "active"
+      @leads = @leads.active
     when "converted"
       @leads = @leads.converted
     when "lost"
       @leads = @leads.lost
-    when "active"
-      @leads = @leads.active
+    when "fresh"
+      @leads = @leads.fresh
     end
+
+    # Sorting
+    if params[:sort].present?
+      direction = params[:direction] == "desc" ? "desc" : "asc"
+
+      case params[:sort]
+      when "name"
+        @leads = @leads.order(name: direction, last_name: direction)
+      when "user_id"
+        @leads = @leads.joins(:user).order("users.name #{direction}, users.last_name #{direction}")
+      else
+        @leads = @leads.order(params[:sort] => direction)
+      end
+    else
+      # Default sort by created_at desc
+      @leads = @leads.order(created_at: :desc)
+    end
+
+    # Pagination
+    @leads = @leads.page(params[:page]).per(15)
 
     respond_to do |format|
       format.html

@@ -16,7 +16,9 @@ class Lead < ApplicationRecord
   scope :filter_by_status, ->(status) { where(status: status) if status.present? }
   scope :converted, -> { where(status: "Cerrado") }
   scope :lost, -> { where(status: "Baja") }
-  scope :active, -> { where.not(status: [ "Cerrado", "Baja" ]) }
+  scope :active, -> { where(status: "WIP") }
+  scope :fresh, -> { where(status: "Nuevo") }
+
 
   def convert_to_client
     transaction do

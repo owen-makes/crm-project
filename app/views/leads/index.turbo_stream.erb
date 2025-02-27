@@ -1,0 +1,3 @@
+<%= turbo_stream.update "leads_list" do %>
+  <%= render partial: 'leads_table', locals: { leads: @leads } %>
+<% end %>

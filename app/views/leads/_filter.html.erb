@@ -1,0 +1,47 @@
+ <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+        <%= form_with url: leads_path, method: :get, data: { turbo_frame: "leads_list" }, class: "space-y-4" do |f| %>
+          <div class="flex flex-wrap gap-4">
+            <div class="w-full md:w-auto">
+              <%= f.label :name, "Buscar por nombre:", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.text_field :query, value: params[:query], placeholder: "Nombre o apellido...", class: "shadow-sm p-2 border rounded-md w-full" %>
+            </div>
+            
+            <div class="w-full md:w-auto">
+              <%= f.label :broker, "Broker:", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.select :broker, 
+                        Lead.where(team_id: current_user.team_id).distinct.pluck(:broker).compact.reject(&:blank?).map { |b| [b, b] },
+                        { include_blank: "Todos los brokers" },
+                        { class: "shadow-sm p-2 border rounded-md w-full" } %>
+            </div>
+            
+            <div class="w-full md:w-auto">
+              <%= f.label :capital, "Capital mínimo:", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.number_field :min_capital, value: params[:min_capital], placeholder: "Valor mínimo", class: "shadow-sm p-2 border rounded-md w-full" %>
+            </div>
+            
+            <% if current_user.admin? %>
+            <div class="w-full md:w-auto">
+              <%= f.label :asesor, "Asesor:", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.select :user_id, 
+                        User.where(team_id: current_user.team_id).map { |u| ["#{u.name} #{u.last_name}", u.id] },
+                        { include_blank: "Todos los asesores" },
+                        { class: "shadow-sm p-2 border rounded-md w-full" } %>
+            </div>
+            <% end %>
+            
+            <div class="w-full md:w-auto">
+              <%= f.label :date, "Fecha de creación:", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <div class="flex gap-2">
+                <%= f.date_field :date_from, value: params[:date_from], class: "shadow-sm p-2 border rounded-md" %>
+                <span class="self-center">-</span>
+                <%= f.date_field :date_to, value: params[:date_to], class: "shadow-sm p-2 border rounded-md" %>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex justify-end gap-2">
+            <%= link_to "Limpiar filtros", leads_path, class: "px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100" %>
+            <%= f.submit "Filtrar", class: "px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" %>
+          </div>
+        <% end %>
+      </div>

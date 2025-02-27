@@ -6,63 +6,68 @@
     </div>
   </div>
   <h1 class="text-2xl font-bold mb-4">Mis Leads</h1>
-  <% if @leads.blank? %>
+  <!-- Filter button with icon -->
+  <div data-controller="filter">
+
+
+  
+  <% if @leads.blank? && params.keys.size <= 2 %>
     <div class="flex-col bg-green-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 m-auto text-white">
       <h2 class="text-4xl font-bold my-4 mx-4">Todavía no tenes leads!</h1>
       <p class="my-4 mx-4">Compartí tu link para ingresar nuevos prospectos</p>
       <div class="bg-slate-50 rounded-md my-4 mx-4 text-black text-center">localhost:3000/signup/<%= current_user.form_token %></div>
     </div>
   <% else %>
-    <div class="overflow-x-auto">
-      <div class="inline-block min-w-full align-middle">
-        <div class="overflow-hidden md:rounded-lg">
-         <div class="flex gap-2 mb-4">
-            <%= link_to "Todos", leads_path, class: "px-4 py-2 rounded #{'bg-green-500 text-white' unless params[:status].present?}" %>
-            <%= link_to "Activos", leads_path(status: 'active'), class: "px-4 py-2 rounded #{'bg-green-500 text-white' if params[:status] == 'active'}" %>
-            <%= link_to "Convertidos", leads_path(status: 'converted'), class: "px-4 py-2 rounded #{'bg-green-500 text-white' if params[:status] == 'converted'}" %>
-            <%= link_to "Bajas", leads_path(status: 'lost'), class: "px-4 py-2 rounded #{'bg-green-500 text-white' if params[:status] == 'lost'}" %>
-          </div>
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Nombre</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Email</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Asesor</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Broker</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capital</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Detalles</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <% @leads.each do |lead| %>
-                <tr class="hover:bg-gray-50">
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= link_to lead.name + " " + lead.last_name, lead, class: "hover:underline" %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= lead.phone %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell"><%= lead.email %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= lead.user.name + " " + lead.user.last_name %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= lead.broker %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= lead.capital %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= truncate(lead.description, length: 50) %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_badge(lead.status) %>">
-                      <%= lead.status %>
-                    </span>
-                  </td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                    <div class="flex space-x-2">
-                      <%= link_to "Editar", edit_lead_path(lead), class: "text-gray-500 hover:text-gray-700" %>
-                      <%= button_to 'Convertir a Cliente', convert_lead_path(lead), method: :post, data: { confirm: 'Are you sure you want to convert this lead to a client?' }, class: "text-green-500 hover:text-green-700" %>
-                    </div>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+
+    <!-- Status Tabs -->
+    <div class="flex flex-wrap items-center gap-1 sm:gap-2 mb-2">
+      <button data-action="click->filter#toggle" class="inline-flex items-center px-3 py-1.5 border border-black rounded-md font-medium text-xs hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+        <span class="filter-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+          </svg>
+        </span>
+        <span class="ml-1 button-text">Filtros</span>
+      </button>
+      <%= link_to "Todos", 
+          leads_path(request.params.except(:status)), 
+
+          class: "ml-auto px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status].present? ? 'border-gray-300 text-gray-700 hover:bg-gray-100' : 'border-green-500 bg-green-500 text-white hover:bg-green-600'}" 
+      %>
+      
+      <%= link_to "WIP", 
+          leads_path(request.params.merge(status: 'active')), 
+
+          class: "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status] == 'active' ? 'border-green-500 bg-green-500 text-white hover:bg-green-600' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}" 
+      %>
+      
+      <%= link_to "Nuevos", 
+          leads_path(request.params.merge(status: 'fresh')), 
+
+          class: "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status] == 'fresh' ? 'border-green-500 bg-green-500 text-white hover:bg-green-600' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}" 
+      %>
+      
+      <%= link_to "Convertidos", 
+          leads_path(request.params.merge(status: 'converted')), 
+
+          class: "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status] == 'converted' ? 'border-green-500 bg-green-500 text-white hover:bg-green-600' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}" 
+      %>
+      
+      <%= link_to "Bajas", 
+          leads_path(request.params.merge(status: 'lost')), 
+
+          class: "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status] == 'lost' ? 'border-green-500 bg-green-500 text-white hover:bg-green-600' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}" 
+      %>
     </div>
+
+        <!-- Advanced Filtering -->
+    <div data-filter-target="form" class="hidden">
+      <%= render "filter" %>
+    </div>
+    
+    <!-- Leads Table with Turbo Frame -->
+    <turbo-frame id="leads_list" class="overflow-x-scroll">
+      <%= render partial: 'leads_table', locals: { leads: @leads } %>
+    </turbo-frame>
   <% end %>
 </div>
