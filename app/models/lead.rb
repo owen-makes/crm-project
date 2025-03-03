@@ -31,6 +31,10 @@ class Lead < ApplicationRecord
     # So basically you should use transaction blocks whenever you have a number of statements that must be executed together or not at all.
   end
 
+  def full_name
+    "#{self.name} #{self.last_name}"
+  end
+
   private
 
   def set_status

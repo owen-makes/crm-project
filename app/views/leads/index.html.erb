@@ -32,18 +32,15 @@
       <%= link_to "Todos", 
           leads_path(request.params.except(:status)), 
           class: "ml-auto px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status].present? ? 'border-gray-300 text-gray-700 hover:bg-gray-100' : 'border-green-500 bg-green-600 text-white hover:bg-green-700'}" 
-      %>
-      
-      <%= link_to "WIP", 
-          leads_path(request.params.merge(status: 'active')), 
-          class: "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status] == 'active' ? 'border-green-500 bg-green-600 text-white hover:bg-green-700' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}" 
-      %>
-      
+      %> 
       <%= link_to "Nuevos", 
           leads_path(request.params.merge(status: 'fresh')), 
           class: "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status] == 'fresh' ? 'border-green-500 bg-green-600 text-white hover:bg-green-700' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}" 
       %>
-      
+      <%= link_to "WIP", 
+          leads_path(request.params.merge(status: 'active')), 
+          class: "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status] == 'active' ? 'border-green-500 bg-green-600 text-white hover:bg-green-700' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}" 
+      %>
       <%= link_to "Convertidos", 
           leads_path(request.params.merge(status: 'converted')), 
           class: "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border #{params[:status] == 'converted' ? 'border-green-500 bg-green-600 text-white hover:bg-green-700' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}" 

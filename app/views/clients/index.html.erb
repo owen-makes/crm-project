@@ -1,7 +1,13 @@
 <%= render "partials/tabbar" %>
 <div class="col-span-6 p-6 bg-white shadow-lg rounded-xl">
   <div class="flex">
-    <div class="ml-auto flex gap-4">
+    <div class="ml-auto flex gap-2">
+      <%= link_to new_client_path, class: "inline-flex items-center px-3 py-1.5 border border-black rounded-md font-medium text-xs hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        Nuevo
+      <% end %>
       <%= render "partials/import_export_buttons" %>
     </div>
   </div>
