@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type: 
+  date: 2025-03-04 20:04:29
+  quantity: 1
+  price: 1.5
+  fees: 1.5
+  currency: one
+  portfolio: one
+  security: one
+
+two:
+  type: 
+  date: 2025-03-04 20:04:29
+  quantity: 1
+  price: 1.5
+  fees: 1.5
+  currency: two
+  portfolio: two
+  security: two

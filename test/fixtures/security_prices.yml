@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  security: one
+  currency: one
+  price: 1.5
+  date: 2025-03-04 18:07:55
+
+two:
+  security: two
+  currency: two
+  price: 1.5
+  date: 2025-03-04 18:07:55

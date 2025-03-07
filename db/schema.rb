@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_07_140646) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,7 +26,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "team_id"
+    t.bigint "team_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
@@ -42,14 +42,36 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
     t.index ["user_id"], name: "index_csv_imports_on_user_id"
   end
 
+  create_table "currencies", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.string "symbol"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "exchange_rates", force: :cascade do |t|
+    t.decimal "rate", precision: 19, scale: 4
+    t.datetime "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "base_currency_id"
+    t.bigint "target_currency_id"
+    t.index ["base_currency_id"], name: "index_exchange_rates_on_base_currency_id"
+    t.index ["date", "base_currency_id", "target_currency_id"], name: "idx_on_date_base_currency_id_target_currency_id_c5ec45c0ee", unique: true
+    t.index ["target_currency_id"], name: "index_exchange_rates_on_target_currency_id"
+  end
+
   create_table "holdings", force: :cascade do |t|
-    t.string "ticker"
-    t.string "asset_type"
-    t.integer "quantity"
-    t.integer "cost_basis"
+    t.decimal "quantity", precision: 18, scale: 8
+    t.decimal "cost_basis", precision: 19, scale: 4
     t.bigint "portfolio_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "security_id"
+    t.bigint "currency_id"
+    t.index ["currency_id"], name: "index_holdings_on_currency_id"
     t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id"
   end
 
@@ -59,7 +81,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
     t.string "phone"
     t.string "status"
     t.string "channel"
-    t.integer "capital"
+    t.decimal "capital", precision: 19, scale: 4
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "description"
@@ -73,12 +95,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
 
   create_table "portfolios", force: :cascade do |t|
     t.string "broker"
-    t.integer "account_number"
+    t.string "account_number"
     t.string "name"
     t.bigint "client_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "currency_id"
     t.index ["client_id"], name: "index_portfolios_on_client_id"
+    t.index ["currency_id"], name: "index_portfolios_on_currency_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -89,6 +113,31 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "securities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "ticker"
+    t.string "name"
+    t.string "country_code"
+    t.string "exchange_mic"
+    t.string "exchange_acronym"
+    t.string "logo_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "security_type"
+    t.index ["country_code"], name: "index_securities_on_country_code"
+    t.index ["ticker", "exchange_mic"], name: "index_securities_on_ticker_and_exchange_mic", unique: true
+  end
+
+  create_table "security_prices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "security_id", null: false
+    t.date "date"
+    t.decimal "price", precision: 19, scale: 4
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "currency_id"
+    t.index ["currency_id"], name: "index_security_prices_on_currency_id"
+    t.index ["security_id"], name: "index_security_prices_on_security_id"
+  end
+
   create_table "teams", force: :cascade do |t|
     t.string "name"
     t.bigint "admin_id", null: false
@@ -96,6 +145,22 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
     t.datetime "updated_at", null: false
     t.string "join_token"
     t.index ["admin_id"], name: "index_teams_on_admin_id"
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.string "transaction_type"
+    t.datetime "date"
+    t.decimal "quantity", precision: 18, scale: 8
+    t.decimal "price", precision: 19, scale: 4
+    t.decimal "fees", precision: 19, scale: 4
+    t.bigint "currency_id", null: false
+    t.bigint "portfolio_id", null: false
+    t.uuid "security_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id"], name: "index_transactions_on_currency_id"
+    t.index ["portfolio_id"], name: "index_transactions_on_portfolio_id"
+    t.index ["security_id"], name: "index_transactions_on_security_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -133,9 +198,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_17_234455) do
   add_foreign_key "clients", "users"
   add_foreign_key "csv_imports", "teams"
   add_foreign_key "csv_imports", "users"
+  add_foreign_key "exchange_rates", "currencies", column: "base_currency_id"
+  add_foreign_key "exchange_rates", "currencies", column: "target_currency_id"
+  add_foreign_key "holdings", "currencies"
   add_foreign_key "holdings", "portfolios"
+  add_foreign_key "holdings", "securities"
   add_foreign_key "leads", "users"
   add_foreign_key "portfolios", "clients"
+  add_foreign_key "portfolios", "currencies"
   add_foreign_key "profiles", "users"
+  add_foreign_key "security_prices", "currencies"
+  add_foreign_key "security_prices", "securities"
   add_foreign_key "teams", "users", column: "admin_id"
+  add_foreign_key "transactions", "currencies"
+  add_foreign_key "transactions", "portfolios"
+  add_foreign_key "transactions", "securities"
 end
