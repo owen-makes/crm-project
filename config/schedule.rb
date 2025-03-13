@@ -3,18 +3,26 @@
 # It's helpful, but not entirely necessary to understand cron before proceeding.
 # http://en.wikipedia.org/wiki/Cron
 
-# Example:
-#
-# set :output, "/path/to/my/cron_log.log"
-#
-# every 2.hours do
-#   command "/usr/bin/some_great_command"
-#   runner "MyModel.some_method"
-#   rake "some:great:rake:task"
+# # Set environment to the current Rails environment
+# set :environment, Rails.env
+
+# Set output log
+set :output, "log/cron.log"
+
+# Update security prices at 6PM on weekdays
+# every "0 18 * * 1-5" do
+#   runner "UpdateSecurityPricesJob.perform_now"
 # end
-#
+
+# # Update exchange rates at 5PM on weekdays
+# every "0 17 * * 1-5" do
+#   runner "UpdateExchangeRatesJob.perform_now"
+# end
+
 every 1.day do
-  runner CsvImport.clean_up!
+  runner "CsvImport.clean_up!"
 end
+
+
 
 # Learn more: http://github.com/javan/whenever

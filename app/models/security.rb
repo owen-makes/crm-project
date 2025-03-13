@@ -1,5 +1,10 @@
 class Security < ApplicationRecord
   has_many :holdings
+  has_many :security_prices, dependent: :destroy
+  has_many :transactions
+  belongs_to :default_currency, class_name: "Currency", foreign_key: "currency_id"
+  validates :ticker, presence: true, uniqueness: true
+  validates :name, presence: true
 
   # Enum for security types
   enum security_type: {
@@ -9,7 +14,7 @@ class Security < ApplicationRecord
     mutual_fund: 3,
     option: 4,
     future: 5,
-    cryptocurrency: 6,
+    cedear: 6,
     real_estate_trust: 7,
     commodity: 8
   }
@@ -27,5 +32,9 @@ class Security < ApplicationRecord
     # Placeholder, will use real market price later
     mock_current_price = 100 * Random.rand(1.9)
     mock_current_price.round(2)
+  end
+
+  def latest_price
+    security_prices.order(date: :desc).first
   end
 end

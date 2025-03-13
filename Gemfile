@@ -75,3 +75,7 @@ gem "whenever", "~> 1.0"
 gem "chartkick", "~> 5.1"
 
 gem "kaminari", "~> 1.2"
+
+gem "faraday", "~> 2.12"
+
+gem "httparty", "~> 0.22.0"

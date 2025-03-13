@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :clients do
     resources :portfolios
   end
+
   resources :portfolios do
     resources :holdings
   end
