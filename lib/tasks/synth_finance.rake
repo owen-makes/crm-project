@@ -2,64 +2,30 @@
 namespace :synth_finance do
   desc "Import all securities from the Argentine stock market (BYMA/BCBA)"
   task import_argentina_securities: :environment do
-    api_service = SynthFinance::ApiService.new
     importer = SynthFinance::SecurityImporter.new
-    exchange_acronym = "BCBA"
+    mic = "XBUE"
 
-    puts "Fetching securities from Argentine stock market (MIC: #{exchange_acronym})..."
+    importer.import_exchange_and_securities(mic)
 
-    # Fetch the list of all securities in the exchange
-    securities_list = api_service.get_exchange_securities(exchange_acronym)
+    puts "\nImport completed: #{Security.all.count} securities"
+  end
 
-    if securities_list.nil? || !securities_list.is_a?(Array) || securities_list.empty?
-      puts "Error: Failed to fetch securities list or no securities found"
-      next
-    end
+  desc "Import all currencies"
+  task import_currencies: :environment do
+    importer = SynthFinance::SecurityImporter.new
 
-    total_count = securities_list.size
-    puts "Found #{total_count} securities to import"
+    importer.import_currencies
 
-    success_count = 0
-    failed_tickers = []
+    puts "\nImport completed: #{Currency.all.count} securities"
+  end
 
-    securities_list.each_with_index do |security_data, index|
-      ticker = security_data["ticker"]
-      puts "[#{index + 1}/#{total_count}] Importing #{ticker}..."
+  desc "Import all exchanges"
+  task import_exchanges: :environment do
+    importer = SynthFinance::SecurityImporter.new
 
-      begin
-        security = importer.import_security(ticker, exchange_mic)
+    importer.import_exchanges
 
-        if security
-          puts "  Success: Imported #{ticker} - #{security.name}"
-          success_count += 1
-
-          # Also fetch the latest price for this security
-          price = importer.import_security_price(security)
-          if price
-            puts "    Added current price: #{price.price} #{security.default_currency.code}"
-          else
-            puts "    Warning: Could not fetch current price"
-          end
-        else
-          puts "  Failed: Could not import #{ticker}"
-          failed_tickers << ticker
-        end
-      rescue => e
-        puts "  Error importing #{ticker}: #{e.message}"
-        failed_tickers << ticker
-      end
-
-      # Add a small delay to avoid rate limiting
-      sleep(0.5) unless index == total_count - 1
-    end
-
-    puts "\nImport completed:"
-    puts "Successfully imported: #{success_count} securities"
-
-    if failed_tickers.any?
-      puts "Failed to import: #{failed_tickers.size} securities"
-      puts "Failed tickers: #{failed_tickers.join(', ')}"
-    end
+    puts "\nImport completed: #{Exchange.all.count} securities"
   end
 
   desc "Import all securities from a specific exchange"
@@ -79,7 +45,6 @@ namespace :synth_finance do
       puts "Import for exchange #{exchange_acronym} is not implemented yet"
     end
   end
-end
 
 
   desc "Import a security from Synth Finance API"
@@ -117,3 +82,13 @@ end
       end
     end
   end
+
+  desc "Get securities logos"
+  task get_logos: :environment do
+    securities = Security.all
+
+    securities.each do |sec|
+      sec.update(logo_url: "https://logo.synthfinance.com/ticker/#{sec.ticker}")
+    end
+  end
+end

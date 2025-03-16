@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_13_143543) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_13_211702) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,6 +62,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_13_143543) do
     t.index ["base_currency_id"], name: "index_exchange_rates_on_base_currency_id"
     t.index ["date", "base_currency_id", "target_currency_id"], name: "idx_on_date_base_currency_id_target_currency_id_c5ec45c0ee", unique: true
     t.index ["target_currency_id"], name: "index_exchange_rates_on_target_currency_id"
+  end
+
+  create_table "exchanges", force: :cascade do |t|
+    t.string "name"
+    t.string "country_code"
+    t.string "acronym"
+    t.string "mic_code"
+    t.string "city"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "holdings", force: :cascade do |t|
@@ -117,18 +127,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_13_143543) do
   create_table "securities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "ticker"
     t.string "name"
-    t.string "country_code"
-    t.string "exchange_mic"
-    t.string "exchange_acronym"
     t.string "logo_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "security_type"
     t.bigint "currency_id", null: false
     t.text "description"
-    t.index ["country_code"], name: "index_securities_on_country_code"
+    t.bigint "exchange_id", null: false
     t.index ["currency_id"], name: "index_securities_on_currency_id"
-    t.index ["ticker", "exchange_mic"], name: "index_securities_on_ticker_and_exchange_mic", unique: true
+    t.index ["exchange_id"], name: "index_securities_on_exchange_id"
   end
 
   create_table "security_prices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -212,6 +219,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_13_143543) do
   add_foreign_key "portfolios", "currencies"
   add_foreign_key "profiles", "users"
   add_foreign_key "securities", "currencies"
+  add_foreign_key "securities", "exchanges"
   add_foreign_key "security_prices", "currencies"
   add_foreign_key "security_prices", "securities"
   add_foreign_key "teams", "users", column: "admin_id"

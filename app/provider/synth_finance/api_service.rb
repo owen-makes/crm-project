@@ -22,8 +22,8 @@ module SynthFinance
       handle_response(response)
     end
 
-    def get_exchange_securities(acronym = "BCBA")
-      endpoint = "/exchanges/#{acronym}?include_tickers=true"
+    def get_exchange_securities(mic = "XBUE")
+      endpoint = "/exchanges/#{mic}?include_tickers=true"
 
       response = self.class.get(endpoint, @options)
       handle_response(response)
@@ -31,6 +31,13 @@ module SynthFinance
 
     def get_currencies
       endpoint = "/currencies"
+
+      response = self.class.get(endpoint, @options)
+      handle_response(response)
+    end
+
+    def get_exchanges(acronym = nil)
+      endpoint = acronym ? "/exchanges/#{acronym}" : "/exchanges"
 
       response = self.class.get(endpoint, @options)
       handle_response(response)

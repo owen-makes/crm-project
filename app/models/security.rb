@@ -1,8 +1,22 @@
+# create_table "securities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+#   t.string "ticker"
+#   t.string "name"
+#   t.string "logo_url"
+#   t.datetime "created_at", null: false
+#   t.datetime "updated_at", null: false
+#   t.string "security_type"
+#   t.bigint "currency_id", null: false
+#   t.text "description"
+#   t.bigint "exchange_id", null: false
+#   t.index ["currency_id"], name: "index_securities_on_currency_id"
+#   t.index ["exchange_id"], name: "index_securities_on_exchange_id"
+# end
 class Security < ApplicationRecord
   has_many :holdings
   has_many :security_prices, dependent: :destroy
   has_many :transactions
   belongs_to :default_currency, class_name: "Currency", foreign_key: "currency_id"
+  belongs_to :exchange
   validates :ticker, presence: true, uniqueness: true
   validates :name, presence: true
 
