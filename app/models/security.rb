@@ -19,6 +19,7 @@ class Security < ApplicationRecord
   belongs_to :exchange
   validates :ticker, presence: true, uniqueness: true
   validates :name, presence: true
+  after_create :add_logo_url
 
   # Enum for security types
   enum security_type: {
@@ -50,5 +51,15 @@ class Security < ApplicationRecord
 
   def latest_price
     security_prices.order(date: :desc).first
+  end
+
+  def display_name
+    "#{ticker} - #{name} (#{default_currency.code})"
+  end
+
+  private
+
+  def add_logo_url
+    self.logo_url = "https://logo.synthfinance.com/ticker/#{self.ticker}"
   end
 end

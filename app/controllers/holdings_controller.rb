@@ -3,6 +3,7 @@ class HoldingsController < ApplicationController
   before_action :find_client_and_portfolio
   before_action :set_holding, only: %i[show edit update destroy]
   before_action :authorize_portfolio
+  before_action :load_securities, only: %i[new edit create update]
 
   def show
     # Individual holding details and metrics
@@ -19,6 +20,7 @@ class HoldingsController < ApplicationController
       redirect_to portfolio_path(@portfolio),
                   notice: "Holding was successfully created."
     else
+      load_securities
       render :new, status: :unprocessable_entity
     end
   end
@@ -31,6 +33,7 @@ class HoldingsController < ApplicationController
       redirect_to portfolio_path(@portfolio),
                   notice: "Holding was successfully updated."
     else
+      load_securities
       render :edit, status: :unprocessable_entity
     end
   end
@@ -42,7 +45,6 @@ class HoldingsController < ApplicationController
   end
 
   private
-
 
   def find_client_and_portfolio
     @portfolio = Portfolio.find(params[:portfolio_id])
@@ -60,7 +62,24 @@ class HoldingsController < ApplicationController
     end
   end
 
+  def load_securities
+    portfolio_currency = @portfolio.currency
+
+    if portfolio_currency&.country_code.present?
+      country_exchanges = Exchange.where(country_code: portfolio_currency.country_code)
+
+      if country_exchanges.exists?
+        @securities = Security.where(exchange_id: country_exchanges.pluck(:id))
+                            .order(:name)
+        return
+      end
+    end
+
+    # Fallback to all securities
+    @securities = Security.all.order(:name)
+  end
+
   def holding_params
-    params.require(:holding).permit(:ticker, :quantity, :cost_basis, :asset_type)
+    params.require(:holding).permit(:security_id, :quantity, :cost_basis)
   end
 end

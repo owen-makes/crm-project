@@ -40,4 +40,19 @@ class Currency < ApplicationRecord
 
     rate&.rate
   end
+
+
+  def country_code
+    # Map from country name to ISO code
+    {
+      "United States" => "US",
+      "Canada" => "CA",
+      "United Kingdom" => "GB",
+      "Japan" => "JP",
+      "Australia" => "AU",
+      "Euro Zone" => "EU",
+      "Switzerland" => "CH",
+      "Argentina" => "AR"
+    }[country]
+  end
 end

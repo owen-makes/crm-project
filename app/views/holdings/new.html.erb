@@ -1,42 +1,47 @@
 <%# app/views/holdings/new.html.erb %>
 <%= turbo_frame_tag "new_holding" do %>
- <div class="bg-white rounded-lg border-green-600 border-solid border-2 shadow-lg p-6">
-   <h2 class="text-xl font-bold mb-4">Add New Holding</h2>
+  <div class="bg-white rounded-lg border-green-600 border-solid border-2 shadow-lg p-6">
+    <h2><%= @holding.persisted? ? "Edit" : "New" %> Holding</h2>
 
-   <%= form_with model: [@portfolio, @holding], 
-                 data: { turbo_frame: "_top" } do |f| %>
-     
-     <div class="grid gap-4">
-       <div>
-         <%= f.label :ticker, class: "block font-medium" %>
-         <%= f.text_field :ticker, class: "mt-1 block w-full rounded-md border-gray-300" %>
-       </div>
+    <%= form_with(model: [@portfolio, @holding], local: true) do |form| %>
+      <% if @holding.errors.any? %>
+        <div class="alert alert-danger">
+          <h4><%= pluralize(@holding.errors.count, "error") %> prohibited this holding from being saved:</h4>
+          <ul>
+            <% @holding.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
 
-       <div>
-         <%= f.label :quantity, class: "block font-medium" %>
-         <%= f.number_field :quantity, step: :any, class: "mt-1 block w-full rounded-md border-gray-300" %>
-       </div>
+      <div class="form-group">
+        <%= form.label :security_id, "Security" %>
+        <%= form.collection_select :security_id, @securities, :id, :display_name, 
+                                  { prompt: "Select a security" }, 
+                                  { class: "form-control" } %>
+        <small class="form-text text-muted">
+          Showing securities from <%= @portfolio.currency&.country || "all countries" %>
+        </small>
+      </div>
 
-       <div>
-         <%= f.label :cost_basis, "Cost Basis ($)", class: "block font-medium" %>
-         <%= f.number_field :cost_basis, step: :any, class: "mt-1 block w-full rounded-md border-gray-300" %>
-       </div>
+      <div class="form-group">
+        <%= form.label :quantity %>
+        <%= form.number_field :quantity, step: 'any', class: "form-control" %>
+      </div>
 
-       <div>
-         <%= f.label :asset_type, class: "block font-medium" %>
-         <%= f.select :asset_type, 
-             ["Stock", "ETF", "Mutual Fund", "Bond", "Other"],
-             {}, 
-             class: "mt-1 block w-full rounded-md border-gray-300" %>
-       </div>
-     </div>
+      <div class="form-group">
+        <%= form.label :cost_basis, "Cost Basis" %>
+        <%= form.number_field :cost_basis, step: 'any', class: "form-control" %>
+        <small class="form-text text-muted">
+          Cost basis in the security's native currency
+        </small>
+      </div>
 
-     <div class="mt-6 flex justify-end gap-4">
-       <%= link_to "Cancel", portfolio_path(@portfolio), 
-           class: "btn btn-secondary",
-           data: { turbo_frame: "_top" } %>
-       <%= f.submit "Add Holding", class: "btn btn-primary" %>
-     </div>
-   <% end %>
- </div>
+      <div class="form-actions">
+        <%= form.submit class: "btn btn-primary" %>
+        <%= link_to "Cancel", portfolio_path(@portfolio), class: "btn btn-secondary" %>
+      </div>
+    <% end %>
+  </div>
 <% end %>

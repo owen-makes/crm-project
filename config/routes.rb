@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   # For managing current user's own profile
   resource :profile, only: [ :edit, :update ]
 
+  resources :securities, only: [ :index, :show ]
 
   resources :leads, except: [ :new, :create ] do
     member do
@@ -47,11 +48,6 @@ Rails.application.routes.draw do
   end
 
   get "team/join/:token", to: "teams#join_via_link", as: :join_team_link
-
-
-  # resources :invitations, only: [ :new, :create ]
-  # get "/invitations/accept/:token", to: "invitations#accept", as: :accept_invitation
-
 
   get "/signup/:form_token", to: "leads#new", as: "new_lead_form"
   post "/signup/:form_token", to: "leads#create"

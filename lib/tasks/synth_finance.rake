@@ -47,41 +47,41 @@ namespace :synth_finance do
   end
 
 
-  desc "Import a security from Synth Finance API"
-  task :import_security, [ :ticker, :exchange_mic ] => :environment do |t, args|
-    ticker = args[:ticker]
-    exchange_mic = args[:exchange_mic]
+  # desc "Import a security from Synth Finance API"
+  # task :import_security, [ :ticker, :exchange_mic ] => :environment do |t, args|
+  #   ticker = args[:ticker]
+  #   exchange_mic = args[:exchange_mic]
 
-    if ticker.blank?
-      puts "Error: Ticker cannot be blank. Usage: rake synth_finance:import_security[AAPL,XNAS]"
-      next
-    end
+  #   if ticker.blank?
+  #     puts "Error: Ticker cannot be blank. Usage: rake synth_finance:import_security[AAPL,XNAS]"
+  #     next
+  #   end
 
-    importer = SynthFinance::SecurityImporter.new
-    security = importer.import_security(ticker, exchange_mic)
+  #   importer = SynthFinance::SecurityImporter.new
+  #   security = importer.import_security(ticker, exchange_mic)
 
-    if security
-      puts "Successfully imported security: #{security.ticker} - #{security.name}"
-    else
-      puts "Failed to import security: #{ticker}"
-    end
-  end
+  #   if security
+  #     puts "Successfully imported security: #{security.ticker} - #{security.name}"
+  #   else
+  #     puts "Failed to import security: #{ticker}"
+  #   end
+  # end
 
-  desc "Update prices for all securities"
-  task update_all_prices: :environment do
-    importer = SynthFinance::SecurityImporter.new
+  # desc "Update prices for all securities"
+  # task update_all_prices: :environment do
+  #   importer = SynthFinance::SecurityImporter.new
 
-    Security.find_each do |security|
-      puts "Updating prices for #{security.ticker}..."
-      price = importer.import_security_price(security)
+  #   Security.find_each do |security|
+  #     puts "Updating prices for #{security.ticker}..."
+  #     price = importer.import_security_price(security)
 
-      if price
-        puts "  Success: Price updated to #{price.price} #{security.default_currency.code}"
-      else
-        puts "  Failed to update price for #{security.ticker}"
-      end
-    end
-  end
+  #     if price
+  #       puts "  Success: Price updated to #{price.price} #{security.default_currency.code}"
+  #     else
+  #       puts "  Failed to update price for #{security.ticker}"
+  #     end
+  #   end
+  # end
 
   desc "Get securities logos"
   task get_logos: :environment do

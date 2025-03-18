@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_13_211702) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_18_173233) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -81,8 +81,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_13_211702) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "security_id"
-    t.bigint "currency_id"
-    t.index ["currency_id"], name: "index_holdings_on_currency_id"
     t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id"
   end
 
@@ -112,6 +110,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_13_211702) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "currency_id"
+    t.string "country"
     t.index ["client_id"], name: "index_portfolios_on_client_id"
     t.index ["currency_id"], name: "index_portfolios_on_currency_id"
   end
@@ -211,7 +210,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_13_211702) do
   add_foreign_key "csv_imports", "users"
   add_foreign_key "exchange_rates", "currencies", column: "base_currency_id"
   add_foreign_key "exchange_rates", "currencies", column: "target_currency_id"
-  add_foreign_key "holdings", "currencies"
   add_foreign_key "holdings", "portfolios"
   add_foreign_key "holdings", "securities"
   add_foreign_key "leads", "users"

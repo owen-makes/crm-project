@@ -7,20 +7,53 @@
 
     <%= form_with(model: @portfolio, url: client_portfolios_path(@client), local: true, class: "space-y-6") do |form| %>
       <div>
-        <%= form.label :name, "Nombre del Portfolio", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.label :name, "Nombre del Portfolio (*)", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <%= form.text_field :name, 
             class: "w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition",
             placeholder: "EJ: Jubilación" %>
-         <div class="block text-sm font-medium text-gray-500 mt-2"> * Opcional</div>   
+         <div class="block text-sm font-medium text-gray-500 mt-2"> *Opcional</div>   
       </div>
+      
+      <div>
+        <%= form.label :country, "País", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.hidden_field :country, value: "Argentina" %>
+        <div class="flex space-x-4">
+          <div class="flex items-center">
+            <%= radio_button_tag "country_display", "Argentina", true, disabled: true, class: "h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300" %>
+            <label for="country_display_argentina" class="ml-2 text-sm font-medium text-gray-700">Argentina</label>
+          </div>
+          <div class="flex items-center">
+            <%= radio_button_tag "country_display", "USA", false, disabled: true, class: "h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300" %>
+            <label for="country_display_usa" class="ml-2 text-sm font-medium text-gray-700">USA</label>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <%= form.label :currency_id, "Moneda", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.hidden_field :currency_id, value: 10 %>
+        <div class="flex space-x-4">
+          <div class="flex items-center">
+            <%= radio_button_tag "currency_display", "ARS", true, disabled: true, class: "h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300" %>
+            <label for="country_display_argentina" class="ml-2 text-sm font-medium text-gray-700">ARS</label>
+          </div>
+          <div class="flex items-center">
+            <%= radio_button_tag "currency_display", "USD", false, disabled: true, class: "h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300" %>
+            <label for="country_display_usa" class="ml-2 text-sm font-medium text-gray-700">USD</label>
+          </div>
+        </div>  
+      </div>
+    
+      <div>
         <%= render "partials/broker_field", form: form %>
+      </div>
+        
       <div>
         <%= form.label :account_number, "Número de Comitente", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <%= form.text_field :account_number, 
             class: "w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition"%>
       </div>
       
-
       <div class="mt-8">
         <%= form.submit "Crear Portfolio", 
             class: "w-full px-6 py-3 bg-green-800 hover:bg-green-700 text-white font-medium rounded-lg transition duration-200 cursor-pointer" %>
