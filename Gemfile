@@ -79,3 +79,7 @@ gem "kaminari", "~> 1.2"
 gem "faraday", "~> 2.12"
 
 gem "httparty", "~> 0.22.0"
+
+group :development do
+  gem "rails-erd"
+end

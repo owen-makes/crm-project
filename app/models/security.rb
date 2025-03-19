@@ -20,6 +20,7 @@ class Security < ApplicationRecord
   validates :ticker, presence: true, uniqueness: true
   validates :name, presence: true
   after_create :add_logo_url
+  attribute :details, :json, default: {}
 
   # Enum for security types
   enum security_type: {
@@ -33,15 +34,6 @@ class Security < ApplicationRecord
     real_estate_trust: 7,
     commodity: 8
   }
-
-  # Additional classification attributes
-  attribute :sector, :string
-  attribute :industry, :string
-  attribute :market_cap_category, :string  # Small/Mid/Large cap
-
-  # Optional deeper classification for specific types
-  attribute :bond_type, :string  # Government, Corporate, Municipal
-  attribute :option_type, :string  # Call, Put
 
   def current_value
     # Placeholder, will use real market price later
