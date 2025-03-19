@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_19_131354) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_19_134318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -129,11 +129,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_19_131354) do
     t.string "logo_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "security_type"
     t.bigint "currency_id", null: false
     t.text "description"
     t.bigint "exchange_id", null: false
     t.jsonb "details"
+    t.integer "security_type"
     t.index ["currency_id"], name: "index_securities_on_currency_id"
     t.index ["exchange_id"], name: "index_securities_on_exchange_id"
   end

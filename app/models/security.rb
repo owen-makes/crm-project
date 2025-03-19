@@ -49,6 +49,10 @@ class Security < ApplicationRecord
     "#{ticker} - #{name} (#{default_currency.code})"
   end
 
+  def issuer_type
+    details["issuer_type"] if security_type == "bond"
+  end
+
   private
 
   def add_logo_url
