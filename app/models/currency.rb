@@ -1,7 +1,10 @@
+# t.string "code"
+# t.string "name"
+# t.string "symbol"
+# t.string "country"
 class Currency < ApplicationRecord
   has_many :portfolios
-  has_many :holdings
-  has_many :security_prices
+  has_many :securities
 
   has_many :base_exchange_rates,
            class_name: "ExchangeRate",

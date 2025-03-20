@@ -23,7 +23,7 @@ class Security < ApplicationRecord
   attribute :details, :json, default: {}
 
   # Enum for security types
-  enum security_type: {
+  enum :security_type, {
     stock: 0,
     bond: 1,
     etf: 2,
@@ -35,14 +35,14 @@ class Security < ApplicationRecord
     commodity: 8
   }
 
+  # TODO: Implement API calls for current value
   def current_value
-    # Placeholder, will use real market price later
-    mock_current_price = 100 * Random.rand(1.9)
-    mock_current_price.round(2)
+    last_close
   end
 
-  def latest_price
-    security_prices.order(date: :desc).first
+  def last_close
+    price = security_prices.order(date: :desc).first.price
+    price.to_f
   end
 
   def display_name
