@@ -42,7 +42,7 @@ namespace :data912 do
       rescue => generic_error
         puts "Generic error for #{ticker}: #{generic_error.message}"
       end
-      sleep 0.5 # Add a small delay to avoid rate limiting.
+      sleep 0.1 # Add a small delay to avoid rate limiting.
     end
   end
 end

@@ -39,7 +39,17 @@ class PortfoliosController < ApplicationController
   def show
     @client = params[:client_id]
     @holdings = @portfolio.holdings
-    @holdings_with_metrics = @portfolio.holdings_with_metrics
+
+    tickers = @portfolio.holdings.map { |h| h.security.ticker }
+
+    # Call the bulk price lookup
+    prices = Data912::ApiService.new.live_price_bulk(tickers)
+
+    # Compute holdings metrics using the bulk prices
+    @holdings_metrics = @portfolio.holdings_with_bulk_metrics(prices)
+
+    # Also compute the total portfolio value if needed
+    @total_value = @portfolio.total_value_with_bulk(prices)
   end
 
   def edit
@@ -62,7 +72,7 @@ class PortfoliosController < ApplicationController
   private
 
   def set_portfolio
-    @portfolio = Portfolio.find(params[:id])
+    @portfolio = Portfolio.includes(holdings: :security).find(params[:id])
   end
 
   def authorize_portfolio

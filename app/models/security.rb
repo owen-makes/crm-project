@@ -37,9 +37,11 @@ class Security < ApplicationRecord
 
   # TODO: Implement API calls for current value
   def current_value
-    api = Data912::ApiService.new
-    api.live_price(ticker)
+    Rails.cache.fetch("security:#{ticker}:current_value", expires_in: 2.hours) do
+      Data912::ApiService.new.live_price(ticker)
+    end
   end
+
 
   def last_close
     price = security_prices.order(date: :desc).first.price

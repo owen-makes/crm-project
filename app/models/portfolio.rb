@@ -16,6 +16,46 @@ class Portfolio < ApplicationRecord
   belongs_to :currency
   has_many :holdings
 
+  # Calculate the portfolio's total value using the provided bulk prices
+  def total_value_with_bulk(prices_hash)
+    holdings.sum do |holding|
+      ticker = holding.security.ticker
+      current_price = prices_hash[ticker] || holding.security.last_close
+      holding.quantity * current_price
+    end
+  end
+
+  # Return an array of metrics for each holding using bulk prices
+  def holdings_with_bulk_metrics(prices_hash)
+    # First, calculate current values per holding
+    holding_values = holdings.map do |holding|
+      ticker = holding.security.ticker
+      current_price = prices_hash[ticker] || holding.security.last_close
+      current_value = holding.quantity * current_price
+      {
+        holding: holding,
+        current_price: current_price,
+        current_value: current_value,
+        profit_loss: (current_price - holding.purchase_price) * holding.quantity,
+        profit_loss_percentage: holding.purchase_price > 0 ? ((current_price - holding.purchase_price) / holding.purchase_price * 100) : 0
+      }
+    end
+
+    total_value = holding_values.sum { |h| h[:current_value] }
+    # Add percentage data to each holding metric
+    holding_values.each do |h|
+      h[:percentage] = total_value > 0 ? (h[:current_value] / total_value * 100) : 0
+    end
+
+    holding_values
+  end
+
+  # Old methods below
+
+  def total_value
+    holdings.sum(&:current_value)
+  end
+
   def holdings_with_metrics
     holdings.map do |holding|
       {
@@ -26,11 +66,6 @@ class Portfolio < ApplicationRecord
         profit_loss_percentage: holding.profit_loss_percentage
       }
     end
-  end
-
-  # Calculate total current value of all holdings in their native currencies
-  def total_value(as_of_date = Date.today)
-    holdings.sum { |holding| holding.current_value(as_of_date) }
   end
 
   # Calculate total value converted to portfolio currency
