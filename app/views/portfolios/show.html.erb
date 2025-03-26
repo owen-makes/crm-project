@@ -63,12 +63,12 @@
               <%= turbo_frame_tag dom_id(holding) do %>
                 <tr class="hover:bg-gray-50 border-b border-gray-100">
                   <td class="py-2">
-                    <%= link_to "#{holding.security.ticker} - #{holding.security.name.truncate(20)}", 
+                    <%= link_to "#{holding.security.ticker}", 
                         portfolio_holding_path(@portfolio, holding),
                         data: { turbo_frame: "_top" } %>
-                    <div class="text-xs text-gray-500"><%= holding.security.currency.code %></div>
+                    <div class="text-xs text-gray-500"><%= holding.security.name.truncate(20) %></div>
                   </td>
-                  <td class="text-right py-2"><%= number_with_delimiter(holding.quantity) %></td>
+                  <td class="text-right py-2"><%= holding.quantity.round %></td>
                   <td class="text-right py-2"><%= number_to_currency(holding.current_value) %></td>
                   <td class="text-right py-2"><%= number_to_percentage(holding.percentage_of_portfolio, precision: 1) %></td>
                   <td class="text-right py-2 <%= holding.profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>">

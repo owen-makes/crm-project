@@ -52,7 +52,7 @@ class HoldingsController < ApplicationController
   end
 
   def set_holding
-    @holding = @portfolio.holdings.find(params[:id]).includes(:security)
+    @holding = @portfolio.holdings.find(params[:id])
   end
 
   def authorize_portfolio
