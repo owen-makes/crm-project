@@ -71,7 +71,7 @@ class Portfolio < ApplicationRecord
 
         holding.cost_basis * exchange_rate
       else
-        holding.cost_basis
+        holding.purchase_price
       end
     end
   end

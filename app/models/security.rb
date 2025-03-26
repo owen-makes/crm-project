@@ -15,7 +15,7 @@ class Security < ApplicationRecord
   has_many :holdings
   has_many :security_prices, dependent: :destroy
   has_many :transactions
-  belongs_to :default_currency, class_name: "Currency", foreign_key: "currency_id"
+  belongs_to :currency
   belongs_to :exchange
   validates :ticker, presence: true, uniqueness: true
   validates :name, presence: true
@@ -37,7 +37,8 @@ class Security < ApplicationRecord
 
   # TODO: Implement API calls for current value
   def current_value
-    last_close
+    api = Data912::ApiService.new
+    api.live_price(ticker)
   end
 
   def last_close
@@ -46,7 +47,7 @@ class Security < ApplicationRecord
   end
 
   def display_name
-    "#{ticker} - #{name} (#{default_currency.code})"
+    "#{ticker} - #{name} (#{currency.code.upcase})"
   end
 
   def issuer_type

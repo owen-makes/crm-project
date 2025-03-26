@@ -23,6 +23,7 @@ every 1.day do
   runner "CsvImport.clean_up!"
 end
 
-
-
-# Learn more: http://github.com/javan/whenever
+# update prices
+every 1.day, at: "5:30 am" do
+  rake "data912:daily_update"
+end

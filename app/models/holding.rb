@@ -1,6 +1,6 @@
 # create_table "holdings"
 #   t.decimal "quantity", precision: 18, scale: 8
-#   t.decimal "cost_basis", precision: 19, scale: 4
+#   t.decimal "purchase_price", precision: 19, scale: 4
 #   t.bigint "portfolio_id", null: false
 #   t.datetime "created_at", null: false
 #   t.datetime "updated_at", null: false
@@ -9,19 +9,14 @@
 class Holding < ApplicationRecord
   belongs_to :portfolio
   belongs_to :security
-  validates :quantity, :cost_basis, :security, presence: true
+  validates :quantity, :purchase_price, :security, presence: true
 
 
 
   # Returns the current market value of the holding
   def current_value(as_of_date = Date.today)
     # Get the most recent price before or on the given date
-    latest_price = security.security_prices
-                          .where("date <= ?", as_of_date)
-                          .order(date: :desc)
-                          .first&.price || 0
-
-    quantity * latest_price
+    security.current_value
   end
 
   # Returns what percentage of the portfolio's total value this holding represents
@@ -31,19 +26,23 @@ class Holding < ApplicationRecord
     # Avoid division by zero
     return 0 if portfolio_value.zero?
 
-    (current_value(as_of_date) / portfolio_value) * 100
+    (current_value(as_of_date) * quantity / portfolio_value) * 100
   end
 
   # Returns the profit or loss in absolute terms (current value - cost basis)
-  def profit_loss(as_of_date = Date.today)
-    current_value(as_of_date) - cost_basis
+  def profit_loss
+    security.current_value - purchase_price
   end
 
-  # Returns the profit or loss as a percentage of the cost basis
-  def profit_loss_percentage(as_of_date = Date.today)
-    # Avoid division by zero
-    return 0 if cost_basis.zero?
+  def cost_basis
+    purchase_price * quantity
+  end
 
-    (profit_loss(as_of_date) / cost_basis) * 100
+  # Returns the profit or loss as a percentage of the purchase price
+  def profit_loss_percentage
+    # Avoid division by zero
+    return 0 if purchase_price.zero?
+
+    (profit_loss / purchase_price) * 100
   end
 end

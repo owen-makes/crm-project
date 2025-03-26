@@ -45,7 +45,7 @@
             <tr class="hover:bg-gray-50">
               <td><%= holding.ticker %></td>
               <td class="text-right"><%= holding.quantity %></td>
-              <td class="text-right"><%= holding.cost_basis %></td>
+              <td class="text-right"><%= holding.purchase_price %></td>
 
               <td class="text-right"> <%# Added action buttons %>
                 <%= link_to "Editar", edit_portfolio_holding_path(@portfolio, holding), class: "text-blue-500 hover:underline mr-2" %>
