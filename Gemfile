@@ -83,3 +83,5 @@ gem "httparty", "~> 0.22.0"
 group :development do
   gem "rails-erd"
 end
+
+gem "countries", "~> 7.1"

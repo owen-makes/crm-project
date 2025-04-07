@@ -11,7 +11,26 @@ class HoldingsController < ApplicationController
 
   def new
     @holding = @portfolio.holdings.build
+
+    # Always define this for the dropdown
+    @available_types = Security.distinct.pluck(:security_type).compact
+
+    # Defensive fallback if iso_country_code is nil
+    if @portfolio.iso_country_code.present?
+      @securities = Security.joins(:exchange)
+                            .where(exchanges: { country_code: @portfolio.iso_country_code })
+                            .order(:ticker)
+    else
+      @securities = Security.order(:ticker)
+    end
+
+    # Apply filtering by security_type if present
+    if params[:security_type].present?
+      @securities = @securities.where(security_type: params[:security_type])
+      render :new
+    end
   end
+
 
   def create
     @holding = @portfolio.holdings.build(holding_params)

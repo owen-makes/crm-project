@@ -13,7 +13,13 @@ class ClientsController < ApplicationController
 
   # GET /clients/1 or /clients/1.json
   def show
+    @prices = {}
+    @client.portfolios.includes(holdings: :security).each do |portfolio|
+      tickers = portfolio.holdings.map { |h| h.security.ticker }
+      @prices[portfolio.id] = Data912::ApiService.new.live_price_bulk(tickers)
+    end
   end
+
 
   # GET /clients/new
   def new

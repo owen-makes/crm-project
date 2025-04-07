@@ -1,47 +1,53 @@
-<%# app/views/holdings/new.html.erb %>
-<%= turbo_frame_tag "new_holding" do %>
-  <div class="bg-white rounded-lg border-green-600 border-solid border-2 shadow-lg p-6">
-    <h2><%= @holding.persisted? ? "Edit" : "New" %> Holding</h2>
-
-    <%= form_with(model: [@portfolio, @holding], local: true) do |form| %>
-      <% if @holding.errors.any? %>
-        <div class="alert alert-danger">
-          <h4><%= pluralize(@holding.errors.count, "error") %> prohibited this holding from being saved:</h4>
-          <ul>
+<%= turbo_frame_tag "modal" do %>
+  <!-- Modal overlay with blur -->
+  <div class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"></div>
+  
+  <!-- Modal content -->
+  <div class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl border-green-600 border shadow-lg p-6 space-y-6 max-w-2xl mx-auto">
+      <h2 class="text-2xl font-semibold"><%= @holding.persisted? ? "Edit" : "New" %> Holding</h2>
+        <% if @holding.errors.any? %>
+          <div class="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4">
+            <h4 class="font-bold mb-2"><%= pluralize(@holding.errors.count, "error") %> prevented saving:</h4>
+            <ul class="list-disc list-inside">
             <% @holding.errors.full_messages.each do |message| %>
               <li><%= message %></li>
-            <% end %>
-          </ul>
+            </ul>
+          </div>
+          <% end %>
+        <% end %>
+        <!-- 🔍 Instrument Filter (partial or component) -->
+        <%= form_with url: new_portfolio_holding_path(@portfolio), method: :get, local: true do %>
+          <%= render "securities/filter",
+                selected_type: params[:security_type],
+                available_types: @available_types %>
+        <% end %>
+      
+      <%= form_with(model: [@portfolio, @holding], local: true) do |form| %>
+
+        <div class="form-group">
+          <%= form.label :security_id, class: "block font-medium text-gray-700" %>
+          <%= form.collection_select :security_id, @securities, :id, :display_name, { prompt: "Select a security" }, class: "form-control mt-1 w-full" %>
+        </div>
+        <!-- Quantity -->
+        <div class="form-group">
+          <%= form.label :quantity, class: "block font-medium text-gray-700" %>
+          <%= form.number_field :quantity, step: 'any', class: "form-control mt-1 w-full" %>
+        </div>
+        <!-- Purchase Price -->
+        <div class="form-group">
+          <%= form.label :purchase_price, "Purchase price", class: "block font-medium text-gray-700" %>
+          <%= form.number_field :purchase_price, step: 'any', class: "form-control mt-1 w-full" %>
+          <small class="text-gray-500">Purchase price in the security's native currency</small>
+        </div>
+        <!-- Actions -->
+        <div class="form-actions flex gap-2 pt-4">
+          <%= form.submit class: "btn btn-primary" %>
+          <%= link_to "Cancel", portfolio_path(@portfolio), 
+                        class: "btn btn-secondary", 
+                        data: { turbo_frame: "_top" } %>
         </div>
       <% end %>
-
-      <div class="form-group">
-        <%= form.label :security_id, "Security" %>
-        <%= form.collection_select :security_id, @securities, :id, :display_name, 
-                                  { prompt: "Select a security" }, 
-                                  { class: "form-control" } %>
-        <small class="form-text text-muted">
-          Showing securities from <%= @portfolio.currency&.country || "all countries" %>
-        </small>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :quantity %>
-        <%= form.number_field :quantity, step: 'any', class: "form-control" %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :purchase_price, "Purchase price" %>
-        <%= form.number_field :purchase_price, step: 'any', class: "form-control" %>
-        <small class="form-text text-muted">
-          Purchase price in the security's native currency
-        </small>
-      </div>
-
-      <div class="form-actions">
-        <%= form.submit class: "btn btn-primary" %>
-        <%= link_to "Cancel", portfolio_path(@portfolio), class: "btn btn-secondary" %>
-      </div>
-    <% end %>
+    </div>
   </div>
 <% end %>

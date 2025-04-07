@@ -1,0 +1,9 @@
+<%# app/views/securities/_filter.html.erb %>
+<div class="form-group mb-4">
+  <label for="security_type" class="block font-medium">Filtrar por instrumento</label>
+  <%= select_tag :security_type,
+        options_for_select(available_types&.map { |t| [t.titleize, t] }, selected_type),
+        prompt: "All types",
+        onchange: "this.form.submit()",
+        class: "form-control mt-1 w-full" %>
+</div>

@@ -14,7 +14,7 @@
 class Portfolio < ApplicationRecord
   belongs_to :client
   belongs_to :currency
-  has_many :holdings
+  has_many :holdings, dependent: :destroy
 
   # Calculate the portfolio's total value using the provided bulk prices
   def total_value_with_bulk(prices_hash)
@@ -179,5 +179,9 @@ class Portfolio < ApplicationRecord
     end
 
     result
+  end
+
+  def iso_country_code
+    ISO3166::Country.find_country_by_any_name(country)&.alpha2
   end
 end

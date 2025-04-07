@@ -50,6 +50,10 @@ class PortfoliosController < ApplicationController
 
     # Also compute the total portfolio value if needed
     @total_value = @portfolio.total_value_with_bulk(prices)
+
+    @total_profit_loss = @holdings_metrics.sum { |h| h[:profit_loss] }
+    @total_cost = @portfolio.total_cost_basis_in_portfolio_currency
+    @total_profit_loss_percentage = @total_cost > 0 ? (@total_profit_loss / @total_cost) * 100 : 0
   end
 
   def edit
@@ -90,6 +94,6 @@ class PortfoliosController < ApplicationController
   end
 
   def portfolio_params
-    params.require(:portfolio).permit(:broker, :account_number, :name, :client_id, :currency_id)
+    params.require(:portfolio).permit(:broker, :account_number, :name, :client_id, :currency_id, :country)
   end
 end

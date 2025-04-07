@@ -18,9 +18,11 @@
           Moneda: <%= @portfolio.currency&.code.upcase || 'N/A' %>
         </p>
       </div>
-      <%= link_to "Agregar Activo", new_portfolio_holding_path(@portfolio),
-          class: "ml-auto btn btn-primary",
-          data: { turbo_frame: "new_holding" } %>
+      <div class="ml-auto">
+        <%= link_to "Agregar Activo", new_portfolio_holding_path(@portfolio),
+            class: "btn btn-primary",
+            data: { turbo_frame: "modal" } %>
+      </div>
     </div>
     
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -36,9 +38,9 @@
       
       <div class="bg-white rounded p-4 shadow border border-gray-100">
         <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Profit/Loss</h3>
-        <p class="text-2xl font-bold <%= @portfolio.total_profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>">
-          <%= number_to_currency(@portfolio.total_profit_loss) %> 
-          (<%= number_to_percentage(@portfolio.total_profit_loss_percentage, precision: 1) %>)
+        <p class="text-2xl font-bold <%= @total_profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>">
+          <%= number_to_currency(@total_profit_loss) %> 
+          (<%= number_to_percentage(@total_profit_loss_percentage, precision: 1) %>)
         </p>
       </div>
     </div>
@@ -59,25 +61,25 @@
             </tr>
           </thead>
           <tbody>
-            <% @portfolio.holdings.each do |holding| %>
+            <% @holdings_metrics.each do |data| %>
+              <% holding = data[:holding] %>
               <%= turbo_frame_tag dom_id(holding) do %>
                 <tr class="hover:bg-gray-50 border-b border-gray-100">
                   <td class="py-2">
-                    <%= link_to "#{holding.security.ticker}", 
-                        portfolio_holding_path(@portfolio, holding),
-                        data: { turbo_frame: "_top" } %>
+                    <%= link_to "#{holding.security.ticker}", portfolio_holding_path(@portfolio, holding), data: { turbo_frame: "_top" } %>
                     <div class="text-xs text-gray-500"><%= holding.security.name.truncate(20) %></div>
                   </td>
                   <td class="text-right py-2"><%= holding.quantity.round %></td>
-                  <td class="text-right py-2"><%= number_to_currency(holding.current_value) %></td>
-                  <td class="text-right py-2"><%= number_to_percentage(holding.percentage_of_portfolio, precision: 1) %></td>
-                  <td class="text-right py-2 <%= holding.profit_loss >= 0 ? 'text-green-600' : 'text-red-600' %>">
-                    <%= number_to_percentage(holding.profit_loss_percentage, precision: 1) %>
+                  <td class="text-right py-2"><%= number_to_currency(data[:current_value]) %></td>
+                  <td class="text-right py-2"><%= number_to_percentage(data[:percentage], precision: 1) %></td>
+                  <td class="text-right py-2 <%= data[:profit_loss] >= 0 ? 'text-green-600' : 'text-red-600' %>">
+                    <%= number_to_percentage(data[:profit_loss_percentage], precision: 1) %>
                   </td>
                 </tr>
               <% end %>
             <% end %>
           </tbody>
+
           <tfoot>
             <tr class="font-bold">
               <td class="pt-2">Total</td>
@@ -95,9 +97,10 @@
       <div class="bg-white rounded p-6 shadow border border-gray-100">
         <div class="mb-6">
           <h3 class="text-lg font-semibold mb-2">Portfolio</h3>
-          <%= pie_chart @portfolio.holdings.map { |holding| 
-            ["#{holding.security.ticker} (#{holding.security.currency.code})", holding.percentage_of_portfolio] 
+          <%= pie_chart @holdings_metrics.map { |data|
+            ["#{data[:holding].security.ticker} (#{data[:holding].security.currency.code})", data[:percentage]]
           }, legend: "bottom", suffix: "%" %>
+
         </div>
         
         <div class="mt-8">
