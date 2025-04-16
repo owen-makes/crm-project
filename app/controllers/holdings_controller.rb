@@ -12,37 +12,39 @@ class HoldingsController < ApplicationController
   def new
     @holding = @portfolio.holdings.build
 
-    # Always define this for the dropdown
-    @available_types = Security.distinct.pluck(:security_type).compact
-
-    # Defensive fallback if iso_country_code is nil
-    if @portfolio.iso_country_code.present?
-      @securities = Security.joins(:exchange)
-                            .where(exchanges: { country_code: @portfolio.iso_country_code })
-                            .order(:ticker)
-    else
-      @securities = Security.order(:ticker)
+    @items = @securities.map do |security|
+      FancySelectComponent::Item.new(security.id, security.display_name, security.logo_url)
     end
 
-    # Apply filtering by security_type if present
-    if params[:security_type].present?
-      @securities = @securities.where(security_type: params[:security_type])
-      render :new
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace("securities_list",
+          partial: "securities/securities_results",
+          locals: { securities: @securities }
+        )
+      end
     end
   end
+
+
 
 
   def create
     @holding = @portfolio.holdings.build(holding_params)
 
+    @items = @securities.map do |security|
+      FancySelectComponent::Item.new(security.id, security.display_name, security.logo_url)
+    end
+
     if @holding.save
-      redirect_to portfolio_path(@portfolio),
-                  notice: "Holding was successfully created."
+      redirect_to portfolio_path(@holding.portfolio), notice: "Holding created"
     else
-      load_securities
-      render :new, status: :unprocessable_entity
+          render :new, status: :unprocessable_entity
     end
   end
+
+
 
   def edit
   end
@@ -82,20 +84,14 @@ class HoldingsController < ApplicationController
   end
 
   def load_securities
-    portfolio_currency = @portfolio.currency
-
-    if portfolio_currency&.country_code.present?
-      country_exchanges = Exchange.where(country_code: portfolio_currency.country_code)
-
-      if country_exchanges.exists?
-        @securities = Security.where(exchange_id: country_exchanges.pluck(:id))
-                            .order(:name)
-        return
-      end
+    if @portfolio.iso_country_code.present?
+      @securities = Security.joins(:exchange)
+                            .includes(:currency)
+                            .where(exchanges: { country_code: @portfolio.iso_country_code })
+                            .order(:ticker)
+    else
+      @securities = Security.includes(:currency).order(:ticker)
     end
-
-    # Fallback to all securities
-    @securities = Security.all.order(:name)
   end
 
   def holding_params

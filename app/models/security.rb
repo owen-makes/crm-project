@@ -44,8 +44,8 @@ class Security < ApplicationRecord
 
 
   def last_close
-    price = security_prices.order(date: :desc).first.price
-    price.to_f
+    price = self.security_prices.exists? ? self.security_prices.order(date: :desc).first&.price : 0
+    price.zero? ? 0 : price.to_f
   end
 
   def display_name

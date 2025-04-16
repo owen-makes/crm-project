@@ -15,7 +15,7 @@
           <%= @portfolio.broker %> (<strong class="font-medium"><%= @portfolio.account_number %></strong>)
         </h2>
         <p class="text-sm text-gray-600 mt-1">
-          Moneda: <%= @portfolio.currency&.code.upcase || 'N/A' %>
+          Moneda: <%= @portfolio.currency&.code.upcase || 'N/A' %> | <%= @portfolio.country || 'N/A' %>
         </p>
       </div>
       <div class="ml-auto">

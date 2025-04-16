@@ -1,0 +1,37 @@
+<div data-controller="fancy-select">
+  <label class="block text-sm font-medium text-gray-700 mb-1"><%= label %></label>
+  <div class="relative">
+    <input
+      type="text"
+      data-fancy-select-target="input"
+      data-action="input->fancy-select#filter"
+      class="w-full rounded-md border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+      placeholder="Buscar..."
+      autocomplete="off"
+    />
+
+    <ul
+      data-fancy-select-target="list"
+      class="hidden absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+    >
+    <%= hidden_field_tag "holding[#{form_name}]", nil, data: { fancy_select_target: "field" } %>
+
+      <% items.each do |item| %>
+        <li
+          class="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-green-50"
+          data-action="click->fancy-select#select"
+          data-fancy-select-target="option"
+          data-id="<%= item.id %>"
+          data-label="<%= item.label %>"
+        >
+          <div class="flex items-center">
+            <% if item.image_url.present? %>
+              <img src="<%= item.image_url %>" class="h-6 w-6 flex-shrink-0 rounded-full" alt="">
+            <% end %>
+            <span class="ml-3 block truncate"><%= item.label %></span>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

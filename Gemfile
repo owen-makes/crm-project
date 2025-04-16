@@ -85,3 +85,5 @@ group :development do
 end
 
 gem "countries", "~> 7.1"
+
+gem "view_component", "~> 3.22"
