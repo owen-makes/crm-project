@@ -46,14 +46,16 @@ module Data912
     end
 
     def live_price_bulk(arr = [])
-      # Find securities in database from array of tickers
-      securities_array = arr.map { |ticker| Security.find_by(ticker: ticker) }.compact
+      # 1. Normalise + deduplicate input
+      tickers = Array(tickers).map { |t| t.to_s.upcase }.uniq
+      return {} if tickers.empty?
 
-      # Return early if no securities found
-      return {} if securities_array.empty?
+      # 2. ONE query instead of N: fetch all securities at once
+      securities = Security.where(ticker: tickers).index_by(&:ticker)
+      return {} if securities.empty?
 
-      # Get unique security types
-      sec_types = securities_array.map(&:security_type).uniq
+      # 3. Determine which endpoints we actually need
+      sec_types = securities.values.map(&:security_type).uniq
 
       # Collect prices from corresponding endpoints
       security_prices = []

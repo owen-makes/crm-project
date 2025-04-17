@@ -38,9 +38,12 @@ class HoldingsController < ApplicationController
     end
 
     if @holding.save
-      redirect_to portfolio_path(@holding.portfolio), notice: "Holding created"
+      respond_to do |format|
+        format.turbo_stream # Looks for create.turbo_stream.erb
+        format.html { redirect_to portfolio_path(@portfolio), notice: "Holding created." }
+      end
     else
-          render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity
     end
   end
 

@@ -37,13 +37,19 @@ class PortfoliosController < ApplicationController
   end
 
   def show
+    tickers = @portfolio.holdings
+                        .joins(:security)
+                        .pluck("securities.ticker")
+                        .sort   # keep the stable sort for the cache key
+
+    cache_key = "prices/#{Digest::SHA1.hexdigest(tickers.join)}"
+
+    prices = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
+      Data912::ApiService.new.live_price_bulk(tickers)
+    end
+
     @client = params[:client_id]
     @holdings = @portfolio.holdings
-
-    tickers = @portfolio.holdings.map { |h| h.security.ticker }
-
-    # Call the bulk price lookup
-    prices = Data912::ApiService.new.live_price_bulk(tickers)
 
     # Compute holdings metrics using the bulk prices
     @holdings_metrics = @portfolio.holdings_with_bulk_metrics(prices)
