@@ -30,10 +30,11 @@ class Portfolio < ApplicationRecord
     # First, calculate current values per holding
     holding_values = holdings.map do |holding|
       ticker = holding.security.ticker
-      current_price = prices_hash[ticker] || holding.security.last_close
+      current_price = prices_hash[ticker] || holding.security.last_close || 0.0
       current_value = holding.quantity * current_price
       {
         holding: holding,
+        security_type: holding.security.security_type,
         current_price: current_price,
         current_value: current_value,
         profit_loss: (current_price - holding.purchase_price) * holding.quantity,
@@ -52,39 +53,39 @@ class Portfolio < ApplicationRecord
 
   # Old methods below
 
-  def total_value
-    holdings.sum(&:current_value)
-  end
+  # def total_value
+  #   holdings.sum(&:current_value)
+  # end
 
-  def holdings_with_metrics
-    holdings.map do |holding|
-      {
-        holding: holding,
-        current_value: holding.current_value,
-        percentage: holding.percentage_of_portfolio,
-        profit_loss: holding.profit_loss,
-        profit_loss_percentage: holding.profit_loss_percentage
-      }
-    end
-  end
+  # def holdings_with_metrics
+  #   holdings.map do |holding|
+  #     {
+  #       holding: holding,
+  #       current_value: holding.current_value,
+  #       percentage: holding.percentage_of_portfolio,
+  #       profit_loss: holding.profit_loss,
+  #       profit_loss_percentage: holding.profit_loss_percentage
+  #     }
+  #   end
+  # end
 
-  # Calculate total value converted to portfolio currency
-  def total_value_in_portfolio_currency(as_of_date = Date.today)
-    holdings.sum do |holding|
-      value = holding.current_value(as_of_date)
+  # # Calculate total value converted to portfolio currency
+  # def total_value_in_portfolio_currency(as_of_date = Date.today)
+  #   holdings.sum(0.0) do |holding|
+  #     value = holding.current_value(as_of_date) || 0.0
 
-      holding.security.currency_id == currency_id ? value :
-        value * fx_rate(holding.security.currency_id, on: as_of_date)
-    end
-  end
+  #     holding.security.currency_id == currency_id ? value :
+  #       value * fx_rate(holding.security.currency_id, on: as_of_date)
+  #   end
+  # end
 
 
-  # Calculate total cost basis of all holdings
-  def total_cost_basis
-    holdings.sum(&:cost_basis)
-  end
+  # # Calculate total cost basis of all holdings
+  # def total_cost_basis
+  #   holdings.sum(&:cost_basis)
+  # end
 
-  # Calculate total cost basis converted to portfolio currency
+  # # Calculate total cost basis converted to portfolio currency
   def total_cost_basis_in_portfolio_currency
     holdings.sum do |holding|
       cost = holding.cost_basis   # purchase_price * quantity
@@ -94,56 +95,28 @@ class Portfolio < ApplicationRecord
   end
 
 
-  # Calculate total profit/loss in portfolio currency
-  def total_profit_loss(as_of_date = Date.today)
-    total_value_in_portfolio_currency(as_of_date) - total_cost_basis_in_portfolio_currency
-  end
+  # # Calculate total profit/loss in portfolio currency
+  # def total_profit_loss(as_of_date = Date.today)
+  #   total_value_in_portfolio_currency(as_of_date) - total_cost_basis_in_portfolio_currency
+  # end
 
-  # Calculate total profit/loss percentage
-  def total_profit_loss_percentage(as_of_date = Date.today)
-    return 0 if total_cost_basis_in_portfolio_currency.zero?
+  # # Calculate total profit/loss percentage
+  # def total_profit_loss_percentage(as_of_date = Date.today)
+  #   return 0 if total_cost_basis_in_portfolio_currency.zero?
 
-    (total_profit_loss(as_of_date) / total_cost_basis_in_portfolio_currency) * 100
-  end
+  #   (total_profit_loss(as_of_date) / total_cost_basis_in_portfolio_currency) * 100
+  # end
 
-  # Get portfolio diversity - percentage allocation by security type
-  def diversity_by_type(as_of_date = Date.today)
-    total = total_value_in_portfolio_currency(as_of_date)
-    return {} if total.zero?
+  # # Get portfolio percentage allocation by security type using previously fetched metrics
+  def diversity_by_type(metrics)
+    total_value = metrics.sum { |m| m[:current_value] }
+    return {} if total_value.zero?
 
-    holdings.each_with_object(Hash.new(0)) do |holding, h|
-      type = holding.security.security_type || "Unknown"
-      value = holding.current_value(as_of_date)
-      value *= fx_rate(holding.security.currency_id, on: as_of_date) if
-               holding.security.currency_id != currency_id
-
-      h[type] += (value / total) * 100
+    metrics.each_with_object(Hash.new(0)) do |m, acc|
+      type  = m[:security_type] || "Unknown"
+      value = m[:current_value] || 0.0
+      acc[type] += (value / total_value) * 100
     end
-  end
-
-
-  # Get portfolio diversity - percentage allocation by currency
-  def diversity_by_currency(as_of_date = Date.today)
-    total = total_value_in_portfolio_currency(as_of_date)
-    return {} if total.zero?
-
-    result = {}
-    holdings.each do |holding|
-      currency_code = holding.security.currency.code
-      result[currency_code] ||= 0
-
-      holding_value = holding.current_value(as_of_date)
-
-      # Convert to portfolio currency for percentage calculation
-      if holding.security.currency_id != self.currency_id
-
-        holding_value *= fx_rate(holding.security.currency_id, on: as_of_date)
-      end
-
-      result[currency_code] += (holding_value / total) * 100
-    end
-
-    result
   end
 
   def iso_country_code
@@ -151,10 +124,10 @@ class Portfolio < ApplicationRecord
   end
 
   def fx_rate(base_currency_id, on: Date.today)
-    @fx_cache ||= {}                                       # 1️⃣ initialise once
+    @fx_cache ||= {}
     key = [ base_currency_id, self.currency_id, on ]
 
-    @fx_cache[key] ||= ExchangeRate                       # 2️⃣ hit DB only if key not cached
+    @fx_cache[key] ||= ExchangeRate
       .where(base_currency_id: base_currency_id,
              target_currency_id: self.currency_id,
              date: on)

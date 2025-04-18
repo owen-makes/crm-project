@@ -27,9 +27,6 @@ class HoldingsController < ApplicationController
     end
   end
 
-
-
-
   def create
     @holding = @portfolio.holdings.build(holding_params)
 
@@ -38,6 +35,7 @@ class HoldingsController < ApplicationController
     end
 
     if @holding.save
+      prepare_portfolio_metrics
       respond_to do |format|
         format.turbo_stream # Looks for create.turbo_stream.erb
         format.html { redirect_to portfolio_path(@portfolio), notice: "Holding created." }
@@ -69,6 +67,17 @@ class HoldingsController < ApplicationController
   end
 
   private
+
+  def prepare_portfolio_metrics
+    tickers          = @portfolio.holdings.map { |h| h.security.ticker }
+    prices           = Data912::ApiService.new.live_price_bulk(tickers)
+    @holdings_metrics = @portfolio.holdings_with_bulk_metrics(prices)
+
+    @total_profit_loss = @holdings_metrics.sum { |h| h[:profit_loss] }
+    @total_cost        = @portfolio.total_cost_basis_in_portfolio_currency
+    @total_profit_loss_percentage =
+      @total_cost.positive? ? (@total_profit_loss / @total_cost) * 100 : 0
+  end
 
   def find_client_and_portfolio
     @portfolio = Portfolio.find(params[:portfolio_id])

@@ -45,48 +45,37 @@ module Data912
       end
     end
 
-    def live_price_bulk(arr = [])
-      # 1. Normalise + deduplicate input
+    def live_price_bulk(tickers = [])
+      # 1. normalise + deduplicate input
       tickers = Array(tickers).map { |t| t.to_s.upcase }.uniq
       return {} if tickers.empty?
 
-      # 2. ONE query instead of N: fetch all securities at once
+      # 2. fetch all securities in one query
       securities = Security.where(ticker: tickers).index_by(&:ticker)
       return {} if securities.empty?
 
-      # 3. Determine which endpoints we actually need
+      # 3. work out which live‑price endpoints we need
       sec_types = securities.values.map(&:security_type).uniq
-
-      # Collect prices from corresponding endpoints
       security_prices = []
-      security_prices += live_arg_stocks if sec_types.include?("stock")
-      security_prices += live_arg_cedears if sec_types.include?("cedear") || sec_types.include?("etf")
-
+      security_prices.concat(live_arg_stocks)                    if sec_types.include?("stock")
+      security_prices.concat(live_arg_cedears)                   if sec_types.any? { |t| t.in?(%w[cedear etf]) }
       if sec_types.include?("bond")
-        security_prices += live_arg_bonds
-        security_prices += live_arg_notes
-        security_prices += live_arg_corp
+        security_prices.concat(live_arg_bonds)
+        security_prices.concat(live_arg_notes)
+        security_prices.concat(live_arg_corp)
       end
-
-      # Return early if no prices found
       return {} if security_prices.empty?
 
-      # Create hash of prices
-      prices_hash = {}
-      securities_array.each do |sec|
-        sec_price = security_prices.find { |item| item["symbol"] == sec.ticker }
+      # 4. build price lookup once
+      prices_by_symbol = security_prices.index_by { |h| h["symbol"] }
 
-        if sec_price
-          prices_hash[sec.ticker] = sec_price["c"]
-        else
-          # Fallback to last close if no current price
-          prices_hash[sec.ticker] = sec.last_close
-          Rails.logger.warn("No current price found for #{sec.ticker}, using last close")
-        end
+      # 5. assemble the result
+      securities.each_value.with_object({}) do |sec, hash|
+        hash[sec.ticker] = prices_by_symbol[sec.ticker]&.dig("c") || sec.last_close
+        Rails.logger.warn("No current price for #{sec.ticker}, using last close") unless prices_by_symbol.key?(sec.ticker)
       end
-
-      prices_hash
     end
+
 
     def live_arg_stocks
       self.class.get("/live/arg_stocks", @options)
