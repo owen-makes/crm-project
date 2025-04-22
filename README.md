@@ -75,13 +75,13 @@ $ bin/dev
 ### Running Tests
 
 ```bash
-$ bundle exec rspec
+bundle exec rspec
 ```
 
 ### Linting & Formatting
 
 ```bash
-$ bundle exec rubocop -A
+bundle exec rubocop -A
 ```
 
 ---
@@ -129,11 +129,4 @@ Please follow the project coding style and add tests where appropriate.
 
 ---
 
-## 🪪 License
-
-This project is licensed under the **MIT License** – see [`LICENSE`](LICENSE) for details.
-
----
-
-> Powered by 🧉 and [Owen](https://github.com/owen-makes).
-
+> Powered by 🧉 and [me](https://github.com/owen-makes).
