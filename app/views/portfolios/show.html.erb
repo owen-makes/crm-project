@@ -6,7 +6,7 @@
       <div class="flex justify-between items-top mb-6">
         <div>
           <h1 class="text-3xl font-bold text-gray-800">
-            <%= @portfolio.name || "Portfolio #{@portfolio.broker}" %>
+            <%= @portfolio.name.blank? ? "#{@portfolio.broker.truncate(20, separator: /\s/)}" : @portfolio.name %>
           </h1>
           <h2 class="text-l text-gray-500 mt-0"> 
             <%= @portfolio.broker %> (<strong class="font-medium"><%= @portfolio.account_number %></strong>)
@@ -16,9 +16,7 @@
           </p>
         </div>
         <div class="ml-auto">
-          <%= link_to "Agregar Activo", new_portfolio_holding_path(@portfolio),
-              class: "btn btn-primary",
-              data: { turbo_frame: "modal" } %>
+          <%= render AddbuttonComponent.new(link: new_portfolio_holding_path(@portfolio), turbo_frame: "modal")%>
         </div>
       </div>
     <%= turbo_frame_tag "portfolio_show" do %>  

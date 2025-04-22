@@ -1,32 +1,47 @@
-<!-- app/views/partials/_client_portfolio_section.html.erb -->
+<div class="flex">
+  <%= link_to "Crear Portfolio", new_client_portfolio_path(@client),
+              class: "text-green-600 hover:underline text-sm ml-auto" %>
+</div>
 
-<%= link_to "Crear Portfolio", new_client_portfolio_path(@client), class: "text-green-600 hover:underline text-sm ml-auto" %>
 <h2 class="text-2xl font-bold text-gray-800 mb-4">📊 Portafolios</h2>
 
 <% if @client.portfolios.any? %>
-  <% if @client.portfolios.count == 1 %>
-    <!-- Single portfolio: Render a summary directly -->
-    <% portfolio = @client.portfolios.first %>
-    <%= render "portfolios/summary", portfolio: portfolio, prices: @prices[portfolio.id] %>
+  <% if @client.portfolios.one? %>
+    <!-- single portfolio, show directly in a turbo‑frame for consistency -->
+    <turbo-frame id="portfolio-summary">
+      <%= render "portfolios/summary",
+                 portfolio: @client.portfolios.first,
+                 prices: @prices[@client.portfolios.first.id] %>
+    </turbo-frame>
+
   <% else %>
-    <!-- Multiple portfolios: Show a tab bar and a summary area -->
-    <div class="tabs mb-4 flex space-x-4 border-b border-gray-200">
+    <!-- multiple portfolios -->
+    <div data-controller="portfolio-tabs"
+         data-portfolio-tabs-client-id-value="<%= @client.id %>"
+         class="tabs mb-4 flex space-x-4 border-b border-gray-200">
       <% @client.portfolios.each do |portfolio| %>
-        <button data-portfolio-id="<%= portfolio.id %>" class="tab-button py-2 px-4 text-gray-600 hover:text-green-600 focus:outline-none">
-          <%= portfolio.name %>
+        <button
+          data-portfolio-tabs-target="button"
+          data-action="click->portfolio-tabs#switch"
+          data-portfolio-id="<%= portfolio.id %>"
+          class="py-2 px-4 text-gray-600 hover:text-green-600 focus:outline-none">
+          <%= portfolio.name.presence || portfolio.broker.truncate(20, separator: " ") %>
         </button>
       <% end %>
     </div>
-    <div id="portfolio-summary">
-      <!-- Default: Render the first portfolio's summary -->
-      <% portfolio = @client.portfolios.first %>
-      <%= render "portfolios/summary", portfolio: portfolio, prices: @prices[portfolio.id] %>
-    </div>
 
+    <!-- the summary area Turbo will swap -->
+    <turbo-frame id="portfolio-summary">
+      <%= render "portfolios/summary",
+                 portfolio: @client.portfolios.first,
+                 prices: @prices[@client.portfolios.first.id] %>
+    </turbo-frame>
   <% end %>
+
 <% else %>
+  <!-- zero portfolios fallback -->
   <%= link_to new_client_portfolio_path(@client) do %>
-    <div class="flex-col h-max justify-items-center content-between border-slate-200 border-4 rounded-xl border-dotted p-4">
+    <div class="flex-col h-full justify-items-center content-between border-slate-200 border-4 rounded-xl border-dotted p-4">
       <div class="text-9xl text-slate-200 font-bold text-center mt-4 mb-0">+</div>
       <div class="text-2xl text-slate-200 font-bold text-center mb-4 mt-0">Agregar un portafolio</div>
     </div>

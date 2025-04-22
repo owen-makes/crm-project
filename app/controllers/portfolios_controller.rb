@@ -8,7 +8,6 @@ class PortfoliosController < ApplicationController
   def index
     if params[:client_id]
       @client = Client.find(params[:client_id])
-      # authorize_client(@client)
       @portfolios = @client.portfolios
     else
       @portfolios = if current_user.admin?
