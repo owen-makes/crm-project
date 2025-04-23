@@ -1,9 +1,10 @@
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_portfolio, only: %i[show edit update destroy]
+  before_action :set_portfolio, only: %i[show edit update destroy summary]
   before_action :authorize_portfolio, only: %i[show edit update destroy]
   before_action :set_client, only: %i[new create]
-  before_action :set_client_from_portfolio, only: [ :show, :edit ]
+  before_action :set_client_from_portfolio, only: [ :show, :edit, :summary ]
+  before_action :get_prices, only: [ :show, :summary ]
 
   def index
     if params[:client_id]
@@ -36,29 +37,26 @@ class PortfoliosController < ApplicationController
   end
 
   def show
-    tickers = @portfolio.holdings
-                        .joins(:security)
-                        .pluck("securities.ticker")
-                        .sort   # keep the stable sort for the cache key
-
-    cache_key = "prices/#{Digest::SHA1.hexdigest(tickers.join)}"
-
-    prices = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
-      Data912::ApiService.new.live_price_bulk(tickers)
-    end
-
     @client = params[:client_id]
     @holdings = @portfolio.holdings
 
     # Compute holdings metrics using the bulk prices
-    @holdings_metrics = @portfolio.holdings_with_bulk_metrics(prices)
+    @holdings_metrics = @portfolio.holdings_with_bulk_metrics(@prices)
 
     # Also compute the total portfolio value if needed
-    @total_value = @portfolio.total_value_with_bulk(prices)
+    @total_value = @portfolio.total_value_with_bulk(@prices)
 
     @total_profit_loss = @holdings_metrics.sum { |h| h[:profit_loss] }
     @total_cost = @portfolio.total_cost_basis_in_portfolio_currency
     @total_profit_loss_percentage = @total_cost > 0 ? (@total_profit_loss / @total_cost) * 100 : 0
+  end
+
+  def summary
+    render turbo_stream: turbo_stream.update(
+      "portfolio-summary",
+      partial: "portfolios/summary",
+      locals:  { portfolio: @portfolio, prices: @prices }
+    )
   end
 
   def edit
@@ -96,6 +94,20 @@ class PortfoliosController < ApplicationController
 
   def set_client_from_portfolio
     @client = @portfolio.client
+  end
+
+  def get_prices
+    tickers = @portfolio.holdings
+    .joins(:security)
+    .order("securities.ticker")
+    .pluck("securities.ticker")
+    return @prices = {} if tickers.empty?
+
+    cache_key = "prices/#{Digest::SHA1.hexdigest(tickers.join)}"
+
+    @prices = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
+      Data912::ApiService.new.live_price_bulk(tickers)
+    end
   end
 
   def portfolio_params

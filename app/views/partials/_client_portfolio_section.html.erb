@@ -6,16 +6,8 @@
 <h2 class="text-2xl font-bold text-gray-800 mb-4">📊 Portafolios</h2>
 
 <% if @client.portfolios.any? %>
-  <% if @client.portfolios.one? %>
-    <!-- single portfolio, show directly in a turbo‑frame for consistency -->
-    <turbo-frame id="portfolio-summary">
-      <%= render "portfolios/summary",
-                 portfolio: @client.portfolios.first,
-                 prices: @prices[@client.portfolios.first.id] %>
-    </turbo-frame>
-
-  <% else %>
     <!-- multiple portfolios -->
+    <% unless @client.portfolios.one? %>
     <div data-controller="portfolio-tabs"
          data-portfolio-tabs-client-id-value="<%= @client.id %>"
          class="tabs mb-4 flex space-x-4 border-b border-gray-200">
@@ -29,14 +21,14 @@
         </button>
       <% end %>
     </div>
+    <% end %>
 
-    <!-- the summary area Turbo will swap -->
     <turbo-frame id="portfolio-summary">
       <%= render "portfolios/summary",
                  portfolio: @client.portfolios.first,
-                 prices: @prices[@client.portfolios.first.id] %>
+                 prices: @prices %>
     </turbo-frame>
-  <% end %>
+
 
 <% else %>
   <!-- zero portfolios fallback -->

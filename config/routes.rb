@@ -26,7 +26,9 @@ Rails.application.routes.draw do
   end
 
   resources :clients do
-    resources :portfolios
+    resources :portfolios do
+      get :summary, on: :member
+    end
   end
 
   resources :portfolios do
