@@ -1,24 +1,44 @@
 <%= render "partials/tabbar" %>
 <div class="col-span-6 p-6 bg-white shadow-lg rounded-xl">
-  <div class="flex">
+  <div class="flex mb-4">
+    <h1 class="text-2xl font-bold">Mis Leads</h1>
+
     <div class="ml-auto flex gap-4">
+      <%# <%= render AddbuttonComponent.new(link: "#",label: "Link ingreso", turbo_frame: "dialog")%>
+      <%= render "partials/link_popover" %>
       <%= render "partials/import_export_buttons" %>
     </div>
   </div>
-  <h1 class="text-2xl font-bold mb-4">Mis Leads</h1>
+
+
   <!-- Filter button with icon -->
   <div data-controller="filter">
 
-
-  
   <% if @leads.blank? && params.keys.size <= 2 %>
-    <div class="flex-col bg-green-950 bg-blur-sm shadow-lg rounded-lg p-5 w-96 h-100 m-auto text-white">
-      <h2 class="text-4xl font-bold my-4 mx-4">Todavía no tenes leads!</h1>
-      <p class="my-4 mx-4">Compartí tu link para ingresar nuevos prospectos</p>
-      <div class="bg-slate-50 rounded-md my-4 mx-4 text-black text-center">localhost:3000/signup/<%= current_user.form_token %></div>
-    </div>
-  <% else %>
+  <div data-controller="share-link"
+      data-share-link-target="wrapper"
+      class="fixed inset-0 flex items-center justify-center">
 
+    <div class="relative bg-white rounded-xl p-6 w-96 space-y-4 shadow-lg">
+      <h2 class="text-lg font-bold">Todavía no tenes leads :(</h2>
+      <p class="text-medium text-gray-900">Compartí este link para ingresar nuevos prospectos, o hace click en <b class="font-bold">Importar</b> para agregar leads desde un .CSV</p>
+
+      <div class="flex gap-2">
+        <input type="text"
+              readonly
+              value="localhost:3000/signup/<%= current_user.form_token %>"
+              class="flex-1 border rounded px-2 py-1 text-sm"
+              data-share-link-target="textbox"
+              data-action="click->share-link#copy">
+        <button class="px-3 py-1 rounded bg-green-600 text-white"
+                data-action="share-link#copy">
+          Copiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+  <% else %>
     <!-- Status Tabs -->
     <div class="flex flex-wrap items-center gap-1 sm:gap-2 mb-2">
       <button data-action="click->filter#toggle" class="inline-flex items-center px-3 py-1.5 border border-black rounded-md font-medium text-xs hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
