@@ -111,6 +111,6 @@ class PortfoliosController < ApplicationController
   end
 
   def portfolio_params
-    params.require(:portfolio).permit(:broker, :account_number, :name, :client_id, :currency_id, :country)
+    params.require(:portfolio).permit(:broker, :account_number, :name, :currency_id, :country)
   end
 end

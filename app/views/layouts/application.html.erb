@@ -40,9 +40,9 @@
       </div>
     <% end %>
   <% end %>
-  <main class="grid grid-cols-6 h-dvh px-16 pt-6 pb-32">
+  <main class="grid grid-cols-6 h-dvh px-16 pt-6 pb-24">
     <%= yield %>
-    <%=  turbo_frame_tag "modal" %>
   </main>
+    <%=  turbo_frame_tag "modal" %>
 </body>
 </html>

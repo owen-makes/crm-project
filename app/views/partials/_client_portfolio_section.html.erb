@@ -32,10 +32,15 @@
 
 <% else %>
   <!-- zero portfolios fallback -->
-  <%= link_to new_client_portfolio_path(@client) do %>
-    <div class="flex-col h-full justify-items-center content-between border-slate-200 border-4 rounded-xl border-dotted p-4">
-      <div class="text-9xl text-slate-200 font-bold text-center mt-4 mb-0">+</div>
-      <div class="text-2xl text-slate-200 font-bold text-center mb-4 mt-0">Agregar un portafolio</div>
-    </div>
-  <% end %>
+<%= link_to new_client_portfolio_path(@client),
+            class: "flex flex-col items-center space-around w-full h-48
+                   border-4 border-dotted border-slate-200 rounded-xl 
+                   text-slate-200 hover:border-green-600 hover:text-green-600 transition-all" do %>
+
+  <span class="text-9xl leading-none ">+</span>
+  <span class="mb-4 text-2xl font-bold">
+    Agregar un portafolio
+  </span>
+<% end %>
+
 <% end %>

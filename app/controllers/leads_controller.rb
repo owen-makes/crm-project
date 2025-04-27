@@ -110,9 +110,9 @@ class LeadsController < ApplicationController
     end
 
     @client = @lead.convert_to_client
-    redirect_to client_path(@client), notice: "Lead successfully converted to a client."
+    redirect_to client_path(@client), notice: "#{@client.full_name} fue convertido a cliente!"
   rescue ActiveRecord::RecordInvalid => e
-    redirect_to lead_path(@lead), alert: "Conversion failed: #{e.message}"
+    redirect_to lead_path(@lead), alert: "Falló la conversión: #{e.message}"
   end
 
   def thank_you

@@ -18,6 +18,6 @@
     <% end %>
   </div>
   <div class="mt-4">
-    <%= link_to "Ver Portafolio", client_portfolio_path(@client, portfolio), class: "text-green-600 hover:underline text-sm" %>
+    <%= link_to "Ver Portafolio", client_portfolio_path(@client, portfolio), data: {turbo: false}, class: "text-green-600 hover:underline text-sm" %>
   </div>
 </div>
