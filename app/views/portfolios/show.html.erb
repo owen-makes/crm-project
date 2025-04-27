@@ -16,7 +16,10 @@
           </p>
         </div>
         <div class="ml-auto">
-          <%= render AddbuttonComponent.new(link: new_portfolio_holding_path(@portfolio), turbo_frame: "modal")%>
+          <%= render AddbuttonComponent.new(
+                link: new_portfolio_holding_path(@portfolio),
+                data:  { turbo_frame: "modal" }
+              ) %>
         </div>
       </div>
     <%= turbo_frame_tag "portfolio_show" do %>  

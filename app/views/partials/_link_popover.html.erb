@@ -1,12 +1,12 @@
 <div class="relative" data-controller="share-link-popover">
         <!-- trigger button ------------------------------------------------------->
-          <%= link_to "#", class: "inline-flex items-center px-3 py-1.5 border border-black rounded-md font-medium text-xs hover:bg-green-100 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500", data: { action: "share-link-popover#toggle" } do %>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-            </svg>
-            Link ingreso
-          <% end %>
-
+          <%= render AddbuttonComponent.new(
+              label: "Link ingreso",
+              link:  "#",
+              data:  {
+                action:     "share-link-popover#toggle"
+              }
+            ) %>
         <!-- popover panel -------------------------------------------------------->
         <div data-share-link-popover-target="panel"
             class="absolute left-1/2 -translate-x-1/2 mt-2 w-auto rounded-xl shadow-lg border bg-green-800 p-4 space-y-3 hidden z-20 transition-all ease-in-out duration-200">
