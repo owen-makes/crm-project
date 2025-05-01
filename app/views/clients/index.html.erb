@@ -1,17 +1,12 @@
 <%= render "partials/tabbar" %>
 <div class="col-span-6 p-6 bg-white shadow-lg rounded-xl">
-  <div class="flex">
+  <div class="flex mb-6">
+    <h1 class="text-2xl font-bold">Mis Clientes</h1>
     <div class="ml-auto flex gap-2">
-      <%= link_to new_client_path, class: "inline-flex items-center px-3 py-1.5 border border-black rounded-md font-medium text-xs hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" do %>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-        </svg>
-        Nuevo
-      <% end %>
+      <%= render AddbuttonComponent.new(link: new_client_path) %>
       <%= render "partials/import_export_buttons" %>
     </div>
   </div>
-  <h1 class="text-2xl font-bold mb-4">Mis Clientes</h1>
   <% if @clients.blank? %>
       <div data-controller="share-link"
       class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -46,8 +41,7 @@
                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Email</th>
                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Broker</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Detalles</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Notas</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Asesor</th>
 
 
                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
@@ -60,8 +54,7 @@
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900"><%= client.phone %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell"><%= client.email %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= client.broker %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= truncate(client.goals, length: 50) %></td>
-                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= truncate(client.notes, length: 50) %></td>
+                  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= client.user ? "#{client.user.full_name}" : "" %></td>
                   <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
                     <div class="flex space-x-2">
                       <%= link_to "Contact", client, class: "text-blue-500 hover:text-blue-700" %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_20_183918) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_01_173436) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,7 +89,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_20_183918) do
     t.string "last_name"
     t.string "phone"
     t.string "status"
-    t.string "channel"
     t.decimal "capital", precision: 19, scale: 4
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -99,6 +98,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_20_183918) do
     t.string "broker"
     t.text "notes"
     t.integer "team_id"
+    t.integer "channel", default: 0, null: false
+    t.index ["channel"], name: "index_leads_on_channel"
     t.index ["user_id"], name: "index_leads_on_user_id"
   end
 

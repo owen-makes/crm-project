@@ -12,6 +12,16 @@ class Lead < ApplicationRecord
     convertido: "Cerrado",
     baja: "Baja"
   }
+  enum channel: {
+    referido:   0,
+    publicidad: 1,
+    redes:      2,
+    evento:     3,
+    busqueda:   4,
+    email:      5,
+    otro:       6
+  }, _prefix: true # means I need to call like lead.channel_X (i.e. lead.channel_evento?)
+
 
   scope :filter_by_status, ->(status) { where(status: status) if status.present? }
   scope :converted, -> { where(status: "Cerrado") }

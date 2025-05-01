@@ -99,7 +99,18 @@
         </div>
 
         <!-- Broker (partial) -->
-        <%= render "partials/broker_field", form: f %>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <%= render "partials/broker_field", form: f %>
+          
+          <div>
+            <%= f.label :channel, "Cómo nos conociste?", class: "block text-sm font-medium text-gray-700 mb-2"%>
+            <%= f.select :channel,
+                      Lead.channels.keys.map { |k| [k.humanize, k] },
+                      { prompt: "Seleccioná uno" },
+                      class: "w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition h-10"%>
+          </div>
+        </div>
 
         <!-- Objectives -->
         <div>
