@@ -18,6 +18,7 @@ class Lead < ApplicationRecord
   scope :lost, -> { where(status: "Baja") }
   scope :active, -> { where(status: "WIP") }
   scope :fresh, -> { where(status: "Nuevo") }
+  scope :excluding_converted, -> { where.not(status: "Cerrado") }
 
 
   def convert_to_client

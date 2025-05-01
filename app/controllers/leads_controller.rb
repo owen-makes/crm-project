@@ -31,6 +31,8 @@ class LeadsController < ApplicationController
       @leads = @leads.lost
     when "fresh"
       @leads = @leads.fresh
+    else
+      @leads = @leads.excluding_converted
     end
 
     # Sorting
@@ -102,8 +104,6 @@ class LeadsController < ApplicationController
   end
 
   def convert
-    @lead = Lead.find(params[:id])
-
     if @lead.convertido?
       redirect_to clients_path, alert: "Este lead ya fue convertido a cliente"
       return

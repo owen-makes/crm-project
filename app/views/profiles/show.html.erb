@@ -16,7 +16,7 @@
             <h1 class="text-2xl font-bold"><%= @user.name %> <%= @user.last_name %></h1>
             <p class="text-green-100"><%= @user.email %></p>
             <span class="inline-flex items-center px-3 py-1 mt-2 rounded-full text-sm font-medium bg-green-800 text-green-100">
-              <%= @user.role.titleize %>
+              <%= @user.role&.titleize %>
             </span>
           </div>
           <div class="flex justify-end w-full mb-auto text-slate-200 hover:text-white">
