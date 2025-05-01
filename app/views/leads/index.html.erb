@@ -16,9 +16,9 @@
   <% if @leads.blank? && params.keys.size <= 2 %>
   <div data-controller="share-link"
       data-share-link-target="wrapper"
-      class="fixed inset-0 flex items-center justify-center">
+      class="fixed inset-0 flex items-center justify-center pointer-events-none">
 
-    <div class="relative bg-white rounded-xl p-6 w-96 space-y-4 shadow-lg">
+    <div class="relative bg-white rounded-xl p-6 w-96 space-y-4 shadow-lg pointer-events-auto">
       <h2 class="text-lg font-bold">Todavía no tenes leads :(</h2>
       <p class="text-medium text-gray-900">Compartí este link para ingresar nuevos prospectos, o hace click en <b class="font-bold">Importar</b> para agregar leads desde un .CSV</p>
 

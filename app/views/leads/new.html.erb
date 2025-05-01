@@ -1,64 +1,149 @@
+<%# app/views/leads/new.html.erb %>
 <% if @user %>
-  <div class="col-span-6 mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4"><%= @user.name + " " + @user.last_name %> Servicios Financieros</h1>
-    <h1 class="text-l mb-4">Si te interesan nuestros servicios, llená el formulario de abajo y te contactaremos a la brevedad!</h1>
+  <div class="col-span-6 mx-4">
+    <!-- Simple professional header -->
+    <header class="text-center my-10 py-10 bg-gradient-to-r from-green-800 to-green-600 rounded-lg">
+      <h1 class="text-3xl font-bold text-slate-100">
+        <%= @user.team&.name.presence || @user.full_name %>
+      </h1>
+      <p class="text-base text-slate-200 mt-2 mx-8">
+        Si te interesan nuestros servicios, completá el formulario y te contactaremos a la brevedad.
+      </p>
+    </header>
 
+    <!-- Validation errors -->
     <% if @lead.errors.any? %>
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <strong class="font-bold">Oops!</strong>
-        <span class="block sm:inline">There were some problems with your submission.</span>
-        <ul>
-          <% @lead.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
+      <div class="mb-6 rounded-lg bg-red-50 ring-1 ring-red-300 p-4">
+        <h2 class="font-semibold text-red-800 mb-2 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.93 20.36l.7-1.25m6.37-11.12l6.37 11.12m-12.74 0l-.7-1.25M12 4l-.7 1.25m6.37 11.12l.7 1.25" />
+          </svg>
+          Oops — revisá estos campos:
+        </h2>
+        <ul class="list-disc list-inside space-y-1 text-sm text-red-700">
+          <% @lead.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
           <% end %>
         </ul>
       </div>
     <% end %>
 
-    <%= form_for @lead, url: "/signup/#{params[:form_token]}", method: :post, class: "space-y-4" do |f| %>
-      <div>
-        <%= f.label "Nombre", class: "block text-sm font-medium text-gray-700" %>
-        <%= f.text_field :name, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
-      </div>
+    <!-- Form card with clean styling -->
+    <div class="bg-white shadow-lg rounded-lg border border-gray-200 p-6">
+      <%= form_for @lead, url: "/signup/#{params[:form_token]}", method: :post,
+                   html: { class: "space-y-6", id: "lead-form" } do |f| %>
 
-      <div>
-        <%= f.label "Apellido", class: "block text-sm font-medium text-gray-700" %>
-        <%= f.text_field :last_name, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
-      </div>
+        <!-- Name grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <%= f.label :name, "Nombre", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :name, 
+                            class: "w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none", 
+                            placeholder: "Juana", 
+                            required: true %>
+          </div>
+          <div>
+            <%= f.label :last_name, "Apellido", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :last_name, 
+                            class: "w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none", 
+                            placeholder: "Pérez", 
+                            required: true %>
+          </div>
+        </div>
 
-      <div>
-        <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
-        <%= f.email_field :email, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
-      </div>
+        <!-- Email with icon -->
+        <div>
+          <%= f.label :email, "Email", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <%= f.email_field :email, 
+                             class: "w-full rounded-md border border-gray-300 pl-10 px-3 py-2 shadow-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none", 
+                             placeholder: "tu@email.com", 
+                             required: true %>
+          </div>
+        </div>
 
-      <div>
-        <%= f.label "Teléfono", class: "block text-sm font-medium text-gray-700" %>
-        <%= f.phone_field :phone, class: "appearance-none mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true %>
-      </div>
+        <!-- Phone & Capital grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <%= f.label :phone, "Teléfono", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <%= f.telephone_field :phone, 
+                                  class: "w-full rounded-md border border-gray-300 pl-10 px-3 py-2 shadow-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none", 
+                                  placeholder: "+54 11 1234-5678", 
+                                  required: true %>
+            </div>
+          </div>
+          <div>
+            <%= f.label :capital, "Capital disponible (USD)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <%= f.number_field :capital, 
+                               class: "w-full rounded-md border border-gray-300 pl-10 px-3 py-2 shadow-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none", 
+                               placeholder: "10 000" %>
+            </div>
+          </div>
+        </div>
 
-      <div>
-        <%= f.label "¿Cuánto estas dispuesto a invertir? (Monto en dólares)", class: "block text-sm font-medium text-gray-700" %>
-        <%= f.number_field :capital, class: "appearance-none mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
-      </div>
-
+        <!-- Broker (partial) -->
         <%= render "partials/broker_field", form: f %>
 
+        <!-- Objectives -->
+        <div>
+          <%= f.label :description, "Objetivos financieros", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_area :description, 
+                         rows: 3, 
+                         class: "w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none", 
+                         placeholder: "Contanos en qué te gustaría invertir…" %>
+        </div>
 
-      <div>
-        <%= f.label "Contanos tus objetivos financieros", class: "block text-sm font-medium text-gray-700" %>
-        <%= f.text_area :description, rows: 4, class: "mt-1 p-2 w-full border rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
-      </div>
+        <!-- Submit button -->
+        <div class="pt-4 flex justify-end">
+          <button type="submit" class="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            Enviar
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </div>
+      <% end %>
+    </div>
 
-      <div>
-        <%= f.submit "Submit", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
-      </div>
-    <% end %>
-  </div>
+    <!-- Simple trust indicators -->
+    <div class="mt-8 text-center">
+      <p class="text-sm text-gray-500 mb-3">prospex</p>
+    </div>
+
+
 <% else %>
-  <div class="container mx-auto p-4">
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-      <strong class="font-bold">Oops!</strong>
-      <span class="block sm:inline">Form not found!</span>
+  <div class="max-w-lg mx-auto mt-12">
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h2 class="text-lg font-semibold text-gray-800">Oops — formulario no encontrado</h2>
+      <p class="mt-2 text-gray-600">
+        Asegurate de que el link sea correcto o pedile uno nuevo a nuestro equipo.
+      </p>
+      <a href="/" class="inline-flex items-center mt-4 text-green-600 hover:text-green-800">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Volver al inicio
+      </a>
     </div>
   </div>
 <% end %>
