@@ -9,7 +9,8 @@ export default class extends Controller {
     this.updateLink()  // set initial link
   }
 
-  toggle () {
+  toggle (event) {
+    event.preventDefault()
     this.panelTarget.classList.toggle("hidden")
   }
 
@@ -34,5 +35,23 @@ export default class extends Controller {
       : this.baseUrl
 
     this.textboxTarget.value = url
+  }
+
+  // Close on outside click and Esc press
+  outsideClick (event) {
+    // Ignore if the panel is hidden
+    if (this.panelTarget.classList.contains("hidden")) return
+
+    // If the click was INSIDE the pop‑over or on the trigger, do nothing
+    if (this.panelTarget.contains(event.target) || this.element.contains(event.target)) return
+
+    // Otherwise, hide the panel
+    this.panelTarget.classList.add("hidden")
+  }
+
+  handleKey (event) {
+    if (event.key === "Escape" && !this.panelTarget.classList.contains("hidden")) {
+      this.panelTarget.classList.add("hidden")
+    }
   }
 }

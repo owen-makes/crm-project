@@ -1,4 +1,6 @@
-<div class="relative" data-controller="share-link-popover" data-share-link-popover-token="<%= current_user.form_token %>">
+<div class="relative" 
+    data-controller="share-link-popover" data-share-link-popover-token="<%= current_user.form_token %>"
+    data-action="click@window->share-link-popover#outsideClick keyup@window->share-link-popover#handleKey">
   <!-- trigger button ----------------------------------------------------->
   <%= render AddbuttonComponent.new(
         label: "Link ingreso",
@@ -29,6 +31,7 @@
           <option value="linkedin">LinkedIn</option>
           <option value="youtube">YouTube</option>
           <option value="whatsapp">WhatsApp</option>
+          <option value="email">Email</option>
           <option value="google_ads">Google Ads</option>
         </select>
       </label>
