@@ -1,4 +1,5 @@
 class LeadsController < ApplicationController
+  require "uri"
   before_action :set_lead, only: [ :show, :edit, :update, :destroy, :convert ]
   before_action :authenticate_user!, only: [ :index, :show, :update, :destroy ]
   def index
@@ -94,7 +95,13 @@ class LeadsController < ApplicationController
   def create
     @user = User.find_by(form_token: params[:form_token])
     redirect_to root_path, alert: "Form not found" unless @user
-    @lead = @user.leads.new(lead_params)
+    @lead = @user.leads.build(lead_params)
+
+    @lead.channel       ||= infer_channel
+    @lead.source_detail ||= infer_source_detail
+    @lead.campaign      ||= params[:utm_campaign]
+    @lead.channel       ||= :otro
+
     if @lead.save
       flash[:lead_id] = @lead.id
       redirect_to thank_you_path(format: nil)
@@ -141,7 +148,44 @@ class LeadsController < ApplicationController
     @lead = Lead.find(params[:id])
   end
 
+  def infer_channel
+    # UTM tag
+    case params[:utm_medium]&.downcase
+    when "cpc", "ppc" then :publicidad
+    when "social"     then :redes
+    when "email"      then :email
+    end ||
+
+    # UTM source when medium is missing
+    case params[:utm_source]&.downcase
+    when /instagram|tiktok|facebook|linkedin|youtube/ then :redes
+    when /google_ads/                                then :publicidad
+    end ||
+
+    # Referrer host
+    channel_from_referrer(request.referer)
+  end
+
+  def channel_from_referrer(url)
+    host = extract_domain(url)
+    return :busqueda if host&.match?(/google\./)
+    return :redes    if host&.match?(/instagram\.com|tiktok\.com|
+                                      facebook\.com|linkedin\.com|youtube\.com/x)
+    nil
+  end
+
+  def infer_source_detail
+    params[:utm_source].presence ||
+      extract_domain(request.referer)
+  end
+
+  def extract_domain(url)
+    URI.parse(url).host if url.present?
+  end
+
   def lead_params
-    params.require(:lead).permit(:name, :last_name, :email, :phone, :capital, :description, :broker, :notes, :channel, :status)
+    params.require(:lead).permit(:name, :last_name, :email, :phone, :capital,
+                               :description, :broker, :notes, :channel, :status,
+                               :source_detail, :campaign)
   end
 end

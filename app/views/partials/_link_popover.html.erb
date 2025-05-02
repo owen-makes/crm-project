@@ -1,30 +1,57 @@
-<div class="relative" data-controller="share-link-popover">
-        <!-- trigger button ------------------------------------------------------->
-          <%= render AddbuttonComponent.new(
-              label: "Link ingreso",
-              link:  "#",
-              data:  {
-                action:     "share-link-popover#toggle"
-              }
-            ) %>
-        <!-- popover panel -------------------------------------------------------->
-        <div data-share-link-popover-target="panel"
-            class="absolute left-1/2 -translate-x-1/2 mt-2 w-auto rounded-xl shadow-lg border bg-green-800 p-4 space-y-3 hidden z-20 animate-fade-in">
+<div class="relative" data-controller="share-link-popover" data-share-link-popover-token="<%= current_user.form_token %>">
+  <!-- trigger button ----------------------------------------------------->
+  <%= render AddbuttonComponent.new(
+        label: "Link ingreso",
+        link:  "#",
+        data:  { action: "share-link-popover#toggle",
+        turbo: false }
+      ) %>
 
-          <p class="text-sm font-semibold text-slate-50">Compartí este link para ingresar prospectos</p>
+  <!-- popover panel ------------------------------------------------------>
+  <div data-share-link-popover-target="panel"
+       class="absolute left-1/2 -translate-x-1/2 mt-2 w-[22rem] rounded-xl shadow-lg
+              border bg-green-800 p-4 space-y-3 hidden z-20 animate-fade-in">
 
-          <div class="flex gap-2">
-            <input type="text"
-                  readonly
-                  class="flex-1 border rounded px-2 py-1 text-sm"
-                  value="localhost:3000/signup/<%= current_user.form_token %>"
-                  data-share-link-popover-target="textbox"
-                  data-action="click->share-link-popover#copy">
+    <p class="text-sm font-semibold text-slate-50">
+      Compartí este link para ingresar prospectos
+    </p>
 
-            <button class="shrink-0 px-3 py-1 rounded bg-green-500 text-white text-sm"
-                    data-action="share-link-popover#copy">
-              Copiar
-            </button>
-          </div>
-        </div>
-      </div>
+    <!-- tiny form -->
+    <div class="space-y-2 text-sm text-slate-50">
+      <label class="block">
+        Plataforma
+        <select data-share-link-popover-target="platform"
+                data-action="change->share-link-popover#updateLink"
+                class="mt-1 block w-full rounded border px-2 py-1 text-black">
+          <option value="">(ninguna)</option>
+          <option value="instagram">Instagram</option>
+          <option value="tiktok">TikTok</option>
+          <option value="linkedin">LinkedIn</option>
+          <option value="youtube">YouTube</option>
+          <option value="whatsapp">WhatsApp</option>
+          <option value="google_ads">Google Ads</option>
+        </select>
+      </label>
+
+      <label class="block">
+        Campaña (opcional)
+        <input type="text" placeholder="enero25_campania_blanqueo"
+               data-share-link-popover-target="campaign"
+               data-action="change->share-link-popover#updateLink"
+               class="mt-1 block w-full rounded border px-2 py-1 text-black">
+      </label>
+    </div>
+
+    <!-- link output + copy -->
+    <div class="flex gap-2">
+      <input type="text" readonly
+             data-share-link-popover-target="textbox"
+             data-action="click->share-link-popover#copy"
+             class="flex-1 border rounded px-2 py-1 text-sm">
+      <button data-action="share-link-popover#copy"
+              class="shrink-0 px-3 py-1 rounded bg-green-500 text-white text-sm">
+        Copiar
+      </button>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,9 @@ class Lead < ApplicationRecord
 
   before_create :set_status, :set_team
   validates :name, :last_name, :email, :phone, presence: true
+  validates :campaign, length: { maximum: 60 }, allow_blank: true
+  validates :source_detail, length: { maximum: 20 }, allow_blank: true
+
 
   enum status: {
     nuevo: "Nuevo",
