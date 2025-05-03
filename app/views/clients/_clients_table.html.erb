@@ -1,0 +1,71 @@
+
+<div class="inline-block min-w-full align-middle">
+  <div class="overflow-hidden md:rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+        <!-- Sortable headers with explicit table references -->
+        <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <%= sort_link_to 'Nombre', :name, request.params %>
+        </th>
+        <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <%= sort_link_to 'Teléfono', :phone, request.params %>
+        </th>
+        <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+          <%= sort_link_to 'Email', :email, request.params %>
+        </th>
+        <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
+          <%= sort_link_to 'Asesor', :user_id, request.params %>
+        </th>
+        <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
+          <%= sort_link_to 'Broker', :broker, request.params %>
+        </th>
+        <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+          <%= sort_link_to 'Fecha', :created_at, request.params %>
+        </th>
+        <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+        </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% clients.each do |client| %>
+          <tr class="hover:bg-gray-50">
+          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900"><%= link_to client.full_name, client, class: "hover:underline", data: { turbo_frame: "_top" }  %></td>
+          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900"><%= client.phone %></td>
+          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= client.email %></td>
+          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= client.user ? "#{client.user.full_name}" : "" %></td>
+          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= client.broker %></td>
+          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell">
+            <%= client.created_at.strftime('%d/%m/%y') %>
+          </td>
+          <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                    <div class="flex space-x-2">
+                      <%= link_to "Contact", client, class: "text-blue-500 hover:text-blue-700" %>
+                      <%= link_to "Edit", edit_client_path(client), class: "text-green-500 hover:text-green-700" %>
+                    </div>
+          </td>
+          </tr>
+          <% end %>
+      </tbody>
+    </table>
+    
+    <!-- Pagination -->
+    <% if clients.respond_to?(:total_pages) %>
+      <div class="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div class="flex-1 flex justify-between sm:hidden">
+          <%= link_to_prev_page clients, 'Anterior', class: 'relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' %>
+          <%= link_to_next_page clients, 'Siguiente', class: 'ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' %>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm text-gray-700">
+              Mostrando <span class="font-medium"><%= clients.offset_value + 1 %></span> a <span class="font-medium"><%= clients.offset_value + clients.length %></span> de <span class="font-medium"><%= clients.total_count %></span> clients
+            </p>
+          </div>
+          <div>
+            <%= paginate clients %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

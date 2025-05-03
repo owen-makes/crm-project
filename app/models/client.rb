@@ -6,6 +6,8 @@ class Client < ApplicationRecord
   after_create :set_team
   validates :name, :last_name, :phone, presence: true
 
+  scope :filter_by_broker, ->(broker) { where(broker: broker) if broker.present? }
+
   def self.from_lead(lead)
     create!(
       name: lead.name,

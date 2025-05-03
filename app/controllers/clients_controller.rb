@@ -5,6 +5,42 @@ class ClientsController < ApplicationController
   def index
     @clients = policy_scope(Client).includes(:user).order(:created_at)
 
+    # Apply filters
+    @clients = @clients.where("clients.name ILIKE ? OR clients.last_name ILIKE ?", "%#{params[:query]}%", "%#{params[:query]}%") if params[:query].present?
+    @clients = @clients.filter_by_broker(params[:broker]) if params[:broker].present?
+    @clients = @clients.where(user_id: params[:user_id]) if params[:user_id].present?
+
+    # Date range filter
+    if params[:date_from].present?
+      date_from = Date.parse(params[:date_from]).beginning_of_day
+      @clients = @clients.where("clients.created_at >= ?", date_from)
+    end
+
+    if params[:date_to].present?
+      date_to = Date.parse(params[:date_to]).end_of_day
+      @clients = @clients.where("clients.created_at <= ?", date_to)
+    end
+
+    # Sorting
+    if params[:sort].present?
+      direction = params[:direction] == "desc" ? "desc" : "asc"
+
+      case params[:sort]
+      when "name"
+        @clients = @clients.order(name: direction, last_name: direction)
+      when "user_id"
+        @clients = @clients.joins(:user).order("users.name #{direction}, users.last_name #{direction}")
+      else
+        @clients = @clients.order(params[:sort] => direction)
+      end
+    else
+      # Default sort by created_at desc
+      @clients = @clients.order(created_at: :desc)
+    end
+
+    # Pagination
+    @clients = @clients.page(params[:page]).per(15)
+
     respond_to do |format|
       format.html
       format.csv { send_data @clients.to_csv, filename: "clients-#{Time.current.strftime("%Y%m%d")}.csv" }
