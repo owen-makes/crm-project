@@ -6,28 +6,28 @@
         <tr>
         <!-- Sortable headers with explicit table references -->
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          <%= sort_link_to 'Nombre', :name, request.params %>
+          <%= sort_link_to 'Nombre', :name, request.params, "leads_list" %>
         </th>
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          <%= sort_link_to 'Teléfono', :phone, request.params %>
+          <%= sort_link_to 'Teléfono', :phone, request.params, "leads_list" %>
         </th>
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
-          <%= sort_link_to 'Email', :email, request.params %>
+          <%= sort_link_to 'Email', :email, request.params, "leads_list" %>
         </th>
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
-          <%= sort_link_to 'Asesor', :user_id, request.params %>
+          <%= sort_link_to 'Asesor', :user_id, request.params, "leads_list" %>
         </th>
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">
-          <%= sort_link_to 'Broker', :broker, request.params %>
+          <%= sort_link_to 'Broker', :broker, request.params, "leads_list" %>
         </th>
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-          <%= sort_link_to 'Capital', :capital, request.params %>
+          <%= sort_link_to 'Capital', :capital, request.params, "leads_list" %>
         </th>
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          <%= sort_link_to 'Estado', :status, request.params %>
+          <%= sort_link_to 'Estado', :status, request.params, "leads_list" %>
         </th>
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-          <%= sort_link_to 'Fecha', :created_at, request.params %>
+          <%= sort_link_to 'Fecha', :created_at, request.params, "leads_list" %>
         </th>
         <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
         </tr>

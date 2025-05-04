@@ -5,6 +5,7 @@ class Client < ApplicationRecord
   include Exportable
   after_create :set_team
   validates :name, :last_name, :phone, presence: true
+  validates :email, uniqueness: true
 
   scope :filter_by_broker, ->(broker) { where(broker: broker) if broker.present? }
 

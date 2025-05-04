@@ -3,7 +3,7 @@ class ClientsController < ApplicationController
 
   # GET /clients or /clients.json
   def index
-    @clients = policy_scope(Client).includes(:user).order(:created_at)
+    @clients = policy_scope(Client).includes(:user)
 
     # Apply filters
     @clients = @clients.where("clients.name ILIKE ? OR clients.last_name ILIKE ?", "%#{params[:query]}%", "%#{params[:query]}%") if params[:query].present?

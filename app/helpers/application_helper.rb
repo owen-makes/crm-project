@@ -12,7 +12,7 @@ module ApplicationHelper
   end
 
   # Helper to create sortable links for table headers
-  def sort_link_to(name, column, params)
+  def sort_link_to(name, column, params, list_name)
     direction = if params[:sort] == column.to_s && params[:direction] == "asc"
                   "desc"
     else
@@ -28,7 +28,7 @@ module ApplicationHelper
     # Create a link that works with Turbo Frame
     link_to "#{name} #{icon}".html_safe,
             request.params.merge(sort: column, direction: direction),
-            data: { turbo_frame: "leads_list" },
+            data: { turbo_frame: list_name },
             class: "text-gray-500 hover:text-gray-700"
   end
 
