@@ -11,8 +11,9 @@ module IOL
       "renta_mixta_dolares",
       "renta_variable_pesos",
       "renta_variable_dolares"
-  ].freeze
-  SETTLEMENTS = [ "T1", "CI" ].freeze
+    ].freeze
+    SETTLEMENTS = [ "T1", "CI" ].freeze
+    ADJUSTED = [ "ajustada", "sinAjustar" ].freeze
 
     # Fetch + symbol + information
     # (simbolo, descripcion/nombre, pais, mercado, tipo/instrumento, plazo, moneda)
@@ -43,8 +44,10 @@ module IOL
 
     # Get historical prices
     # Date format: yyyy-mm-dd
+    # Adjusted: "ajustada" or "sinAjustar"
     def get_historical_prices(symbol, date_from, date_to, adjusted, market: "BCBA")
       market = validate_market!(market)
+      raise ArgumentError, "Invalid argument for adjusted: #{adjusted.inspect}" unless ADJUSTED.include?(adjusted)
 
       get("/api/v2/#{market}/Titulos/#{symbol}/Cotizacion/seriehistorica/#{date_from}/#{date_to}/#{adjusted}")
     end
