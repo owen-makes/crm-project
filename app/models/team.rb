@@ -5,6 +5,7 @@ class Team < ApplicationRecord
   has_many :leads
   has_many :clients
   has_many :csv_imports
+  has_many :broker_credentials, dependent: :destroy
   before_create :generate_join_token
   after_create :add_admin_as_member
 

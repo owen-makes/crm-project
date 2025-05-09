@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_02_004331) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_09_194120) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "broker_credentials", force: :cascade do |t|
+    t.integer "provider", default: 0, null: false
+    t.text "access_token_ciphertext"
+    t.text "refresh_token_ciphertext"
+    t.datetime "token_expires_at"
+    t.string "account_number"
+    t.bigint "team_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id", "provider"], name: "index_broker_credentials_on_team_id_and_provider", unique: true
+    t.index ["team_id"], name: "index_broker_credentials_on_team_id"
+    t.index ["token_expires_at"], name: "index_broker_credentials_on_token_expires_at"
+  end
 
   create_table "clients", force: :cascade do |t|
     t.string "name"
@@ -209,6 +223,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_02_004331) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "broker_credentials", "teams"
   add_foreign_key "clients", "users"
   add_foreign_key "csv_imports", "teams"
   add_foreign_key "csv_imports", "users"
