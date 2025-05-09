@@ -3,11 +3,6 @@ module IOL
     # --------------------- Constants & helpers ---------------------
     ALLOWED_COUNTRIES = %w[Argentina Estados_Unidos].freeze
     ALLOWED_STATUSES  = %w[Pendientes Liquidadas Canceladas Anuladas].freeze
-
-    def iso_date(date)
-      (date.is_a?(Date) || date.is_a?(Time)) ? date.iso8601 : date.to_s
-    end
-    private :iso_date
     # ---------- Bank acct transfers/deposits/withdrawals/MOVIMIENTOS ---------------
     # Returns client transactions (from_date, to_date, idTipo, idEstado, tipoCuenta)
     def get_client_transfers(client_id,
@@ -29,9 +24,17 @@ module IOL
     end
 
     # Returns all clients transactions
-    # Docs not clear on how to use variables, assuming it's params
+    # Docs not clear on how to use variables, assuming it's JSON body
     def get_all_clients_transfers(from_date, to_date)
-      post("/api/v2/Asesor/Movimientos?from=#{from_date}&to=#{to_date}")
+      body = {
+        FechaDesde: iso_date(from_date),
+        FechaHasta: iso_date(to_date),
+        IdTipo:     id_tipo,
+        IdEstado:   id_estado,
+        TipoCuenta: tipo_cuenta
+      }.compact
+
+      post("/api/v2/Asesor/Movimientos", body)
     end
   end
 
@@ -73,5 +76,11 @@ module IOL
 
   def get_client_portoflio(client_id, country: "Argentina")
     get("/api/v2/Asesores/Portafolio/#{client_id}/#{country}")
+  end
+
+  private
+
+  def iso_date(date)
+    (date.is_a?(Date) || date.is_a?(Time)) ? date.iso8601 : date.to_s
   end
 end
