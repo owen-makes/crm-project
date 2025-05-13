@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_09_194120) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_11_121721) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_09_194120) do
     t.bigint "team_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "username_ciphertext"
+    t.text "password_ciphertext"
     t.index ["team_id", "provider"], name: "index_broker_credentials_on_team_id_and_provider", unique: true
     t.index ["team_id"], name: "index_broker_credentials_on_team_id"
     t.index ["token_expires_at"], name: "index_broker_credentials_on_token_expires_at"

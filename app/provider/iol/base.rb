@@ -1,14 +1,22 @@
 # app/providers/iol/base.rb
-module IOL
+module Iol
     class Base
+      class Error < StandardError; end
+      class AuthError < Error; end
+      class NetworkError < Error; end
       include HTTParty
-      base_uri Rails.application.credentials.dig(:iol, :base_url) # => e.g. https://api.invertironline.com
+      base_url = Rails.application.credentials.dig(:iol, :base_url) ||
+      ENV["IOL_BASE_URL"] ||
+      "https://api.invertironline.com"
+
+      base_uri base_url
 
       TOKEN_PATH = "/token".freeze
 
-      def initialize(username:, password:)
+      def initialize(username: nil, password: nil, refresh_token: nil)
         @username = username
         @password = password
+        @refresh_token = refresh_token
       end
 
       # ––––– public helpers –––––
@@ -20,8 +28,19 @@ module IOL
         with_token  { self.class.post(path, body:, headers: default_headers, **opts) }
       end
 
+      def iso_date(date)
+        (date.is_a?(Date) || date.is_a?(Time)) ? date.iso8601 : date.to_s
+      end
+
       # ––––– token handling –––––
+
       def token
+        return @token if @token && !token_expired?
+
+        @refresh_token.present? ? refresh_token : password_grant_token
+      end
+
+      def password_grant_token
         return @token if @token && !token_expired?
 
         response = self.class.post(
@@ -33,13 +52,34 @@ module IOL
             password:   @password
           }
         )
-        raise(Errors::Auth, response.parsed_response) unless response.success?
+        raise AuthError, response.parsed_response unless response.success?
 
-        payload            = response.parsed_response
-        @token             = payload["access_token"]
+        payload = response.parsed_response
+        @token = payload["access_token"]
+        @refresh_token = payload["refresh_token"]
         @token_expired_at  = Time.current + payload["expires_in"].to_i.seconds
         @token
       end
+
+      def refresh_token
+        response = self.class.post(
+          TOKEN_PATH,
+          headers: { "Content-Type" => "application/x-www-form-urlencoded" },
+          body: {
+            grant_type:    "refresh_token",
+            refresh_token: @refresh_token
+          }
+        )
+        raise AuthError, response.parsed_response unless response.success?
+
+        payload = response.parsed_response
+        @token = payload["access_token"]
+        @token_expired_at = Time.current + payload["expires_in"].to_i.seconds
+        @refresh_token = payload["refresh_token"]
+
+        @token
+      end
+
 
       private
 
@@ -51,7 +91,7 @@ module IOL
         token # → refresh on demand
         yield
       rescue HTTParty::Error, SocketError => e
-        raise Errors::Network, e
+        raise NetworkError, e
       end
 
       def token_expired?

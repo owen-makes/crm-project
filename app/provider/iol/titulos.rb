@@ -1,4 +1,4 @@
-module IOL
+module Iol
   class Titulos < Base
     ALLOWED_COUNTRIES = [ "Argentina", "Estados_Unidos" ].freeze
     ALLOWED_MARKETS = [ "BCBA", "NYSE", "NASDAQ", "AMEX", "BCS", "ROFX" ].freeze
@@ -49,7 +49,7 @@ module IOL
       market = validate_market!(market)
       raise ArgumentError, "Invalid argument for adjusted: #{adjusted.inspect}" unless ADJUSTED.include?(adjusted)
 
-      get("/api/v2/#{market}/Titulos/#{symbol}/Cotizacion/seriehistorica/#{date_from}/#{date_to}/#{adjusted}")
+      get("/api/v2/#{market}/Titulos/#{symbol}/Cotizacion/seriehistorica/#{iso_date(date_from)}/#{iso_date(date_to)}/#{adjusted}")
     end
 
     # Returns ultimoPrecio, variacion, apertura, max, min, fechaHora, tendencia, montoOperado, volumenNominal...

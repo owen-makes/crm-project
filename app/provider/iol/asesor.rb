@@ -1,4 +1,4 @@
-module IOL
+module Iol
   class Asesor < Base
     # --------------------- Constants & helpers ---------------------
     ALLOWED_COUNTRIES = %w[Argentina Estados_Unidos].freeze
@@ -76,11 +76,5 @@ module IOL
 
   def get_client_portoflio(client_id, country: "Argentina")
     get("/api/v2/Asesores/Portafolio/#{client_id}/#{country}")
-  end
-
-  private
-
-  def iso_date(date)
-    (date.is_a?(Date) || date.is_a?(Time)) ? date.iso8601 : date.to_s
   end
 end
