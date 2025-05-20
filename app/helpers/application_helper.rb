@@ -8,7 +8,7 @@ module ApplicationHelper
   end
 
   def initials_or_emoji(user)
-    user.emoji ? user.emoji : user.name[0].upcase + user.last_name[0].upcase
+    user.emoji ? user.emoji[0..2] : user.name[0].upcase + user.last_name[0].upcase
   end
 
   # Helper to create sortable links for table headers

@@ -13,6 +13,9 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   validates :name, :last_name, :email, presence: true
+  validates :emoji, format: { with: /\p{Emoji}/,
+                              message: "Solo puede contener emojis" }
+  validates :emoji, length: { maximum: 3 }
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|

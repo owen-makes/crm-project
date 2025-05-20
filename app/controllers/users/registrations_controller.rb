@@ -25,9 +25,39 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
+  def update
+    self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
+
+    # Devise helper that enforces current_password if you included that field
+    resource_updated = update_resource(resource, account_update_params)
+
+    if resource_updated
+      flash[:notice] = "Perfil actualizado"
+
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.remove("modal"),
+            turbo_stream.update("profile-card",
+                                 partial: "profiles/card",
+                                 locals: { user: resource })
+          ]
+      end
+
+        # Fallback for non-Turbo browsers
+        format.html { redirect_to after_update_path_for(resource) }
+      end
+    else
+      clean_up_passwords resource
+      set_minimum_password_length
+
+      respond_to do |format|
+        format.turbo_stream { render :edit, layout: false, formats: :html, status: :unprocessable_entity }
+      end
+    end
+  end
+
+
 
   # DELETE /resource
   # def destroy
