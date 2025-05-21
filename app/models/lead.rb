@@ -3,18 +3,20 @@ class Lead < ApplicationRecord
   belongs_to :team, optional: true
   include Exportable
 
-  before_create :set_status, :set_team
+  after_commit :convert_to_client, on: :update, if: :closed_now?
+  before_create :set_team
   validates :name, :last_name, :email, :phone, presence: true
   validates :campaign, length: { maximum: 60 }, allow_blank: true
   validates :source_detail, length: { maximum: 20 }, allow_blank: true
 
 
-  enum status: {
-    nuevo: "Nuevo",
-    wip: "WIP",
-    convertido: "Cerrado",
-    baja: "Baja"
+  enum :status, {
+    nuevo: 0,
+    wip: 1,
+    cerrado: 2,
+    baja: 3
   }
+
   enum channel: {
     referido:   0,
     publicidad: 1,
@@ -27,11 +29,11 @@ class Lead < ApplicationRecord
 
 
   scope :filter_by_status, ->(status) { where(status: status) if status.present? }
-  scope :converted, -> { where(status: "Cerrado") }
-  scope :lost, -> { where(status: "Baja") }
-  scope :active, -> { where(status: "WIP") }
-  scope :fresh, -> { where(status: "Nuevo") }
-  scope :excluding_converted, -> { where.not(status: "Cerrado") }
+  scope :active,              -> { where(status: statuses[:wip]) }
+  scope :converted,           -> { where(status: statuses[:cerrado]) }
+  scope :lost,                -> { where(status: statuses[:baja]) }
+  scope :fresh,               -> { where(status: statuses[:nuevo]) }
+  scope :excluding_converted, -> { where.not(status: statuses[:cerrado]) }
 
 
   def convert_to_client
@@ -51,13 +53,18 @@ class Lead < ApplicationRecord
 
   private
 
-  def set_status
-    self.status = "Nuevo"
-  end
-
   def set_team
     if self.user.team
       self.team_id = self.user.team.id
     end
+  end
+
+  def closed_now?
+    saved_change_to_status? && cerrado?
+  end
+
+  def convert_to_client
+    return if client.present?
+    self.convert_to_client
   end
 end

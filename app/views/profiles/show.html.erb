@@ -65,7 +65,7 @@
               <tr class="hover:bg-gray-50">
                 <td class="py-3 px-4 whitespace-nowrap"><%= lead.name %> <%= lead.last_name %></td>
                 <td class="py-3 px-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= lead.status == 'nuevo' ? 'bg-blue-100 text-blue-800' : (lead.status == 'convertido' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800') %>">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= lead.nuevo? ? 'bg-blue-100 text-blue-800' : (lead.cerrado? ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800') %>">
                     <%= lead.status&.titleize %>
                   </span>
                 </td>

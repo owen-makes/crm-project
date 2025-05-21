@@ -11,6 +11,14 @@ module ApplicationHelper
     user.emoji ? user.emoji[0..2] : user.name[0].upcase + user.last_name[0].upcase
   end
 
+  def whatsapp_link(number, msg: nil)
+    base_url = "https://wa.me/"
+    phone = number.to_s.gsub(/\D/, "")
+    return nil if phone.empty?
+    url = msg ? base_url + phone + "?text=" + URI.encode_uri_component(msg) : base_url + phone
+    url
+  end
+
   # Helper to create sortable links for table headers
   def sort_link_to(name, column, params, list_name)
     direction = if params[:sort] == column.to_s && params[:direction] == "asc"
@@ -34,17 +42,12 @@ module ApplicationHelper
 
   # Helper for status badges
   def status_badge(status)
-    case status
-    when "Nuevo"
-      "bg-blue-100 text-blue-800"
-    when "WIP"
-      "bg-yellow-100 text-yellow-800"
-    when "Cerrado"
-      "bg-green-100 text-green-800"
-    when "Baja"
-      "bg-red-100 text-red-800"
-    else
-      "bg-gray-100 text-gray-800"
+    case status.to_sym
+    when :nuevo   then "bg-blue-100 text-blue-800"
+    when :wip     then "bg-yellow-100 text-yellow-800"
+    when :cerrado then "bg-green-100 text-green-800"
+    when :baja    then "bg-red-100 text-red-800"
+    else               "bg-gray-100 text-gray-800"
     end
   end
 end

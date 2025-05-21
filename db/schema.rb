@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_11_121721) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_21_025506) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -104,7 +104,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_11_121721) do
     t.string "name"
     t.string "last_name"
     t.string "phone"
-    t.string "status"
     t.decimal "capital", precision: 19, scale: 4
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -117,6 +116,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_11_121721) do
     t.integer "channel", default: 0, null: false
     t.string "source_detail"
     t.string "campaign"
+    t.integer "status", default: 0, null: false
     t.index ["channel"], name: "index_leads_on_channel"
     t.index ["user_id"], name: "index_leads_on_user_id"
   end
