@@ -39,7 +39,7 @@ class Lead < ApplicationRecord
   def convert_to_client
     transaction do
       client = Client.from_lead(self)
-      update!(status: :convertido)
+      update!(status: :cerrado)
       client
     end
     # Transactions are protective blocks where SQL statements are only permanent if they can all succeed as one atomic action.
@@ -61,10 +61,5 @@ class Lead < ApplicationRecord
 
   def closed_now?
     saved_change_to_status? && cerrado?
-  end
-
-  def convert_to_client
-    return if client.present?
-    self.convert_to_client
   end
 end

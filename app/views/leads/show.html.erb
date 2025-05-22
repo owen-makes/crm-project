@@ -35,10 +35,14 @@
       <div class="bg-gray-50 rounded-lg p-4 <%= "col-span-2" if current_user.member? %>">
         <h3 class="text-sm font-semibold text-gray-700 mb-2">Estado</h3>
         <%= form_with(model: @lead, local: true, class: "flex items-center gap-2 py-1") do |form| %>
-            <%= form.select :status, 
-               [["#{@lead.status.humanize}", @lead.status, { disabled: true }]] + Lead.statuses.values, 
-               { selected: @lead.status }, 
-               class: "border-gray-300 rounded-md text-sm focus:ring-green-500 focus:border-green-500" %>
+          <%= form.select :status,
+                  options_for_select(
+                    Lead.statuses.map { |key, _| [key.humanize, key] },   
+                    selected: @lead.status,                               
+                    disabled: @lead.status                                
+                  ),
+                  {},
+                  class: "border-gray-300 rounded-md text-sm focus:ring-green-500 focus:border-green-500" %>
             <%= form.submit "Set Status", class: "px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm" %>
         <% end %>
 
