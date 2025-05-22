@@ -52,7 +52,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_minimum_password_length
 
       respond_to do |format|
-        format.turbo_stream { render :edit, layout: false, formats: :html, status: :unprocessable_entity }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update(
+            "modal",
+            partial: "profiles/edit_modal",
+            locals: { user: resource }
+          )
+        end
       end
     end
   end

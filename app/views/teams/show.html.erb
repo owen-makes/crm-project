@@ -6,6 +6,7 @@
 
   <div class="flex">
     <div class="ml-auto">
+      <%= link_to "Conectar Broker", team_broker_credentials_path, data: {turbo_frame: "modal"}, class: "text-green-600 hover:underline text-sm mr-4" %>
       <%= link_to "Invitar Miembros", new_user_invitation_path, class: "text-green-600 hover:underline text-sm mr-4" %>
       <%= link_to "Editar Equipo", edit_team_path, class: "text-green-600 hover:underline text-sm" %>
     </div>

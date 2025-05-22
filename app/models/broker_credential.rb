@@ -4,7 +4,7 @@ class BrokerCredential < ApplicationRecord
 
   enum provider: { iol: 0 }, _prefix: true
 
-  with_options if: :iol? do
+  with_options if: :provider_iol? do
     validates :username_ciphertext, :password_ciphertext, presence: true
   end
 

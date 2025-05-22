@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   end
 
   resource :team do
+    resources :broker_credentials
     member do
       patch :remove_from_team
     end
