@@ -87,3 +87,5 @@ end
 gem "countries", "~> 7.1"
 
 gem "view_component", "~> 3.22"
+
+gem "sidekiq", "~> 8.0"

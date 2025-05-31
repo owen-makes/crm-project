@@ -1,0 +1,5 @@
+# config/sidekiq.yml
+:queues:
+  - [critical, 4]
+  - [default,  4]
+  - [low,      2]

@@ -1,0 +1,146 @@
+<%= turbo_frame_tag "modal" do %>
+  <div data-controller="modal" data-modal-target="container">
+    <!-- Overlay -->
+    <div class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+         data-action="click->modal#close"
+         data-modal-target="overlay"></div>
+    
+    <!-- Modal panel -->
+    <div role="dialog"
+         aria-modal="true"
+         aria-labelledby="modal-title"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      
+      <div class="w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 ease-out scale-100"
+           data-modal-target="panel">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-green-50">
+          <div>
+            <h2 id="modal-title" class="text-xl font-semibold text-gray-900">
+              Nuevo Broker
+            </h2>
+            <p class="text-sm text-gray-600 mt-1">
+              Conectate a un broker para sincronizar los portafolios de tus clientes
+            </p>
+          </div>
+          
+          <button type="button"
+                  aria-label="Cerrar"
+                  data-action="click->modal#close"
+                  class="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Content -->
+        <div class="flex flex-col max-h-[70vh]">
+          <!-- Error messages -->
+          <% if @credential.errors.any? %>
+            <div class="mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div class="flex items-start">
+                <svg class="flex-shrink-0 w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div class="ml-3">
+                  <h4 class="text-sm font-medium text-red-800 mb-2">
+                    <%= pluralize(@credential.errors.count, "error") %> prevented saving:
+                  </h4>
+                  <ul class="text-sm text-red-700 space-y-1">
+                    <% @credential.errors.full_messages.each do |message| %>
+                      <li class="flex items-start">
+                        <span class="block w-1.5 h-1.5 bg-red-400 rounded-full mt-2 mr-2 flex-shrink-0"></span>
+                        <%= message %>
+                      </li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Form -->
+          <div class="px-6 py-6 overflow-y-auto" id="broker-form-content">
+            <%= form_with model: [@team, @credential], 
+                          local: false,
+                          data: { turbo_frame: "modal" } do |f| %>
+              
+              <div class="space-y-6">
+                <!-- Provider Selection -->
+                <div>
+                  <%= f.label :provider, "Broker", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                  <%= f.select :provider,
+                        options_for_select(
+                          BrokerCredential.providers.map { |key, value| [BrokerCredential.provider_display_name(key) || key.humanize, key] },
+                          @credential.provider
+                        ),
+                        { prompt: "Selecciona un broker" },
+                        {
+                          class: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200",
+                          data: { modal_initial_focus: true }
+                        } %>
+                </div>
+
+                <!-- Credentials Section -->
+                <div class="space-y-4">
+                  <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+                    Credenciales de Acceso
+                  </h3>
+                  
+                  <!-- Username -->
+                  <div>
+                    <%= f.label :username, "Usuario", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                    <%= f.text_field :username,
+                          class: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200",
+                          autocomplete: "username",
+                          placeholder: "Tu nombre de usuario del broker" %>
+                  </div>
+                  
+                  <!-- Password -->
+                  <div>
+                    <%= f.label :password, "Contraseña", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                    <%= f.password_field :password,
+                          class: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200",
+                          autocomplete: "current-password",
+                          placeholder: "Tu contraseña del broker" %>
+                  </div>
+
+                  <!-- Account Number (optional) -->
+                   <!--<div>
+                    <%= f.label :account_number, "Número de Cuenta (Opcional)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                    <%= f.text_field :account_number,
+                          class: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200",
+                          placeholder: "Número específico de cuenta (si aplica)" %>
+                    <p class="mt-1 text-xs text-gray-500">
+                      Solo necesario si tienes múltiples cuentas con el mismo broker
+                    </p>
+                  </div>
+                </div> -->
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                  <%= f.submit "Conectar Broker",
+                        class: "w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Footer -->
+          <div class="px-6 py-4">
+            <div class="flex items-center justify-center">
+              <div class="flex items-center text-sm text-gray-500">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                Tus credenciales están encriptadas y seguras
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

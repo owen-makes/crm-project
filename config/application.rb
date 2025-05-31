@@ -16,8 +16,11 @@ module CrmProject
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
     config.autoload_paths << Rails.root.join("app", "provider")
+    config.active_record.encryption.primary_key = ENV["active_record_encryption_primary_key"]
+    config.active_record.encryption.deterministic_key = ENV["active_record_encryption_deterministic_key"]
+    config.active_record.encryption.key_derivation_salt = ENV["active_record_encryption_key_derivation_salt"]
 
-
+    config.active_job.queue_adapter = :sidekiq
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

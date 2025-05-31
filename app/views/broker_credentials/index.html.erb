@@ -57,9 +57,9 @@
 
           <!-- Credentials List -->
           <div class="flex-1 overflow-y-auto">
-            <% if @broker_credentials.present? %>
+            <% if @credentials.present? %>
               <div class="divide-y divide-gray-100">
-                <% @broker_credentials.each do |credential| %>
+                <% @credentials.each do |credential| %>
                   <div class="px-6 py-4 hover:bg-gray-50 transition-colors duration-150">
                     <div class="flex items-center justify-between">
                       <div class="flex items-center space-x-4">
@@ -67,7 +67,7 @@
                         <div class="flex-shrink-0">
                           <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                             <span class="text-white font-semibold text-sm">
-                              <%= credential.broker_name.first(2).upcase rescue "BR" %>
+                              <%= credential.provider.first(2).upcase rescue "BR" %>
                             </span>
                           </div>
                         </div>
@@ -75,7 +75,7 @@
                         <!-- Broker Info -->
                         <div class="flex-1 min-w-0">
                           <p class="text-sm font-medium text-gray-900 truncate">
-                            <%= credential.broker_name.titleize %>
+                            <%= credential.provider.titleize %>
                           </p>
                           <div class="flex items-center mt-1">
                             <!-- Status Badge -->
@@ -102,9 +102,9 @@
                               </span>
                             <% end %>
                             
-                            <% if credential.last_synced_at.present? %>
+                            <% if credential.updated_at.present? %>
                               <span class="ml-2 text-xs text-gray-500">
-                                Última sync: <%= time_ago_in_words(credential.last_synced_at) %>
+                                Última sync: <%= time_ago_in_words(credential.updated_at) %>
                               </span>
                             <% end %>
                           </div>
@@ -126,7 +126,7 @@
                           <% end %>
                         <% end %>
                         
-                        <%= link_to edit_broker_credential_path(credential),
+                        <%= link_to edit_team_broker_credential_path(credential),
                             remote: true,
                             class: "inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors duration-200",
                             title: "Editar credenciales" do %>
@@ -136,7 +136,7 @@
                           Editar
                         <% end %>
                         
-                        <%= button_to broker_credential_path(credential),
+                        <%= button_to team_broker_credential_path(credential),
                             method: :delete,
                             remote: true,
                             data: { 

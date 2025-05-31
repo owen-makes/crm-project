@@ -1,3 +1,5 @@
+require "sidekiq/web"
+
 Rails.application.routes.draw do
   devise_for :users, controllers: {
      omniauth_callbacks: "users/omniauth_callbacks",
@@ -8,6 +10,10 @@ Rails.application.routes.draw do
 
   delete "/users/invitation/:id", to: "users/invitations#destroy", as: :delete_user_invitation
 
+  # Sidekiq interface (delete or find another type of auth for prod)
+  authenticate :user, ->(u) { u.admin? } do
+    mount Sidekiq::Web => "/sidekiq"
+  end
 
   resources :users, only: [] do
     get "profile", to: "profiles#show"

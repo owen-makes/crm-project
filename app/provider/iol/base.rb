@@ -8,6 +8,7 @@ module Iol
       base_url = Rails.application.credentials.dig(:iol, :base_url) ||
       ENV["IOL_BASE_URL"] ||
       "https://api.invertironline.com"
+      attr_reader :refresh_token, :token_expires_at
 
       base_uri base_url
 
@@ -57,7 +58,7 @@ module Iol
         payload = response.parsed_response
         @token = payload["access_token"]
         @refresh_token = payload["refresh_token"]
-        @token_expired_at  = Time.current + payload["expires_in"].to_i.seconds
+        @token_expires_at  = Time.current + payload["expires_in"].to_i.seconds
         @token
       end
 
@@ -74,7 +75,7 @@ module Iol
 
         payload = response.parsed_response
         @token = payload["access_token"]
-        @token_expired_at = Time.current + payload["expires_in"].to_i.seconds
+        @token_expires_at = Time.current + payload["expires_in"].to_i.seconds
         @refresh_token = payload["refresh_token"]
 
         @token
@@ -95,7 +96,7 @@ module Iol
       end
 
       def token_expired?
-        @token_expired_at && Time.current >= @token_expired_at
+        @token_expires_at && Time.current >= @token_expires_at
       end
     end
 end

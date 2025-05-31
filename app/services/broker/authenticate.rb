@@ -20,18 +20,18 @@ module Broker
     Result = Struct.new(:success?, :error, keyword_init: true)
 
     def authenticate_iol
-      client = IOL::Base.new(
+      client = Iol::Base.new(
         username: @credential.username,
         password: @credential.password
       )
 
       token = client.token # ← will raise on failure
-      refresh_token = client.instance_variable_get(:@refresh_token)
+      refresh_token = client.refresh_token
 
       @credential.update!(
         access_token:     token,
         refresh_token:    refresh_token,
-        token_expires_at: client.instance_variable_get(:@token_expired_at)
+        token_expires_at: client.token_expires_at
       )
 
       schedule_refresh

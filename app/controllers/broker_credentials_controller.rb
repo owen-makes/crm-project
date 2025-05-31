@@ -16,7 +16,9 @@ class BrokerCredentialsController < ApplicationController
   def create
     @credential = @team.broker_credentials.build(broker_credential_params)
     if @credential.save
-      redirect_to team_path, notice: "Credencial guardada correctamente."
+      AuthenticateBrokerCredentialJob.perform_later(@credential.id)
+      redirect_to team_path(@team),
+                  notice: "Broker conectado – validando credenciales."
     else
       render :new, status: :unprocessable_entity
     end
@@ -26,6 +28,7 @@ class BrokerCredentialsController < ApplicationController
 
   def update
     if @credential.update(broker_credential_params)
+      AuthenticateBrokerCredentialJob.perform_later(@credential.id)
       redirect_to team_path, notice: "Credencial actualizada."
     else
       render :edit, status: :unprocessable_entity
@@ -50,7 +53,7 @@ class BrokerCredentialsController < ApplicationController
 
   def broker_credential_params
     params.require(:broker_credential)
-          .permit(:access_token, :refresh_token, :token_expires_at, :account_number, :username, :password)
+          .permit(:access_token, :refresh_token, :token_expires_at, :account_number, :username, :password, :provider)
   end
 
   def require_team_admin!
