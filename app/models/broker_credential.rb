@@ -10,9 +10,9 @@ class BrokerCredential < ApplicationRecord
     error:   2    # last auth attempt failed
   }, prefix: true
 
-  # with_options if: :provider_iol? do
-  #   validates :username, :password, presence: true
-  # end
+  with_options if: :provider_iol? do
+    validates :username, :password, presence: true
+  end
 
   validates  :provider, presence: true
   validates  :team_id,  uniqueness: { scope: :provider } # one key per team
@@ -25,5 +25,9 @@ class BrokerCredential < ApplicationRecord
     {
       "iol" => "InvertirOnline"
     }[provider_key] || provider_key.humanize
+  end
+
+  def provider_display_name
+    self.class.provider_display_name(provider)
   end
 end
