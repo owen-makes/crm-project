@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_31_181828) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_02_193929) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "broker_credentials", force: :cascade do |t|
     t.integer "provider", default: 0, null: false
-    t.text "access_token_ciphertext"
-    t.text "refresh_token_ciphertext"
+    t.text "access_token"
+    t.text "refresh_token"
     t.datetime "token_expires_at"
     t.string "account_number"
     t.bigint "team_id", null: false

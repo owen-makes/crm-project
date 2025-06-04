@@ -31,7 +31,8 @@ module Broker
       @credential.update!(
         access_token:     token,
         refresh_token:    refresh_token,
-        token_expires_at: client.token_expires_at
+        token_expires_at: client.token_expires_at || Time.current + 15.minutes,
+        last_authenticated_at: Time.now
       )
 
       schedule_refresh

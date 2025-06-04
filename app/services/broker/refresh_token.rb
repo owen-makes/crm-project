@@ -23,14 +23,17 @@ module Broker
 
     # ---- provider-specific helpers -----------------------------------
     def refresh_iol
-      client = Iol::Base.new(refresh_token: @credential.refresh_token)
-
+      client = Iol::Base.new(refresh_token: @credential.refresh_token,
+                            username: @credential.username,
+                            password: @credential.password
+      )
       new_access = client.refresh_token     # may raise AuthError / NetworkError
 
       @credential.update!(
         access_token:     new_access,
         refresh_token:    client.refresh_token,  # IOL often rotates it
-        token_expires_at: client.token_expires_at,
+        token_expires_at: client.token_expires_at || Time.current + 15.minutes,
+        last_authenticated_at: Time.current,
         status:           :ok
       )
 
@@ -43,9 +46,14 @@ module Broker
 
     # ---- scheduling --------------------------------------------------
     def schedule_next_refresh
-      RefreshBrokerTokenJob.set(
-        wait_until: @credential.token_expires_at - 5.minutes
-      ).perform_later(@credential.id)
+      return unless @credential.token_expires_at
+      run_at = @credential.token_expires_at - 5.minutes
+      run_at = 30.seconds.from_now if run_at < Time.current # don’t schedule in the past
+
+      Rails.logger.info "🔄 scheduling next refresh for #{@credential.id} at #{run_at}"
+
+      RefreshBrokerTokenJob.set(wait_until: run_at)
+                          .perform_later(@credential.id)
     end
   end
 end

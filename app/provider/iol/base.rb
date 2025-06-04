@@ -38,7 +38,7 @@ module Iol
       def token
         return @token if @token && !token_expired?
 
-        @refresh_token.present? ? refresh_token : password_grant_token
+        @refresh_token.present? ? refresh_access_token! : password_grant_token
       end
 
       def password_grant_token
@@ -62,7 +62,7 @@ module Iol
         @token
       end
 
-      def refresh_token
+      def refresh_access_token!
         response = self.class.post(
           TOKEN_PATH,
           headers: { "Content-Type" => "application/x-www-form-urlencoded" },
@@ -79,6 +79,10 @@ module Iol
         @refresh_token = payload["refresh_token"]
 
         @token
+      end
+
+      def get_account_data
+        get("/api/v2/datos-perfil")
       end
 
 
