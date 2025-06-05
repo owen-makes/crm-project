@@ -19,6 +19,18 @@ module ApplicationHelper
     url
   end
 
+  def number_to_social(number)
+    return number_to_human(number) if number < 1000
+
+    number_to_human(number,
+        precision: 2,
+        round_mode: :up,
+        significant: false,
+        format: "%n%u",
+        units: { thousand: "K", million: "M", billion: "B" }
+        )
+  end
+
   # Helper to create sortable links for table headers
   def sort_link_to(name, column, params, list_name)
     direction = if params[:sort] == column.to_s && params[:direction] == "asc"

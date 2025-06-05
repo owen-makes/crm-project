@@ -32,12 +32,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
     resource_updated = update_resource(resource, account_update_params)
 
     if resource_updated
-      flash[:notice] = "Perfil actualizado"
+      flash.now[:notice] = "Perfil actualizado"
 
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.remove("modal"),
+            turbo_stream.update("flash", partial: "partials/flash"),
+            turbo_stream.update("modal") { "" },
             turbo_stream.update("profile-card",
                                  partial: "profiles/card",
                                  locals: { user: resource })

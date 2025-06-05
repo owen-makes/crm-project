@@ -17,8 +17,14 @@ class BrokerCredentialsController < ApplicationController
     @credential = @team.broker_credentials.build(broker_credential_params)
     if @credential.save
       AuthenticateBrokerCredentialJob.perform_later(@credential.id)
-      redirect_to team_path(@team),
-                  notice: "Broker conectado – validando credenciales."
+      flash.now[:notice] = "#{@credential.provider_display_name} conectado, validando credenciales"
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update("flash", partial: "partials/flash"),
+            turbo_stream.update("modal") { "" } ]
+        end
+      end
     else
       render :new, status: :unprocessable_entity
     end
@@ -29,7 +35,14 @@ class BrokerCredentialsController < ApplicationController
   def update
     if @credential.update(broker_credential_params)
       AuthenticateBrokerCredentialJob.perform_later(@credential.id)
-      redirect_to team_path, notice: "Credencial actualizada."
+      flash.now[:notice] = "Credencial Actualizada"
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update("flash", partial: "partials/flash"),
+            turbo_stream.update("modal") { "" } ]
+        end
+      end
     else
       render :edit, status: :unprocessable_entity
     end
@@ -37,8 +50,14 @@ class BrokerCredentialsController < ApplicationController
 
   def destroy
     @credential.destroy
-    flash[:provider] = @credential.provider
-    redirect_to team_path, notice: "Se desconectó #{@credential.provider}"
+    flash.now[:notice] = "Se desconectó #{@credential.provider_display_name}"
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update("flash", partial: "partials/flash"),
+          turbo_stream.update("modal") { "" } ]
+      end
+    end
   end
 
   private

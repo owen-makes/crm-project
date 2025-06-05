@@ -40,7 +40,7 @@
           <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell"><%= lead.email %></td>
           <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= lead.user ? "#{lead.user.full_name}" : "" %></td>
           <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden xl:table-cell"><%= lead.broker %></td>
-          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell"><%= lead.capital %></td>
+          <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell"><%= lead.capital ? number_to_social(lead.capital) : "N/A" %></td>
           <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
           <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_badge(lead.status) %>">
             <%= lead.status %>
